@@ -1,0 +1,16 @@
+﻿{
+	propertyEditors : [
+		{
+			alias: "Gigya Settings Config",
+			name: "GigyaSettings",
+			editor: {
+				view: "~/App_Plugins/GigyaSettings/gigyasettings.editor.html",
+				valueType: "JSON"
+			}
+		}
+	],
+	javascript: [
+		"~/App_Plugins/GigyaSettings/gigyasettings.resource.js",
+		"~/App_Plugins/GigyaSettings/gigyasettings.controller.js"
+	]
+}

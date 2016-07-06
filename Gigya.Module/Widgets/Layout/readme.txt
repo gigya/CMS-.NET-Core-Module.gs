@@ -1,0 +1,2 @@
+﻿This is the folder where you should put all module Layout Widgets.
+You can find more information here: http://www.sitefinity.com/documentation/documentationarticles/designer-s-guide/custom-layout-widgets

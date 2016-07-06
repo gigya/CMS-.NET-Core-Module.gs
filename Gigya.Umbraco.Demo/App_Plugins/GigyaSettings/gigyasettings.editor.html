@@ -1,0 +1,46 @@
+﻿<div ng-controller="Gigya.GigyaSettingsController">
+    <h1>Gigya Global Configuration</h1>
+    <div>
+        <span>API Key</span>
+        <br />
+        <input type="text" ng-model="model.applicationKey" style="width: 520px" />
+    </div>
+    <div>
+        <span>Application Key</span>
+        <br />
+        <input type="text" ng-model="model.value.applicationKey" style="width: 300px" />
+    </div>
+    <div>
+        <span>Application Secret</span>
+        <br />
+        <input type="text" ng-model="model.value.applicationSecret" style="width: 300px" />
+    </div>
+    <div>
+        <span>Providers</span>
+        <br />
+        <input type="text" ng-model="model.value.providers" />
+    </div>
+    <div>
+        <span>Data Center</span>
+        <br />
+        <select ng-model="model.value.dataCenter">
+            <option value="US" selected="selected">US</option>
+            <option value="EU">EU</option>
+            <option value="AU">AU</option>
+        </select>
+    </div>
+    <div>
+        <span>Language</span>
+        <br />
+        <select ng-model="model.value.language">
+            <option value="en" selected="selected">English</option>
+            <option value="de">German</option>
+            <option value="es">Spanish</option>
+        </select>
+    </div>
+    <div>
+        <span>Custom Configuration</span>
+        <br />
+        <textarea style="width: 300px; height: 120px;" ng-model="model.value.customConfig" />
+    </div>
+</div>

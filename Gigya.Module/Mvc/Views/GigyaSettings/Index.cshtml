@@ -1,0 +1,17 @@
+﻿@model Gigya.Module.Mvc.Models.GigyaSettingsViewModel
+
+@using Telerik.Sitefinity.Frontend.Mvc.Helpers
+@using Telerik.Sitefinity.Modules.Pages;
+
+@Html.Script(ScriptRef.JQuery, "top")
+@if (Model.RenderScript)
+{
+    <script src="https://cdns.gigya.com/js/gigya.js?apiKey=@Model.ApiKey">
+        @Html.Raw(Model.SettingsJson)
+    </script>
+    <script src="@Model.GigyaScriptPath"></script>
+}
+@if (Model.DebugMode)
+{
+    <script>window.gigyaDebugMode = true;</script>
+}

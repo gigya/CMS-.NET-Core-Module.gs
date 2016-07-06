@@ -1,0 +1,34 @@
+﻿@model Gigya.Module.Mvc.ViewModels.GigyaLoginStatusViewModel
+
+@using Telerik.Sitefinity.Frontend.Mvc.Helpers
+@using Telerik.Sitefinity.Modules.Pages;
+@using Gigya.Module
+
+@if (Model.IsLoggedIn)
+{
+    <span class="gigya-logged-greeting">@Html.Resource(Constants.Resources.FrontEnd.LoginStatus.LoggedInUserGreeting, Constants.Resources.ClassId)@Model.Email</span>
+    <a href="#" class="gigya-edit-profile">@Html.Resource("ProfilePage", "LoginStatusResources")</a>
+    <a href="#" class="gigya-logout">@Html.Resource("Logout", "LoginStatusResources")</a>
+}
+else
+{
+    <a href="#" class="gigya-login">@Html.Resource("Login", "LoginStatusResources")</a>
+    <a href="#" class="gigya-register">@Html.Resource("RegisterNow", "LoginStatusResources")</a>
+}
+
+<input id="gigya-redirect-url" type="hidden" value="@Model.LoggedInRedirectUrl" />
+<input id="gigya-logout-url" type="hidden" value="@Model.LogoutUrl" />
+<input id="gigya-error-message" type="hidden" value="@Model.ErrorMessage" />
+<input id="gigya-site-id" type="hidden" value="@Model.SiteId" />
+
+@if (!Model.IsDesignMode)
+{
+<script>
+    if (window.gigyaSitefinity) {
+        gigyaSitefinity.authenticated = @Model.IsLoggedIn.ToString().ToLower();
+        gigyaSitefinity.init();
+    } else {
+        alert("Gigya settings widget not added to page or hasn't been configured. Check logs and refer to manual.");
+    }
+</script>
+}
