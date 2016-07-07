@@ -17,13 +17,6 @@ namespace Gigya.Module.Core
             public const string SignatureTimestamp = "signatureTimestamp";
         }
 
-        //public class SitefinityFields
-        //{
-        //    public const string FirstName = "FirstName";
-        //    public const string LastName = "LastName";
-        //    public const string Email = "Email";
-        //}
-
         public class Testing
         {
             public const string EmailWhichThrowsException = "loginexception@purestone.co.uk";

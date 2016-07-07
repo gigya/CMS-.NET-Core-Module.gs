@@ -58,7 +58,11 @@ namespace Gigya.Umbraco.Module.Helpers
             // find homepage from current node
             var homepage = Utils.HomepageNode(currentNode);
             
-            return Get(homepage.Id, decrypt);
+            var model = Get(homepage.Id, decrypt);
+
+            // if we are using global settings we still want to tell the client to use the current homepage id
+            model.Id = homepage.Id;
+            return model;
         }
 
         public GigyaUmbracoModuleSettings GetRaw(int id)
@@ -94,6 +98,17 @@ namespace Gigya.Umbraco.Module.Helpers
 
         protected override List<IGigyaModuleSettings> GetForSiteAndDefault(object id)
         {
+            if (id == null)
+            {
+                id = -1;
+            }
+
+            var idList = id as string[];
+            if (idList != null)
+            {
+                id = idList[0];
+            }
+            
             var db = UmbracoContext.Current.Application.DatabaseContext.Database;
             var sql = string.Format("SELECT * FROM dbo.gigya_settings WHERE Id IN ({0}, -1)", id);
             var data = db.Fetch<GigyaUmbracoModuleSettings>(sql);

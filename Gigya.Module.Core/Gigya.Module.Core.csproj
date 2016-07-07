@@ -98,8 +98,6 @@
     <Compile Include="Data\IGigyaSettings.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
     <Compile Include="Mvc\Controllers\BaseController.cs" />
-    <Compile Include="Mvc\Controllers\GigyaLoginStatusController.cs" />
-    <Compile Include="Mvc\Controllers\GigyaSettingsController.cs" />
     <Compile Include="Mvc\JsonNetResult.cs" />
     <Compile Include="Mvc\Models\AccountModels.cs" />
     <Compile Include="Mvc\Models\GigyaSettingsViewModel.cs" />

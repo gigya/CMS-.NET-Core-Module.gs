@@ -9,6 +9,7 @@ using Gigya.Umbraco.Module.Connector.Helpers;
 using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Umbraco.Module.Connector;
+using System.Web.Mvc;
 
 namespace Gigya.Umbraco.Module.Mvc.Controllers
 {

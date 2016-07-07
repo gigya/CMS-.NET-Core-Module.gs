@@ -269,9 +269,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Plugins\GigyaSettings\gigyasettings.controller.js" />
-    <Content Include="App_Plugins\GigyaSettings\gigyasettings.editor.html" />
-    <Content Include="App_Plugins\GigyaSettings\gigyasettings.resource.js" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\dashboard.controller.js" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\edit.controller.js" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\edit.html" />
@@ -299,7 +296,6 @@
     <Content Include="App_Plugins\Grid\Editors\Render\media_text_right.cshtml" />
     <Content Include="App_Plugins\Grid\Editors\Render\media_wide.cshtml" />
     <Content Include="App_Plugins\Grid\Editors\Render\quote_with_description.cshtml" />
-    <Content Include="App_Plugins\GigyaSettings\package.manifest" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
@@ -323,6 +319,9 @@
     <Content Include="config\404handlers.config" />
     <Content Include="App_Plugins\Gigya\package.manifest" />
     <None Include="bundleconfig.json" />
+    <Content Include="Views\GigyaSettings\Index.cshtml" />
+    <Content Include="Views\Master.cshtml" />
+    <Content Include="Views\Partials\MainNavigation.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -350,6 +349,7 @@
     <Folder Include="App_Plugins\GigyaLoggedIn\" />
     <Folder Include="App_Plugins\GigyaLogin\" />
     <Folder Include="App_Plugins\GigyaRegister\" />
+    <Folder Include="App_Plugins\GigyaSettings\" />
     <Folder Include="css\" />
     <Folder Include="media\" />
   </ItemGroup>

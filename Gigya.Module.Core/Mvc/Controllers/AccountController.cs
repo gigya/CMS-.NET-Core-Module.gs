@@ -32,7 +32,7 @@ namespace Gigya.Module.Core.Mvc.Controllers
         public virtual ActionResult EditProfile(LoginModel model)
         {
             var response = new LoginResponseModel();
-            var id = model != null ? model.Id : Guid.Empty;
+            var id = model != null ? model.Id : null;
             var settings = SettingsHelper.Get(id, true);
 
             if (!ModelState.IsValid)
@@ -66,7 +66,7 @@ namespace Gigya.Module.Core.Mvc.Controllers
                 return JsonNetResult(response);
             }
 
-            var id = model != null ? model.Id : Guid.Empty;
+            var id = model != null ? model.Id : null;
             var settings = SettingsHelper.Get(id, true);
 
             if (!ModelState.IsValid)
@@ -88,11 +88,11 @@ namespace Gigya.Module.Core.Mvc.Controllers
         }
 
         /// <summary>
-        /// Should be called when a user is logged out of Gigya and therefore needs to be logged out of Sitefinity.
+        /// Should be called when a user is logged out of Gigya and therefore needs to be logged out of the CMS.
         /// </summary>
-        public virtual ActionResult Logout(Guid? id)
+        public virtual ActionResult Logout(object id = null)
         {
-            var settings = SettingsHelper.Get(id ?? Guid.Empty);
+            var settings = SettingsHelper.Get(id);
             
             var response = new ResponseModel { Status = ResponseStatus.Success };
             var currentIdentity = GetCurrentIdentity();

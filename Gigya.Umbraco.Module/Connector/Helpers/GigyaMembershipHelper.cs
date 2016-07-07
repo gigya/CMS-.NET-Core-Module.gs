@@ -155,13 +155,21 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var email = GetGigyaValueWithDefault(gigyaModel, Constants.GigyaFields.Email, null);
 
-            IMember user = memberService.CreateMemberWithIdentity(userId, email, email, "Members");
+            IMember user = memberService.CreateMemberWithIdentity(userId, email, email, Constants.MemberTypeAlias);
             if (user == null)
             {
                 return null;
             }
 
             MapProfileFields(user, gigyaModel, settings);
+            try
+            {
+                memberService.Save(user);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to update profile for userId: " + userId, e);
+            }
             return user;
         }
 

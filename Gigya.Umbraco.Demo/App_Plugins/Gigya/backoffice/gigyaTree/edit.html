@@ -189,20 +189,20 @@
                                         <thead>
                                             <tr>
                                                 <th>Gigya Field</th>
-                                                <th>Umbraco Field</th>
+                                                <th>Umbraco Field Alias</th>
                                                 <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr ng-repeat="row in model.MappingFields">
                                                 <td>
-                                                    <input class="gigya-mapping-field" ng-disabled="model.Inherited" type="text" ng-model="row.GigyaFieldName" />
+                                                    <input class="gigya-mapping-field" ng-disabled="model.Inherited || row.Required" type="text" ng-model="row.GigyaFieldName" />
                                                 </td>
                                                 <td>
-                                                    <input class="sf-mapping-field" ng-disabled="model.Inherited" type="text" ng-model="row.CmsFieldName" />
+                                                    <input class="sf-mapping-field" ng-disabled="model.Inherited || row.Required" type="text" ng-model="row.CmsFieldName" />
                                                 </td>
                                                 <td>
-                                                    <buton type="button" class="btn btn-small" ng-hide="model.Inherited" ng-click="removeMappingField(row)">Remove</buton>
+                                                    <buton type="button" class="btn btn-small" ng-hide="model.Inherited || row.Required" ng-click="removeMappingField(row)">Remove</buton>
                                                 </td>
                                             </tr>
                                         </tbody>

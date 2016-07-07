@@ -220,6 +220,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GigyaApplicationEventHandler.cs" />
     <Compile Include="Connector\Helpers\GigyaMembershipHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaSettingsHelper.cs" />
     <Compile Include="Connector\Logging\UmbracoLogger.cs" />
@@ -230,6 +231,8 @@
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
     <Compile Include="Mvc\Controllers\GigyaSettingsApiController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaLoginButtonController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaSettingsController.cs" />
     <Compile Include="Mvc\Models\GigyaApiModels.cs" />
     <Compile Include="Mvc\Models\GigyaConfigModel.cs" />
     <Compile Include="Mvc\Models\GigyaLanguageModel.cs" />

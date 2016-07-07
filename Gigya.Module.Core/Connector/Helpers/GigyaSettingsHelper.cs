@@ -16,6 +16,7 @@ using Gigya.Module.Core.Connector.Common;
 
 using System.Web.Mvc;
 using Gigya.Module.Core.Connector.Logging;
+using System.Web;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
@@ -47,7 +48,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// </summary>
         /// <param name="settings">The settings for the current site.</param>
         /// <param name="urlHelper">UrlHelper for the current request.</param>
-        public virtual GigyaSettingsViewModel ViewModel(IGigyaModuleSettings settings, UrlHelper urlHelper)
+        public virtual GigyaSettingsViewModel ViewModel(IGigyaModuleSettings settings, UrlHelper urlHelper, CurrentIdentity currentIdentity)
         {
             var scriptName = settings.DebugMode ? "gigya-cms.js" : "gigya-cms.min.js";
 
@@ -55,13 +56,26 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 ApiKey = settings.ApiKey,
                 DebugMode = settings.DebugMode,
-                GigyaScriptPath = UrlUtils.AddQueryStringParam(ScriptPath(settings), "v=" + CmsVersion)
+                GigyaScriptPath = UrlUtils.AddQueryStringParam(VirtualPathUtility.ToAbsolute(ScriptPath(settings)), "v=" + CmsVersion),
+                LoggedInRedirectUrl = settings.RedirectUrl,
+                LogoutUrl = settings.LogoutUrl,
+                IsLoggedIn = currentIdentity.IsAuthenticated,
+                Id = settings.Id
             };
             
-            model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<dynamic>(settings.GlobalParameters) : new ExpandoObject();
-            model.Settings.lang = Language(settings);
-            model.Settings.sessionExpiration = settings.SessionTimeout;
-            model.SettingsJson = JsonConvert.SerializeObject(model.Settings);
+            model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<ExpandoObject>(settings.GlobalParameters) : new ExpandoObject();
+
+            var settingsProperties = (IDictionary<string, object>)model.Settings;
+            if (!settingsProperties.ContainsKey("lang"))
+            {
+                model.Settings.lang = Language(settings);
+            }
+            if (!settingsProperties.ContainsKey("sessionExpiration"))
+            {
+                model.Settings.sessionExpiration = settings.SessionTimeout;
+            }
+
+            model.SettingsJson = JsonConvert.SerializeObject(model.Settings);            
             return model;
         }
 

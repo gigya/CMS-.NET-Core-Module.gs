@@ -21,7 +21,7 @@ namespace Gigya.Module.Core.Mvc.Models
     public class RequestModel
     {
         [Required]
-        public Guid Id { get; set; }
+        public object Id { get; set; }
     }
 
     public class LoginResponseModel : ResponseModel

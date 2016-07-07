@@ -43,12 +43,13 @@ namespace Gigya.Module.Connector.Helpers
         public static GigyaSettingsViewModel ViewModel(GigyaModuleSettings settings, UrlHelper urlHelper)
         {
             var scriptName = settings.DebugMode ? "gigya-sitefinity.js" : "gigya-sitefinity.min.js";
+            var scriptPath = FileHelper.GetPath("~/Mvc/Scripts/" + scriptName, urlHelper.WidgetContent("Mvc/Scripts/" + scriptName));
 
             var model = new GigyaSettingsViewModel
             {
                 ApiKey = settings.ApiKey,
                 DebugMode = settings.DebugMode,
-                GigyaScriptPath = UrlUtils.AddQueryStringParam(urlHelper.WidgetContent("Mvc/Scripts/" + scriptName), "v=" + ModuleClass.Version)
+                GigyaScriptPath = UrlUtils.AddQueryStringParam(scriptPath, "v=" + ModuleClass.Version)
             };
             
             model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<dynamic>(settings.GlobalParameters) : new ExpandoObject();
