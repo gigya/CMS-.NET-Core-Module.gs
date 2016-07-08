@@ -52,7 +52,7 @@ var gigyaCms = {
             window.location.reload();
         }
     },
-    genericErrorMessage: '',
+    genericErrorMessage: 'Sorry an error occurred. Please try again.',
     id: '',
     loggedInRedirectUrl: '',
     logoutRedirectUrl: '',
