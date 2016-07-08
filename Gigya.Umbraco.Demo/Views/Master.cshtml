@@ -48,19 +48,11 @@
             <nav>
 			  
               @{ Html.RenderPartial("MainNavigation"); }
-
             </nav>
           </div>
         </div>
-          @if (User.Identity.IsAuthenticated)
-          {
-          <div style="color: white;">
-              Welcome <a style="color: white; text-decoration: underline;" href="javascript:void(0)" class="gigya-edit-profile">@User.Identity.Name</a> <button class="gigya-logout btn">Logout</button>
+          <div id="gigya-container">
           </div>
-          }
-          <script>
-                gigyaCms.init();
-          </script>
       </div>
 
       <div id="toggle" class="toggle">
@@ -76,11 +68,15 @@
 			
 		  @{ Html.RenderPartial("BottomNavigation"); }
 
+            @Umbraco.RenderMacro("GigyaLoginButton")
         </div>
       </div>
     </footer>
     
     <!-- Javascripts -->
+    <script>
+        gigyaCms.init();
+    </script>
     <script src="/js/jquery.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
 	<script src="/scripts/fanoe.js"></script>

@@ -22,7 +22,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
 {
     public class GigyaMembershipHelper : IGigyaMembershipHelper
     {
-        public static event EventHandler GettingGigyaValue;
+        public static event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
         private readonly GigyaApiHelper _gigyaApiHelper;
         private readonly Logger _logger;
 
@@ -33,7 +33,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         }
 
         /// <summary>
-        /// Updates the users Sitefinity profile.
+        /// Updates the users Umbraco profile.
         /// </summary>
         /// <param name="userId">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
@@ -75,13 +75,13 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="gigyaFieldName">Gigya field name e.g. profile.age</param>
         /// <returns></returns>
-        protected object GetGigyaValue(dynamic gigyaModel, string gigyaFieldName, string sitefinityFieldName)
+        protected object GetGigyaValue(dynamic gigyaModel, string gigyaFieldName, string cmsFieldName)
         {
-            var eventArgs = new MapGigyaFieldEvent
+            var eventArgs = new MapGigyaFieldEventArgs
             {
                 GigyaModel = gigyaModel,
                 GigyaFieldName = gigyaFieldName,
-                CmsFieldName = sitefinityFieldName,
+                CmsFieldName = cmsFieldName,
                 Origin = "GetGigyaValue",
                 GigyaValue = DynamicUtils.GetValue<object>(gigyaModel, gigyaFieldName)
             };
@@ -91,7 +91,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         }
 
         /// <summary>
-        /// Maps Gigya fields to a Sitefinity profile.
+        /// Maps Gigya fields to a Umbraco profile.
         /// </summary>
         /// <param name="profile">The profile to update.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
@@ -122,12 +122,13 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                             }
                             catch (Exception e)
                             {
-                                _logger.Error(string.Format("Couldn't set Sitefinity profile value for [{0}] and gigya field [{1}].", field.CmsFieldName, field.GigyaFieldName), e);
+                                _logger.Error(string.Format("Couldn't set Umbraco profile value for [{0}] and gigya field [{1}].", field.CmsFieldName, field.GigyaFieldName), e);
+                                continue;
                             }
 
-                            if (user.GetValue(field.CmsFieldName) != gigyaValue)
+                            if (user.GetValue(field.CmsFieldName).ToString() != gigyaValue.ToString())
                             {
-                                _logger.Error(string.Format("Sitefinity field [{0}] type doesn't match Gigya field [{1}] type. You may need to add a conversion using EventHub.Subscribe<IMapGigyaFieldEvent>", field.CmsFieldName, field.GigyaFieldName));
+                                _logger.Error(string.Format("Umbraco field [{0}] type doesn't match Gigya field [{1}] type. You may need to add a conversion using GigyaMembershipHelper.GettingGigyaValue", field.CmsFieldName, field.GigyaFieldName));
                             }
                         }
                         else if (settings.DebugMode)
@@ -137,14 +138,14 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                     }
                     else if (settings.DebugMode)
                     {
-                        _logger.DebugFormat("Sitefinity field \"{0}\" not found.", field.CmsFieldName);
+                        _logger.DebugFormat("Umbraco field \"{0}\" not found.", field.CmsFieldName);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Creates a new Sitefinity user from a Gigya user.
+        /// Creates a new Umbraco user from a Gigya user.
         /// </summary>
         /// <param name="userId">The Id of the new user.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
@@ -154,7 +155,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var email = GetGigyaValueWithDefault(gigyaModel, Constants.GigyaFields.Email, null);
-
+            
             IMember user = memberService.CreateMemberWithIdentity(userId, email, email, Constants.MemberTypeAlias);
             if (user == null)
             {
@@ -170,6 +171,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             {
                 _logger.Error("Failed to update profile for userId: " + userId, e);
             }
+            
             return user;
         }
 
@@ -224,7 +226,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                 }
             }
 
-            // user logged into Gigya so now needs to be logged into Sitefinity
+            // user logged into Gigya so now needs to be logged into Umbraco
             var authenticated = AuthenticateUser(model, settings, userExists, gigyaModel);
             response.Status = authenticated ? ResponseStatus.Success : ResponseStatus.Error;
             if (authenticated)
@@ -234,7 +236,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         }
 
         /// <summary>
-        /// Updates a user's profile in Sitefinity.
+        /// Updates a user's profile in Umbraco.
         /// </summary>
         public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
         {
@@ -274,7 +276,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         }
 
         /// <summary>
-        /// Authenticates a user in Sitefinity.
+        /// Authenticates a user in Umbraco.
         /// </summary>
         protected virtual bool AuthenticateUser(LoginModel model, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel)
         {
@@ -282,7 +284,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
 
             if (settings.DebugMode)
             {
-                _logger.Debug(string.Concat("User [", model.UserId, "] successfully logged into Sitefinity."));
+                _logger.Debug(string.Concat("User [", model.UserId, "] successfully logged into Umbraco."));
             }
 
             if (updateProfile)

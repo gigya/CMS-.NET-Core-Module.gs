@@ -231,7 +231,6 @@
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
     <Compile Include="Mvc\Controllers\GigyaSettingsApiController.cs" />
-    <Compile Include="Mvc\Controllers\GigyaLoginButtonController.cs" />
     <Compile Include="Mvc\Controllers\GigyaSettingsController.cs" />
     <Compile Include="Mvc\Models\GigyaApiModels.cs" />
     <Compile Include="Mvc\Models\GigyaConfigModel.cs" />

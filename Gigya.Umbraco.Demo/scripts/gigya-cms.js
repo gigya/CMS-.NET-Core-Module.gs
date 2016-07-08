@@ -8,6 +8,7 @@ var gigyaCms = {
         AlreadyLoggedIn: 2
     },
     authenticated: false,
+    authenticatedOnServerByCurrentPage: false,
     baseUrl: '/api/gigya/account/',
     debugMode: false,
     log: function (message, data) {
@@ -96,24 +97,34 @@ var gigyaCms = {
             gigyaCms.baseUrl = window.gigyaBaseUrl;
         }
     },
+    showScreenSet: function(settings, event) {
+        var currentContainerId = gigyaCms.screenSetSettings.login.containerID;
+        var containerId = event.target.getAttribute('data-container-id');
+        if (containerId) {
+            settings.containerID = containerId;
+        }
+
+        gigya.accounts.showScreenSet(settings);
+        settings.containerID = currentContainerId;
+    },
     init: function () {
         gigyaCms.attachEvents(document.getElementsByClassName('gigya-login'), 'click', function (event) {
-            gigya.accounts.showScreenSet(gigyaCms.screenSetSettings.login);
+            gigyaCms.showScreenSet(gigyaCms.screenSetSettings.login, event);
             return false;
         });
 
-        gigyaCms.attachEvents(document.getElementsByClassName('gigya-logout'), 'click', function () {
+        gigyaCms.attachEvents(document.getElementsByClassName('gigya-logout'), 'click', function (event) {
             gigya.accounts.logout();
             return false;
         });
 
-        gigyaCms.attachEvents(document.getElementsByClassName('gigya-register'), 'click', function () {
-            gigya.accounts.showScreenSet(gigyaCms.screenSetSettings.register);
+        gigyaCms.attachEvents(document.getElementsByClassName('gigya-register'), 'click', function (event) {
+            gigyaCms.showScreenSet(gigyaCms.screenSetSettings.register, event);
             return false;
         });
 
-        gigyaCms.attachEvents(document.getElementsByClassName('gigya-edit-profile'), 'click', function () {
-            gigya.accounts.showScreenSet(gigyaCms.screenSetSettings.editProfile);
+        gigyaCms.attachEvents(document.getElementsByClassName('gigya-edit-profile'), 'click', function (event) {
+            gigyaCms.showScreenSet(gigyaCms.screenSetSettings.editProfile, event);
             return false;
         });
 
@@ -182,9 +193,16 @@ var gigyaCms = {
              if (response != null) {
                  switch (response.status) {
                      case gigyaCms.responseCodes.AlreadyLoggedIn:
+                         gigyaCms.authenticated = true;
+                         if (redirectAfterLogin === true && gigyaCms.authenticatedOnServerByCurrentPage) {
+                             gigyaCms.redirectAfterLogin(response.redirectUrl);
+                         }
+                         gigyaCms.authenticatedOnServerByCurrentPage = true;
                          return;
                      case gigyaCms.responseCodes.Success:
-                         if (redirectAfterLogin) {
+                         gigyaCms.authenticated = true;
+                         gigyaCms.authenticatedOnServerByCurrentPage = true;
+                         if (redirectAfterLogin === true) {
                              gigyaCms.redirectAfterLogin(response.redirectUrl);
                          }
                          return;
@@ -196,7 +214,7 @@ var gigyaCms = {
                  }
 
              } else {
-                 // failed to login to Sitefinity so logout of Gigya
+                 // failed to login to CMS so logout of Gigya
                  gigyaCms.log('logout');
                  gigya.accounts.logout();
                  gigyaCms.handleError(response.errorMessage);

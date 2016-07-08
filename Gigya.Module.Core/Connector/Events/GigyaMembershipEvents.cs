@@ -25,7 +25,7 @@ namespace Gigya.Module.Core.Connector.Events
         object GigyaValue { get; set; }
     }
 
-    public class MapGigyaFieldEvent : EventArgs, IMapGigyaFieldEvent
+    public class MapGigyaFieldEventArgs : EventArgs, IMapGigyaFieldEvent
     {
         public dynamic GigyaModel { get; set; }
         public string CmsFieldName { get; set; }

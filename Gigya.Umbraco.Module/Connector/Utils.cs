@@ -18,5 +18,23 @@ namespace Gigya.Umbraco.Module.Connector
 
             return HomepageNode(currentNode.Parent);
         }
+
+        public static string UmbracoMacroProperty(IDictionary<string, object> properties, string key)
+        {
+            object value;
+            if (!properties.TryGetValue(key, out value) || value == null)
+            {
+                return null;
+            }
+
+            // umbraco stores null as "null"
+            var strValue = value.ToString();
+            if (string.IsNullOrEmpty(strValue) || strValue == "null")
+            {
+                return null;
+            }
+
+            return strValue;
+        }
     }
 }

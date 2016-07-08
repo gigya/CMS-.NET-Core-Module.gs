@@ -322,6 +322,9 @@
     <Content Include="Views\GigyaSettings\Index.cshtml" />
     <Content Include="Views\Master.cshtml" />
     <Content Include="Views\Partials\MainNavigation.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaLogoutButton.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaLoginButton.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaRegisterButton.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -343,17 +346,20 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Plugins\GigyaLoggedIn\" />
-    <Folder Include="App_Plugins\GigyaLogin\" />
-    <Folder Include="App_Plugins\GigyaRegister\" />
-    <Folder Include="App_Plugins\GigyaSettings\" />
     <Folder Include="css\" />
     <Folder Include="media\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gigya.Module.Core\Gigya.Module.Core.csproj">
+      <Project>{7610af03-891b-4ab2-a619-549bc9657cce}</Project>
+      <Name>Gigya.Module.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gigya.Umbraco.Module\Gigya.Umbraco.Module.csproj">
       <Project>{a3f56e14-a510-4ba4-89be-9afeda162041}</Project>
       <Name>Gigya.Umbraco.Module</Name>

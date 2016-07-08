@@ -28,6 +28,10 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
     [PluginController("Gigya")]
     public class GigyaSettingsApiController : UmbracoAuthorizedJsonController
     {
+        /// <summary>
+        /// Gets all the settings data required for the client.
+        /// </summary>
+        /// <param name="id">Id of the homepage or -1 if global settings.</param>
         public GigyaSettingsApiResponseModel Get(int id)
         {
             var settingsHelper = new Umbraco.Module.Helpers.GigyaSettingsHelper();
@@ -149,6 +153,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
 
             try
             {
+                // validate input
                 settingsHelper.Validate(mappedSettings);
             }
             catch (Exception e)
@@ -239,7 +244,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             return model;
         }
 
-        private void AddMappingField(string gigyaFieldName, string defaultSitefinityFieldName, ref List<MappingField> fields, bool required)
+        private void AddMappingField(string gigyaFieldName, string defaultUmbracoFieldName, ref List<MappingField> fields, bool required)
         {
             var field = fields.FirstOrDefault(i => i.GigyaFieldName == gigyaFieldName);
             if (field != null)
@@ -251,7 +256,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                 fields.Add(new MappingField
                 {
                     GigyaFieldName = gigyaFieldName,
-                    CmsFieldName = defaultSitefinityFieldName,
+                    CmsFieldName = defaultUmbracoFieldName,
                     Required = required
                 });
             }
