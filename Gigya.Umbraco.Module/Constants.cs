@@ -27,6 +27,7 @@ namespace Gigya.Umbraco.Module
             public const string FirstName = "FirstName";
             public const string LastName = "LastName";
             public const string Email = "Email";
+            public const string Name = "name";
         }
 
         public class Testing
@@ -44,33 +45,5 @@ namespace Gigya.Umbraco.Module
         {
             public const string Admin = "Administrators";
         }
-
-        //public class Resources
-        //{
-        //    public const string ClassId = "GigyaResources";
-        //    public const string ErrorMessage = "ErrorMessage";
-
-        //    public class FrontEnd
-        //    {
-        //        public class LoginStatus
-        //        {
-        //            public const string LoggedInUserGreeting = "LoggedInUserGreeting";
-        //        }
-        //    }
-
-        //    public class Designer
-        //    {
-        //        public class SettingsWidget
-        //        {
-        //            public const string NothingToEditText = "SettingsWidgetNothingToEdit";
-        //        }
-
-        //        public class LoginStatus
-        //        {
-        //            public const string LogoutPageLabel = "LogoutPageLabel";
-        //            public const string RedirectPageLabel = "RedirectPageLabel";
-        //        }
-        //    }
-        //}
     }
 }

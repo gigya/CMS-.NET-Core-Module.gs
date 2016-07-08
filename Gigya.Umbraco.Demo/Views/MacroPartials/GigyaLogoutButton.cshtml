@@ -15,7 +15,7 @@
 
 @if (loginStatusModel.IsLoggedIn)
 {
-    <span class="gigya-greeting">@greeting</span> <a href="javascript:void(0)" data-container-id="@containerId" class="gigya-edit-profile">@loginStatusModel.Email</a> <button type="button" class="gigya-logout">@label</button>
+    <span class="gigya-logged-greeting">@greeting</span> <a href="javascript:void(0)" data-container-id="@containerId" class="gigya-edit-profile">@loginStatusModel.Email</a> <button type="button" class="gigya-logout">@label</button>
     <script>gigyaCms.authenticated = true</script>
 }
 else if (Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor"))

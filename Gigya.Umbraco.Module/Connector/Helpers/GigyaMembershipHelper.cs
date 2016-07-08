@@ -96,50 +96,57 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="profile">The profile to update.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">The Gigya module settings.</param>
-        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, IGigyaModuleSettings settings)
+        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields = null)
         {
-            // map custom fields
-            if (!string.IsNullOrEmpty(settings.MappingFields))
+            if (mappingFields == null && string.IsNullOrEmpty(settings.MappingFields))
             {
-                var mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
-                foreach (var field in mappingFields)
+                return;
+            }
+
+            if (mappingFields == null)
+            {
+                mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
+            }
+
+            // map custom fields
+            foreach (var field in mappingFields)
+            {
+                // check if field is a custom one
+                switch (field.CmsFieldName)
                 {
-                    // check if field is a custom one
-                    switch (field.CmsFieldName)
-                    {
-                        case Constants.CmsFields.Email:
-                            continue;
-                    }
+                    case Constants.CmsFields.Email:
+                    case Constants.CmsFields.Name:
+                        continue;
+                }
 
-                    if (!string.IsNullOrEmpty(field.CmsFieldName) && user.HasProperty(field.CmsFieldName))
+                if (!string.IsNullOrEmpty(field.CmsFieldName) && user.HasProperty(field.CmsFieldName))
+                {
+                    object gigyaValue = GetGigyaValue(gigyaModel, field.GigyaFieldName, field.CmsFieldName);
+                    if (gigyaValue != null)
                     {
-                        object gigyaValue = GetGigyaValue(gigyaModel, field.GigyaFieldName, field.CmsFieldName);
-                        if (gigyaValue != null)
+                        try
                         {
-                            try
-                            {
-                                user.SetValue(field.CmsFieldName, gigyaValue);
-                            }
-                            catch (Exception e)
-                            {
-                                _logger.Error(string.Format("Couldn't set Umbraco profile value for [{0}] and gigya field [{1}].", field.CmsFieldName, field.GigyaFieldName), e);
-                                continue;
-                            }
-
-                            if (user.GetValue(field.CmsFieldName).ToString() != gigyaValue.ToString())
-                            {
-                                _logger.Error(string.Format("Umbraco field [{0}] type doesn't match Gigya field [{1}] type. You may need to add a conversion using GigyaMembershipHelper.GettingGigyaValue", field.CmsFieldName, field.GigyaFieldName));
-                            }
+                            user.SetValue(field.CmsFieldName, gigyaValue);
                         }
-                        else if (settings.DebugMode)
-                        {   
-                            _logger.DebugFormat("Gigya field \"{0}\" is null so profile field not updated.", field.GigyaFieldName);
+                        catch (Exception e)
+                        {
+                            _logger.Error(string.Format("Couldn't set Umbraco profile value for [{0}] and gigya field [{1}].", field.CmsFieldName, field.GigyaFieldName), e);
+                            continue;
+                        }
+
+                        if (user.GetValue(field.CmsFieldName).ToString() != gigyaValue.ToString())
+                        {
+                            _logger.Error(string.Format("Umbraco field [{0}] type doesn't match Gigya field [{1}] type. You may need to add a conversion using GigyaMembershipHelper.GettingGigyaValue", field.CmsFieldName, field.GigyaFieldName));
                         }
                     }
                     else if (settings.DebugMode)
-                    {
-                        _logger.DebugFormat("Umbraco field \"{0}\" not found.", field.CmsFieldName);
+                    {   
+                        _logger.DebugFormat("Gigya field \"{0}\" is null so profile field not updated.", field.GigyaFieldName);
                     }
+                }
+                else if (settings.DebugMode)
+                {
+                    _logger.DebugFormat("Umbraco field \"{0}\" not found.", field.CmsFieldName);
                 }
             }
         }
@@ -155,14 +162,27 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var email = GetGigyaValueWithDefault(gigyaModel, Constants.GigyaFields.Email, null);
-            
-            IMember user = memberService.CreateMemberWithIdentity(userId, email, email, Constants.MemberTypeAlias);
+            var name = email;
+
+            // check if there is a name field for the member name otherwise fallback to email
+            List<MappingField> mappingFields = null;
+            if (!string.IsNullOrEmpty(settings.MappingFields))
+            {
+                mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
+                var nameField = mappingFields.FirstOrDefault(i => i.CmsFieldName == Constants.CmsFields.Name);
+                if (nameField != null && !string.IsNullOrEmpty(nameField.GigyaFieldName))
+                {
+                    name = GetGigyaValueWithDefault(gigyaModel, nameField.GigyaFieldName, email);
+                }
+            }
+
+            IMember user = memberService.CreateMemberWithIdentity(userId, email, name, Constants.MemberTypeAlias);
             if (user == null)
             {
                 return null;
             }
 
-            MapProfileFields(user, gigyaModel, settings);
+            MapProfileFields(user, gigyaModel, settings, mappingFields);
             try
             {
                 memberService.Save(user);
