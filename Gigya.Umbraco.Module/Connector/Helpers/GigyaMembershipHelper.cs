@@ -169,11 +169,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             if (!string.IsNullOrEmpty(settings.MappingFields))
             {
                 mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
-                var nameField = mappingFields.FirstOrDefault(i => i.CmsFieldName == Constants.CmsFields.Name);
-                if (nameField != null && !string.IsNullOrEmpty(nameField.GigyaFieldName))
-                {
-                    name = GetGigyaValueWithDefault(gigyaModel, nameField.GigyaFieldName, email);
-                }
+                name = GetGigyaFieldFromCmsAlias(gigyaModel, Constants.CmsFields.Name, email, mappingFields);
             }
 
             IMember user = memberService.CreateMemberWithIdentity(userId, email, name, Constants.MemberTypeAlias);
@@ -193,6 +189,17 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
             
             return user;
+        }
+
+        private string GetGigyaFieldFromCmsAlias(dynamic gigyaModel, string cmsFieldName, string fallback, List<MappingField> mappingFields)
+        {
+            var field = mappingFields.FirstOrDefault(i => i.CmsFieldName == cmsFieldName);
+            if (field != null && !string.IsNullOrEmpty(field.GigyaFieldName))
+            {
+                return GetGigyaValueWithDefault(gigyaModel, field.GigyaFieldName, fallback);
+            }
+
+            return fallback;
         }
 
         /// <summary>

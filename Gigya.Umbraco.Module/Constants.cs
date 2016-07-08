@@ -28,6 +28,7 @@ namespace Gigya.Umbraco.Module
             public const string LastName = "LastName";
             public const string Email = "Email";
             public const string Name = "name";
+            public const string Username = "username";
         }
 
         public class Testing
