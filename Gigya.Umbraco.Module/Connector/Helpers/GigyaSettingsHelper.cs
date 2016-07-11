@@ -110,7 +110,7 @@ namespace Gigya.Umbraco.Module.Helpers
             }
             
             var db = UmbracoContext.Current.Application.DatabaseContext.Database;
-            var sql = string.Format("SELECT * FROM dbo.gigya_settings WHERE Id IN ({0}, -1)", id);
+            var sql = string.Format("SELECT * FROM gigya_settings WHERE Id IN ({0}, -1)", id);
             var data = db.Fetch<GigyaUmbracoModuleSettings>(sql);
             return data.Select(Map).ToList();
         }
