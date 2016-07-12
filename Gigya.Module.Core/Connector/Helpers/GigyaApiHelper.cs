@@ -117,8 +117,14 @@ namespace Gigya.Module.Core.Connector.Helpers
         {
             if (apiMethod == "accounts.getAccountInfo")
             {
-                request.SetParam("gigya_version", _settingsHelper.ModuleVersion);
-                request.SetParam("cms_version", _settingsHelper.CmsVersion);
+                var environment = new
+                {
+                    cms_name = _settingsHelper.CmsName,
+                    cms_version = _settingsHelper.CmsVersion,
+                    gigya_version = _settingsHelper.ModuleVersion
+                };
+
+                request.SetParam("environment", JsonConvert.SerializeObject(environment));
             }
 
             if (!string.IsNullOrEmpty(settings.DataCenter))

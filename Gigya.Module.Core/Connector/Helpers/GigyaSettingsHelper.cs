@@ -24,6 +24,7 @@ namespace Gigya.Module.Core.Connector.Helpers
     {
         protected abstract string Language(IGigyaModuleSettings settings);
         protected abstract string ScriptPath(IGigyaModuleSettings settings);
+        public abstract string CmsName { get; }
         public abstract string CmsVersion { get; }
         public abstract string ModuleVersion { get; }
 

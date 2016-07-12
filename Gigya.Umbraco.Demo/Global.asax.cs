@@ -29,10 +29,9 @@ namespace Gigya.Umbraco.Demo
             var memberService = ApplicationContext.Current.Services.MemberService;
             foreach (var member in e.SavedEntities)
             {
+                // this is a brand new member object
                 if (member.IsNewEntity())
                 {
-                    // this is a brand new member object
-
                     // add member group for example:
                     memberService.AssignRole(member.Id, "Authenticated");
                 }
