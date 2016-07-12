@@ -38,14 +38,14 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="userId">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected void UpdateProfile(string userId, IGigyaModuleSettings settings, dynamic gigyaModel)
+        protected void MapProfileFieldsAndUpdate(string userId, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var user = memberService.GetByUsername(userId);
             user.Email = GetGigyaValue(gigyaModel, Constants.GigyaFields.Email, Constants.CmsFields.Email);
 
             // map any custom fields
-            MapProfileFields(user, gigyaModel, settings);
+            MapProfileFields(user, gigyaModel, settings, mappingFields);
 
             try
             {
@@ -96,16 +96,11 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="profile">The profile to update.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">The Gigya module settings.</param>
-        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields = null)
+        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             if (mappingFields == null && string.IsNullOrEmpty(settings.MappingFields))
             {
                 return;
-            }
-
-            if (mappingFields == null)
-            {
-                mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
             }
 
             // map custom fields
@@ -240,13 +235,17 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
 
             var gigyaModel = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
             ThrowTestingExceptionIfRequired(settings, gigyaModel);
-            
+
+            // find what field has been configured for the Umbraco username
+            List<MappingField> mappingFields = GetMappingFields(settings);
+            var username = GetUmbracoUsername(mappingFields, gigyaModel);
+
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
-            var userExists = memberService.Exists(model.UserId);
+            var userExists = memberService.Exists(username);
             if (!userExists)
             {
                 // user doesn't exist so create a new one
-                var user = CreateUser(model.UserId, gigyaModel, settings);
+                var user = CreateUser(username, gigyaModel, settings);
                 if (user == null)
                 {
                     return;
@@ -254,7 +253,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
 
             // user logged into Gigya so now needs to be logged into Umbraco
-            var authenticated = AuthenticateUser(model, settings, userExists, gigyaModel);
+            var authenticated = AuthenticateUser(username, settings, userExists, gigyaModel, mappingFields);
             response.Status = authenticated ? ResponseStatus.Success : ResponseStatus.Error;
             if (authenticated)
             {
@@ -286,12 +285,30 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                 return;
             }
 
+            List<MappingField> mappingFields = GetMappingFields(settings);
+
             dynamic userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
             ThrowTestingExceptionIfRequired(settings, userInfo);
-            
-            UpdateProfile(model.UserId, settings, userInfo);
+
+            string username = GetUmbracoUsername(mappingFields, userInfo);
+            MapProfileFieldsAndUpdate(username, settings, userInfo, mappingFields);
             response.RedirectUrl = settings.RedirectUrl;
             response.Status = ResponseStatus.Success;
+        }
+
+        private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
+        {
+            return !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
+        }
+
+        private string GetUmbracoUsername(List<MappingField> mappingFields, dynamic userInfo)
+        {
+            if (!mappingFields.Any())
+            {
+                return userInfo.UID;
+            }
+
+            return GetGigyaFieldFromCmsAlias(userInfo, Constants.CmsFields.Username, userInfo.UID, mappingFields);
         }
 
         private void ThrowTestingExceptionIfRequired(IGigyaModuleSettings settings, dynamic userInfo)
@@ -305,18 +322,18 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Umbraco.
         /// </summary>
-        protected virtual bool AuthenticateUser(LoginModel model, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel)
+        protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
-            FormsAuthentication.SetAuthCookie(model.UserId, false);
+            FormsAuthentication.SetAuthCookie(username, false);
 
             if (settings.DebugMode)
             {
-                _logger.Debug(string.Concat("User [", model.UserId, "] successfully logged into Umbraco."));
+                _logger.Debug(string.Concat("User [", username, "] successfully logged into Umbraco."));
             }
 
             if (updateProfile)
             {
-                UpdateProfile(model.UserId, settings, gigyaModel);
+                MapProfileFieldsAndUpdate(username, settings, gigyaModel, mappingFields);
             }
             return true;
         }
