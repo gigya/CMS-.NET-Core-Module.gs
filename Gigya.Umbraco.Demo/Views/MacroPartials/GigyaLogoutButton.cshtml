@@ -10,15 +10,10 @@
     var loginStatusModel = Members.GetCurrentLoginStatus();
     var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Logout";
     var greeting = Utils.UmbracoMacroProperty(Model.MacroParameters, "Greeting") ?? "Welcome";
-    var containerId = Utils.UmbracoMacroProperty(Model.MacroParameters, "ContainerId");
 }
 
-@if (loginStatusModel.IsLoggedIn)
+@if (loginStatusModel.IsLoggedIn || Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor"))
 {
-    <span class="gigya-logged-greeting">@greeting</span> <a href="javascript:void(0)" data-container-id="@containerId" class="gigya-edit-profile">@loginStatusModel.Email</a> <button type="button" class="gigya-logout">@label</button>
+    <button type="button" class="gigya-logout">@label</button>
     <script>gigyaCms.authenticated = true</script>
-}
-else if (Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor"))
-{
-    <span class="gigya-greeting">@greeting</span> <a href="javascript:void(0)" data-container-id="@containerId" class="gigya-edit-profile">sample@@email.com</a> <button type="button" class="gigya-logout">@label</button>
 }

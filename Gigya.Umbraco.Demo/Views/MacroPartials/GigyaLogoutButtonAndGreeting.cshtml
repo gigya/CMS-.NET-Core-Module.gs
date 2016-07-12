@@ -1,0 +1,26 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using System.Web.Mvc.Html
+@using ClientDependency.Core.Mvc
+@using Umbraco.Web
+@using Umbraco.Web.Models
+@using Umbraco.Web.Controllers
+@using Gigya.Umbraco.Module.Connector
+
+@{ 
+    var loginStatusModel = Members.GetCurrentLoginStatus();
+    var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Logout";
+    var greeting = Utils.UmbracoMacroProperty(Model.MacroParameters, "Greeting") ?? "Welcome";
+    var screenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "ScreenSet") ?? "Default-RegistrationLogin";
+    var mobileScreenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "MobileScreenSet");
+    var startScreen = Utils.UmbracoMacroProperty(Model.MacroParameters, "StartScreen");
+}
+
+@if (loginStatusModel.IsLoggedIn)
+{
+    <span class="gigya-logged-greeting">@greeting</span> <a href="javascript:void(0)" class="gigya-edit-profile" data-gigya-screen="@screenSet" data-gigya-mobile-screen="@mobileScreenSet" data-gigya-start-screen="@startScreen">@loginStatusModel.Email</a> <button type="button" class="gigya-logout">@label</button>
+    <script>gigyaCms.authenticated = true</script>
+}
+else if (Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor"))
+{
+    <span class="gigya-greeting">@greeting</span> <a href="javascript:void(0)" class="gigya-edit-profile">sample@@email.com</a> <button type="button" class="gigya-logout">@label</button>
+}

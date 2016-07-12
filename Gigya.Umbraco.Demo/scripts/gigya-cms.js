@@ -102,15 +102,35 @@ var gigyaCms = {
             gigyaCms.baseUrl = window.gigyaBaseUrl;
         }
     },
-    showScreenSet: function(settings, event) {
-        var currentContainerId = gigyaCms.screenSetSettings.login.containerID;
-        var containerId = event.target.getAttribute('data-container-id');
-        if (containerId) {
-            settings.containerID = containerId;
+    showScreenSet: function (settings, event) {
+        var elem = event.target;
+
+        // update the values for the settings object. setting and unsetting allows globals settings to be used and maintained e.g. event handlers
+        var currentScreenSet = settings.screenSet;
+        var screenSet = elem.getAttribute('data-gigya-screen');
+        if (screenSet) {
+            settings.screenSet = screenSet;
         }
 
+        var currentMobileScreenSet = settings.mobileScreenSet;
+        var mobileScreenSet = elem.getAttribute('data-gigya-mobile-screen');
+        if (mobileScreenSet) {
+            settings.mobileScreenSet = mobileScreenSet;
+        }
+
+        var currentStartScreen = settings.startScreen;
+        var startScreen = elem.getAttribute('data-gigya-start-screen');
+        if (startScreen) {
+            settings.startScreen = startScreen;
+        }
+
+        gigyaCms.log('screen set settings', settings);
         gigya.accounts.showScreenSet(settings);
-        settings.containerID = currentContainerId;
+
+        // reset back to globals
+        settings.screenSet = currentScreenSet;
+        settings.mobileScreenSet = currentMobileScreenSet;
+        settings.startScreen = currentScreenSet;
     },
     initialized: false,
     init: function () {
@@ -144,7 +164,24 @@ var gigyaCms = {
             onLogout: gigyaCms.onLogout
         });
 
+        gigyaCms.initEmbeddedScreens();
+
         gigyaCms.initialized = true;
+    },
+    initEmbeddedScreens: function() {
+        var embeddedScreens = document.getElementsByClassName('gigya-embedded-screen');
+        for (var i = 0; i < embeddedScreens.length; i++) {
+            var elem = embeddedScreens[i];
+
+            var settings = {
+                containerID: elem.getAttribute('id'),
+                screenSet: elem.getAttribute('data-gigya-screen'),
+                mobileScreenSet: elem.getAttribute('data-gigya-mobile-screen'),
+                startScreen: elem.getAttribute('data-gigya-start-screen')
+            };
+
+            gigya.accounts.showScreenSet(settings);
+        }
     },
     onGetAccountInfo: function (eventObj) {
         gigyaCms.log('onGetAccountInfo', eventObj);

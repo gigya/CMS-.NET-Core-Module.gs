@@ -269,6 +269,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Umbraco.sdf" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\dashboard.controller.js" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\edit.controller.js" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\edit.html" />
@@ -325,6 +326,8 @@
     <Content Include="Views\MacroPartials\GigyaLogoutButton.cshtml" />
     <Content Include="Views\MacroPartials\GigyaLoginButton.cshtml" />
     <Content Include="Views\MacroPartials\GigyaRegisterButton.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaEmbeddedProfile.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaLogoutButtonAndGreeting.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -8,5 +8,23 @@
     }
     var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Register";
     var containerId = Utils.UmbracoMacroProperty(Model.MacroParameters, "ContainerId");
+    var generateContainer = Utils.UmbracoMacroProperty(Model.MacroParameters, "GenerateContainer") == "1";
+
+    if (string.IsNullOrEmpty(containerId) && generateContainer)
+    {
+        containerId = "gigya-container-" + Guid.NewGuid();
+    }
+
+    var screenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "ScreenSet") ?? "Default-RegistrationLogin";
+    var mobileScreenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "MobileScreenSet") ?? "DefaultMobile-RegistrationLogin";
+    var startScreen = Utils.UmbracoMacroProperty(Model.MacroParameters, "StartScreen") ?? "gigya-register-screen";
 }
-<a href="javascript:void(0)" data-container-id="@containerId" class="gigya-register">@label</a>
+
+@if (!string.IsNullOrEmpty(containerId))
+{
+    <div id="@containerId" class="gigya-embedded-screen" data-gigya-screen="@screenSet" data-gigya-mobile-screen="@mobileScreenSet" data-gigya-start-screen="@startScreen"></div>
+}
+else
+{
+    <a href="javascript:void(0)" class="gigya-register" data-gigya-screen="@screenSet" data-gigya-mobile-screen="@mobileScreenSet" data-gigya-start-screen="@startScreen">@label</a>
+}
