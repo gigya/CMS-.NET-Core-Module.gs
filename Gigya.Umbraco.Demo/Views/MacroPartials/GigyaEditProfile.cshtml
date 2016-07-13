@@ -1,12 +1,19 @@
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using System.Web.Mvc.Html
+@using ClientDependency.Core.Mvc
+@using Umbraco.Web
+@using Umbraco.Web.Models
+@using Umbraco.Web.Controllers
 @using Gigya.Umbraco.Module.Connector
 
-@{
-    if (User.Identity.IsAuthenticated)
+@{ 
+    var loginStatusModel = Members.GetCurrentLoginStatus();
+    if (!loginStatusModel.IsLoggedIn)
     {
         return;
     }
-    var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Register";
+
+    var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Edit Profile";
     var containerId = Utils.UmbracoMacroProperty(Model.MacroParameters, "ContainerId");
     var generateContainer = Utils.UmbracoMacroProperty(Model.MacroParameters, "GenerateContainer") == "1";
 
@@ -14,10 +21,9 @@
     {
         containerId = "gigya-container-" + Guid.NewGuid();
     }
-
-    var screenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "ScreenSet") ?? "Default-RegistrationLogin";
-    var mobileScreenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "MobileScreenSet") ?? "DefaultMobile-RegistrationLogin";
-    var startScreen = Utils.UmbracoMacroProperty(Model.MacroParameters, "StartScreen") ?? "gigya-register-screen";
+    var screenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "ScreenSet") ?? "Default-ProfileUpdate";
+    var mobileScreenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "MobileScreenSet") ?? "DefaultMobile-ProfileUpdate";
+    var startScreen = Utils.UmbracoMacroProperty(Model.MacroParameters, "StartScreen");
 }
 
 @if (!string.IsNullOrEmpty(containerId))

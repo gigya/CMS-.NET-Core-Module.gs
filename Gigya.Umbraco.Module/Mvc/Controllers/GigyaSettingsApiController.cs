@@ -229,9 +229,11 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
 
             var mappingFields = !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
             AddMappingField(Constants.GigyaFields.Email, Constants.CmsFields.Email, ref mappingFields, true);
-            AddMappingField(Constants.GigyaFields.FirstName, Constants.CmsFields.Name, ref mappingFields, false);
-            AddMappingField(Constants.GigyaFields.UserId, Constants.CmsFields.Username, ref mappingFields, false);
-            model.MappingFields = mappingFields;
+            AddMappingField(Constants.GigyaFields.FirstName, Constants.CmsFields.Name, ref mappingFields, true);
+            AddMappingField(Constants.GigyaFields.UserId, Constants.CmsFields.Username, ref mappingFields, true);
+
+            // required fields first
+            model.MappingFields = mappingFields.OrderByDescending(i => i.Required).ThenBy(i => i.CmsFieldName).ToList();
 
             // check if authorised to view application secret
             if (model.CanViewApplicationSecret && !string.IsNullOrEmpty(settings.ApplicationSecret) && Encryptor.IsConfigured)

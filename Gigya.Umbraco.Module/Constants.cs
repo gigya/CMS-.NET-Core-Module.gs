@@ -24,9 +24,7 @@ namespace Gigya.Umbraco.Module
 
         public class CmsFields
         {
-            public const string FirstName = "FirstName";
-            public const string LastName = "LastName";
-            public const string Email = "Email";
+            public const string Email = "email";
             public const string Name = "name";
             public const string Username = "username";
         }

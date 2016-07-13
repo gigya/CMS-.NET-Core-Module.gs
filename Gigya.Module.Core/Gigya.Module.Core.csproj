@@ -88,6 +88,8 @@
     <Compile Include="Connector\Helpers\GigyaLanguageHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaSettingsHelper.cs" />
     <Compile Include="Connector\Helpers\IGigyaMembershipHelper.cs" />
+    <Compile Include="Connector\Helpers\IPathUtilities.cs" />
+    <Compile Include="Connector\Helpers\PathUtilities.cs" />
     <Compile Include="Connector\Helpers\StringHelper.cs" />
     <Compile Include="Connector\Logging\ICmsLogger.cs" />
     <Compile Include="Connector\Logging\LogCategory.cs" />

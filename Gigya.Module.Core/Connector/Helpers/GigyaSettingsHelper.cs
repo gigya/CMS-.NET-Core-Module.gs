@@ -22,6 +22,12 @@ namespace Gigya.Module.Core.Connector.Helpers
 {
     public abstract class GigyaSettingsHelper
     {
+        private IPathUtilities _pathUtilities = new PathUtilities();
+        public IPathUtilities PathUtilities
+        {
+            set { _pathUtilities = value; }
+        }
+
         protected abstract string Language(IGigyaModuleSettings settings);
         protected abstract string ScriptPath(IGigyaModuleSettings settings);
         public abstract string CmsName { get; }
@@ -57,7 +63,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 ApiKey = settings.ApiKey,
                 DebugMode = settings.DebugMode,
-                GigyaScriptPath = UrlUtils.AddQueryStringParam(VirtualPathUtility.ToAbsolute(ScriptPath(settings)), "v=" + CmsVersion),
+                GigyaScriptPath = UrlUtils.AddQueryStringParam(_pathUtilities.ToAbsolute(ScriptPath(settings)), "v=" + CmsVersion),
                 LoggedInRedirectUrl = settings.RedirectUrl,
                 LogoutUrl = settings.LogoutUrl,
                 IsLoggedIn = currentIdentity.IsAuthenticated,

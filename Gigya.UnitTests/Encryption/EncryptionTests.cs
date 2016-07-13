@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Gigya.Module.Connector.Encryption;
+using Gigya.Module.Core.Connector.Encryption;
 
 namespace Gigya.UnitTests.Encryption
 {

@@ -196,7 +196,7 @@
                                         <tbody>
                                             <tr ng-repeat="row in model.MappingFields">
                                                 <td>
-                                                    <input class="gigya-mapping-field" ng-disabled="model.Inherited || row.Required" type="text" ng-model="row.GigyaFieldName" />
+                                                    <input class="gigya-mapping-field" ng-disabled="model.Inherited" type="text" ng-model="row.GigyaFieldName" />
                                                 </td>
                                                 <td>
                                                     <input class="sf-mapping-field" ng-disabled="model.Inherited || row.Required" type="text" ng-model="row.CmsFieldName" />

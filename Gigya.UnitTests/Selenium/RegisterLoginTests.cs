@@ -53,12 +53,12 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void CanRegisterAndLoginToSitefinity()
+        public void CanRegisterAndLoginToCms()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
             // wait the usual 3 mins for sitefinity to start up....
-            _driver.FindElement(By.Id("gigya-register"), 180).Click();
+            _driver.FindElement(By.CssSelector(".gigya-register"), 180).Click();
             
             var dialog = _driver.FindElement(By.Id("gigya-register-screen"), 2);
             dialog.FindElement(By.Name("email")).SendKeys(_newEmail);
@@ -70,7 +70,7 @@ namespace Gigya.UnitTests.Selenium
             dialog.FindElement(By.CssSelector("input.gigya-input-submit")).Click();
 
             // wait up to 30 seconds for reload
-            var loggedInGreeting = _driver.FindElement(By.ClassName("gigya-logged-greeting"), 30);
+            var loggedInGreeting = _driver.FindElement(By.CssSelector(".gigya-edit-profile"), 30);
             Assert.IsNotNull(loggedInGreeting, "Logged in greeting not found. User should be logged in.");
 
             Assert.IsTrue(loggedInGreeting.Text.Contains(_newEmail), "Logged in greeting found but doesn't contain new user's email.");
@@ -81,12 +81,12 @@ namespace Gigya.UnitTests.Selenium
         [TestMethod]
         public void SitefinityExceptionLogsInUser()
         {
-            _newEmail = Gigya.Module.Constants.Testing.EmailWhichThrowsException;
+            _newEmail = Gigya.Module.Core.Constants.Testing.EmailWhichThrowsException;
 
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
             // wait the usual 3 mins for sitefinity to start up....
-            _driver.FindElement(By.Id("gigya-register"), 180).Click();
+            _driver.FindElement(By.CssSelector(".gigya-register"), 180).Click();
 
             var dialog = _driver.FindElement(By.Id("gigya-register-screen"), 2);
             var email = dialog.FindElement(By.Name("email"));
@@ -112,7 +112,7 @@ namespace Gigya.UnitTests.Selenium
             }
 
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
-            _driver.FindElement(By.Id("gigya-login"), 180).Click();
+            _driver.FindElement(By.CssSelector(".gigya-login"), 180).Click();
 
             dialog = _driver.FindElement(By.Id("gigya-login-screen"), 5);
             dialog.FindElement(By.Name("username")).SendKeys(_newEmail);
@@ -129,12 +129,12 @@ namespace Gigya.UnitTests.Selenium
         {
             if (!_loggedIn)
             {
-                CanRegisterAndLoginToSitefinity();
+                CanRegisterAndLoginToCms();
             }
 
             _driver.Navigate().GoToUrl(Config.Site2BaseURL);
 
-            var loggedInGreeting = _driver.FindElement(By.ClassName("gigya-logged-greeting"), 30);
+            var loggedInGreeting = _driver.FindElement(By.ClassName("gigya-edit-profile"), 30);
             Assert.IsNotNull(loggedInGreeting, "Logged in greeting not found. User should be logged in to second site.");
 
             Assert.IsTrue(loggedInGreeting.Text.Contains(_newEmail), "Logged in greeting found but doesn't contain new user's email.");
@@ -145,20 +145,20 @@ namespace Gigya.UnitTests.Selenium
         {
             if (!_loggedIn)
             {
-                CanRegisterAndLoginToSitefinity();
+                CanRegisterAndLoginToCms();
             }
 
             // logout
-            _driver.FindElement(By.Id("gigya-logout")).Click();
+            _driver.FindElement(By.CssSelector(".gigya-logout")).Click();
 
             // make sure register button is displayed which indicates that the user is logged out
-            Assert.IsNotNull(_driver.FindElement(By.Id("gigya-register"), 5), "Register button not displayed. User may still be logged in or another error occurred.");
+            Assert.IsNotNull(_driver.FindElement(By.CssSelector(".gigya-register"), 5), "Register button not displayed. User may still be logged in or another error occurred.");
 
             // make sure user logged out of second site as well
             _driver.Navigate().GoToUrl(Config.Site2BaseURL);
             
             // make sure register button is displayed which indicates that the user is logged out
-            Assert.IsNotNull(_driver.FindElement(By.Id("gigya-register"), 5), "Register button not displayed. User may still be logged in to second site or another error occurred.");
+            Assert.IsNotNull(_driver.FindElement(By.CssSelector(".gigya-register"), 5), "Register button not displayed. User may still be logged in to second site or another error occurred.");
         }
         
         public void CanLoginToFrontEnd()
@@ -166,7 +166,7 @@ namespace Gigya.UnitTests.Selenium
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
             // wait the usual 3 mins for sitefinity to start up....
-            _driver.FindElement(By.Id("gigya-login"), 180).Click();
+            _driver.FindElement(By.CssSelector(".gigya-login"), 180).Click();
 
             var dialog = _driver.FindElement(By.Id("gigya-login-screen"), 5);
             dialog.FindElement(By.Name("username")).SendKeys(_newEmail);
@@ -174,7 +174,7 @@ namespace Gigya.UnitTests.Selenium
             dialog.FindElement(By.CssSelector("input.gigya-input-submit")).Click();
 
             // wait up to 30 seconds for reload
-            var loggedInGreeting = _driver.FindElement(By.ClassName("gigya-logged-greeting"), 30);
+            var loggedInGreeting = _driver.FindElement(By.ClassName("gigya-edit-profile"), 30);
             Assert.IsNotNull(loggedInGreeting, "Logged in greeting not found. User should be logged in.");
 
             Assert.IsTrue(loggedInGreeting.Text.Contains(_newEmail), "Logged in greeting found but doesn't contain new user's email.");
@@ -183,18 +183,18 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void CanUpdateProfile()
+        public void CanUpdateProfileSitefinity()
         {
             if (!_loggedIn)
             {
-                CanRegisterAndLoginToSitefinity();
+                CanRegisterAndLoginToCms();
             }
 
             CanLogoutAndIsLoggedOutOfSecondSiteAsWell();
 
             CanLoginToFrontEnd();
 
-            _driver.FindElement(By.Id("gigya-edit-profile")).Click();
+            _driver.FindElement(By.CssSelector(".gigya-edit-profile")).Click();
 
             // wait for form
             var form = _driver.FindElement(By.Id("gigya-profile-form"), 5);

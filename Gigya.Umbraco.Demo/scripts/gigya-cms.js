@@ -130,7 +130,7 @@ var gigyaCms = {
         // reset back to globals
         settings.screenSet = currentScreenSet;
         settings.mobileScreenSet = currentMobileScreenSet;
-        settings.startScreen = currentScreenSet;
+        settings.startScreen = currentStartScreen;
     },
     initialized: false,
     init: function () {
