@@ -145,7 +145,7 @@ var gigyaCms = {
         });
 
         gigyaCms.attachEvents(document.getElementsByClassName('gigya-logout'), 'click', function (event) {
-            gigya.accounts.logout();
+            gigya.accounts.logout({ callback: gigyaCms.onLogoutTriggeredByUser });
             return false;
         });
 
@@ -273,7 +273,7 @@ var gigyaCms = {
          .catch(function (e, xhr, response) {
              // Process the error
              gigyaCms.loggingIn = false;
-             gigyaCms.log('logout');
+             gigyaCms.log('login error');
              gigya.accounts.logout();
 
              if (xhr.status === 500) {
@@ -281,9 +281,13 @@ var gigyaCms = {
              }
          });
     },
-    onLogout: function () {
-        gigyaCms.log('onLogout');
+    onLogoutTriggeredByUser: function(response) {
+        gigyaCms.log('onLogout triggered by user');
         gigyaCms.logout(true);
+    },
+    onLogout: function (eventObj) {
+        gigyaCms.log('onLogout', eventObj);
+        gigyaCms.logout(false);
     },
     logout: function (redirectAfterLogout) {
         var data = { Id: gigyaCms.id };
