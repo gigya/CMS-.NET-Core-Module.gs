@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using System.Text;
@@ -7,6 +8,11 @@ using System.Configuration;
 using System.Threading;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Remote;
+using Umbraco.Core;
+using Umbraco.Core.Services;
+using Umbraco.Core.Persistence;
+using Gigya.UnitTests.Umbraco;
+using Gigya.Umbraco.Module.Data;
 
 namespace Gigya.UnitTests.Selenium
 {
@@ -70,10 +76,8 @@ namespace Gigya.UnitTests.Selenium
             dialog.FindElement(By.CssSelector("input.gigya-input-submit")).Click();
 
             // wait up to 30 seconds for reload
-            var loggedInGreeting = _driver.FindElement(By.CssSelector(".gigya-edit-profile"), 30);
-            Assert.IsNotNull(loggedInGreeting, "Logged in greeting not found. User should be logged in.");
-
-            Assert.IsTrue(loggedInGreeting.Text.Contains(_newEmail), "Logged in greeting found but doesn't contain new user's email.");
+            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
 
             _loggedIn = true;
         }
@@ -134,10 +138,8 @@ namespace Gigya.UnitTests.Selenium
 
             _driver.Navigate().GoToUrl(Config.Site2BaseURL);
 
-            var loggedInGreeting = _driver.FindElement(By.ClassName("gigya-edit-profile"), 30);
-            Assert.IsNotNull(loggedInGreeting, "Logged in greeting not found. User should be logged in to second site.");
-
-            Assert.IsTrue(loggedInGreeting.Text.Contains(_newEmail), "Logged in greeting found but doesn't contain new user's email.");
+            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
         }
 
         [TestMethod]
@@ -173,13 +175,128 @@ namespace Gigya.UnitTests.Selenium
             dialog.FindElement(By.Name("password")).SendKeys(_passsword);
             dialog.FindElement(By.CssSelector("input.gigya-input-submit")).Click();
 
-            // wait up to 30 seconds for reload
-            var loggedInGreeting = _driver.FindElement(By.ClassName("gigya-edit-profile"), 30);
-            Assert.IsNotNull(loggedInGreeting, "Logged in greeting not found. User should be logged in.");
-
-            Assert.IsTrue(loggedInGreeting.Text.Contains(_newEmail), "Logged in greeting found but doesn't contain new user's email.");
+            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
 
             _loggedIn = true;
+        }
+
+        [TestMethod]
+        public void CanUpdateProfileUmbraco()
+        {
+            CanRegisterAndLoginToCms();
+
+            var application = new ConsoleApplicationBase();
+            application.Start(application, new EventArgs());
+            var context = ApplicationContext.Current;
+            
+            var memberService = context.Services.MemberService;
+            var member = memberService.GetByEmail(_newEmail);
+
+            Assert.IsNotNull(member, "Member not found in Umbraco after creation");
+
+            // check fields are mapped
+            Assert.AreEqual(_firstName, member.GetValue("firstName"), "First name not mapped");
+            Assert.AreEqual(_lastName, member.GetValue("lastName"), "Last name not mapped");
+        }
+
+        [TestMethod]
+        public void UmbracoFieldOverriddenOnLogin()
+        {
+            CanRegisterAndLoginToCms();
+
+            var application = new ConsoleApplicationBase();
+            application.Start(application, new EventArgs());
+            var context = ApplicationContext.Current;
+
+            var memberService = context.Services.MemberService;
+            var member = memberService.GetByEmail(_newEmail);
+            Assert.IsNotNull(member, "Member not found in Umbraco after creation");
+
+            // update member with some random crap
+            member.SetValue("firstName", "laksjdfasjdflasjdklfajslkdf");
+            member.SetValue("lastName", "lskdjfskldf");
+            memberService.Save(member);
+
+            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
+            logoutButton.Click();
+
+            CanLoginToFrontEnd();
+
+            member = memberService.GetByEmail(_newEmail);
+            Assert.IsNotNull(member, "Member not found in Umbraco after creation");
+
+            // check fields have been updated
+            Assert.AreEqual(_firstName, member.GetValue("firstName"), "First name not mapped");
+            Assert.AreEqual(_lastName, member.GetValue("lastName"), "Last name not mapped");
+        }
+
+        [TestMethod]
+        public void IsSessionExpiredCorrectly()
+        {
+            var application = new ConsoleApplicationBase();
+            application.Start(application, new EventArgs());
+            var context = ApplicationContext.Current;
+            var db = context.DatabaseContext.Database;
+
+            var sql = "SELECT * FROM gigya_settings";
+            var settings = db.Fetch<GigyaUmbracoModuleSettings>(sql);
+            var currentGlobalSettings = settings.Select(i => i.GlobalParameters).ToList();
+
+            // update all to 10 seconds
+            foreach (var setting in settings)
+            {
+                setting.GlobalParameters = "{ \"sessionExpiration\": 10 }";
+                db.Save(setting);
+            }
+
+            var reset = false;
+
+            try
+            {
+                // test session expiration works now that we know all sites are using 10 second timeout
+                CanRegisterAndLoginToCms();
+
+                Thread.Sleep(11000);
+
+                // reload page and should still be logged in
+                _driver.Navigate().Refresh();
+                var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+                Assert.IsNotNull(logoutButton, "Not logged in.");
+
+                // wait for logout to complete
+                Thread.Sleep(10000);
+
+                _driver.Navigate().Refresh();
+
+                logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 5);
+                Assert.IsNull(logoutButton, "Still logged in after session timeout");
+
+                // login again
+                CanLoginToFrontEnd();
+
+                ResetSettings(db, settings, currentGlobalSettings);
+                reset = true;
+            }
+            catch
+            {
+                if (!reset)
+                {
+                    ResetSettings(db, settings, currentGlobalSettings);
+                }
+                throw;
+            }
+        }
+
+        private static void ResetSettings(UmbracoDatabase db, System.Collections.Generic.List<GigyaUmbracoModuleSettings> settings, System.Collections.Generic.List<string> currentGlobalSettings)
+        {
+            // reset back to original values
+            for (int i = 0; i < settings.Count; i++)
+            {
+                settings[i].GlobalParameters = currentGlobalSettings[i];
+                db.Save(settings[i]);
+            }
         }
 
         [TestMethod]
