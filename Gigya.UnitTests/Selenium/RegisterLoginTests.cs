@@ -258,20 +258,17 @@ namespace Gigya.UnitTests.Selenium
                 // test session expiration works now that we know all sites are using 10 second timeout
                 CanRegisterAndLoginToCms();
 
+                IsLoggedIntoSecondSiteAsWell();
+
+                _driver.Navigate().GoToUrl(Config.Site1BaseURL);
+
+                // wait for session to expire
                 Thread.Sleep(11000);
+                HasSessionExpired();
 
-                // reload page and should still be logged in
-                _driver.Navigate().Refresh();
-                var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
-                Assert.IsNotNull(logoutButton, "Not logged in.");
-
-                // wait for logout to complete
-                Thread.Sleep(10000);
-
-                _driver.Navigate().Refresh();
-
-                logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 5);
-                Assert.IsNull(logoutButton, "Still logged in after session timeout");
+                // check logged out of site 2 as well
+                _driver.Navigate().GoToUrl(Config.Site2BaseURL);
+                HasSessionExpired();
 
                 // login again
                 CanLoginToFrontEnd();
@@ -287,6 +284,22 @@ namespace Gigya.UnitTests.Selenium
                 }
                 throw;
             }
+        }
+
+        private void HasSessionExpired()
+        {
+            // reload page and should still be logged in
+            _driver.Navigate().Refresh();
+            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            Assert.IsNotNull(logoutButton, "Not logged in.");
+
+            // wait for logout to complete
+            Thread.Sleep(10000);
+
+            _driver.Navigate().Refresh();
+
+            logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 5);
+            Assert.IsNull(logoutButton, "Still logged in after session timeout");
         }
 
         private static void ResetSettings(UmbracoDatabase db, System.Collections.Generic.List<GigyaUmbracoModuleSettings> settings, System.Collections.Generic.List<string> currentGlobalSettings)
