@@ -312,6 +312,13 @@
     <Content Include="config\BaseRestExtensions.config" />
     <Content Include="config\applications.config" />
     <Content Include="config\404handlers.config" />
+    <Content Include="Views\MacroPartials\GigyaEditProfile.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaLoginButton.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaLogoutButton.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaRegisterButton.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaSettings.cshtml" />
+    <Content Include="Views\GigyaSettings\Index.cshtml" />
+    <None Include="bundleconfig.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -330,6 +337,10 @@
     <Content Include="scripts\ai.0.15.0-build58334.js" />
     <Content Include="scripts\ai.0.15.0-build58334.min.js" />
     <Content Include="scripts\dummy.txt" />
+    <EmbeddedResource Include="scripts\gigya-cms.js" />
+    <Content Include="scripts\gigya-cms.min.js">
+      <DependentUpon>gigya-cms.js</DependentUpon>
+    </Content>
     <Content Include="umbraco\Plugins\Gigya\DashboardIntro.ascx" />
     <Content Include="umbraco\Plugins\Gigya\Edit.aspx" />
     <Content Include="umbraco\Plugins\Gigya\edit.controller.js" />

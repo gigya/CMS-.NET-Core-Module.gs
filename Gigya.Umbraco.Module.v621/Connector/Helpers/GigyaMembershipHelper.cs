@@ -111,6 +111,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
                 {
                     case Constants.CmsFields.Email:
                     case Constants.CmsFields.Name:
+                    case Constants.CmsFields.Username:
                         continue;
                 }
 

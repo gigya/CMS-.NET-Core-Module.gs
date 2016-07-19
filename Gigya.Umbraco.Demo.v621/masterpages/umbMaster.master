@@ -28,8 +28,7 @@
   <link rel="stylesheet" href="/css/feijoa-ie6.css" media="screen, projection">
   <script src="/scripts/js/dd_belatedpng.js"></script>
   <![endif]-->
-
-
+  <umbraco:macro id="Macro2" alias="GigyaSettings" runat="server"></umbraco:macro>
   <asp:contentplaceholder id="cp_head" runat="server"></asp:contentplaceholder>
 </head>
   

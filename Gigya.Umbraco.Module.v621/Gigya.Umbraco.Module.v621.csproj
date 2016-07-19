@@ -255,9 +255,7 @@
     <Compile Include="Sections\GigyaSection.cs" />
     <Compile Include="Trees\GigyaTreeController.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Connector\Events\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
