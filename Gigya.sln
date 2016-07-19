@@ -27,6 +27,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.7.2", "Gigya.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.7.2.4.Demo", "Gigya.Umbraco.7.2.4.Demo\Gigya.Umbraco.7.2.4.Demo.csproj", "{93E62F25-9401-4027-982F-44E69D4058F0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.Module.v621", "Gigya.Umbraco.Module.v621\Gigya.Umbraco.Module.v621.csproj", "{59636BFE-D606-4B2D-9E85-B009EFA47440}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.Demo.v621", "Gigya.Umbraco.Demo.v621\Gigya.Umbraco.Demo.v621.csproj", "{CBE0287E-1859-42D5-B2E9-8551F9B730A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +92,18 @@ Global
 		{93E62F25-9401-4027-982F-44E69D4058F0}.Release Pro|Any CPU.Build.0 = Release|Any CPU
 		{93E62F25-9401-4027-982F-44E69D4058F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{93E62F25-9401-4027-982F-44E69D4058F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59636BFE-D606-4B2D-9E85-B009EFA47440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59636BFE-D606-4B2D-9E85-B009EFA47440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59636BFE-D606-4B2D-9E85-B009EFA47440}.Release Pro|Any CPU.ActiveCfg = Release|Any CPU
+		{59636BFE-D606-4B2D-9E85-B009EFA47440}.Release Pro|Any CPU.Build.0 = Release|Any CPU
+		{59636BFE-D606-4B2D-9E85-B009EFA47440}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59636BFE-D606-4B2D-9E85-B009EFA47440}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Release Pro|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Release Pro|Any CPU.Build.0 = Release|Any CPU
+		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -101,5 +117,6 @@ Global
 		{D0071CC1-F65F-401A-A2CF-C4E43EAB1E53} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
 		{BBD1394E-FB22-4870-8180-C54E46DBADF9} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
 		{93E62F25-9401-4027-982F-44E69D4058F0} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
+		{59636BFE-D606-4B2D-9E85-B009EFA47440} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
 	EndGlobalSection
 EndGlobal
