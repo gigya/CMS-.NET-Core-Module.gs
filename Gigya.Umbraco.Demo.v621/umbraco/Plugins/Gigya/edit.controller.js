@@ -21,7 +21,7 @@ angular.module("umbraco").controller("Gigya.GigyaSettingsEditController",
 	    $scope.publish = function (model) {
 	        gigyaTreeResource.save(model).then(function (response) {
 	            if (response.data.Success) {
-	                noty({ text: 'Settings have been published', timeout: 5000, type: 'success', layout: 'bottomCenter' });
+	                noty({ text: 'Settings have been verified and published', timeout: 5000, type: 'success', layout: 'bottomCenter' });
 
 	                if (response.data.Settings) {
 	                    $scope.model = response.data.Settings;
