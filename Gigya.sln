@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.Module.v621",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.Demo.v621", "Gigya.Umbraco.Demo.v621\Gigya.Umbraco.Demo.v621.csproj", "{CBE0287E-1859-42D5-B2E9-8551F9B730A8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.UnitTests.Umbraco621", "Gigya.UnitTests.Umbraco621\Gigya.UnitTests.Umbraco621.csproj", "{CC05B940-B7EA-4D9D-8925-7AE166B769FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,12 @@ Global
 		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Release Pro|Any CPU.Build.0 = Release|Any CPU
 		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CBE0287E-1859-42D5-B2E9-8551F9B730A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC05B940-B7EA-4D9D-8925-7AE166B769FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC05B940-B7EA-4D9D-8925-7AE166B769FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC05B940-B7EA-4D9D-8925-7AE166B769FF}.Release Pro|Any CPU.ActiveCfg = Release|Any CPU
+		{CC05B940-B7EA-4D9D-8925-7AE166B769FF}.Release Pro|Any CPU.Build.0 = Release|Any CPU
+		{CC05B940-B7EA-4D9D-8925-7AE166B769FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC05B940-B7EA-4D9D-8925-7AE166B769FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -119,5 +127,6 @@ Global
 		{93E62F25-9401-4027-982F-44E69D4058F0} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
 		{59636BFE-D606-4B2D-9E85-B009EFA47440} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
 		{CBE0287E-1859-42D5-B2E9-8551F9B730A8} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
+		{CC05B940-B7EA-4D9D-8925-7AE166B769FF} = {F31F816C-9241-496F-BA48-2EDA96FE8ACB}
 	EndGlobalSection
 EndGlobal
