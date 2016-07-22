@@ -7,11 +7,12 @@
     }
     var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Login";
     var containerId = Utils.UmbracoMacroProperty(Model.MacroParameters, "ContainerId");
+    var generatedContainerId = "gigya-container-" + Guid.NewGuid();
     var generateContainer = Utils.UmbracoMacroProperty(Model.MacroParameters, "GenerateContainer") == "1";
 
     if (string.IsNullOrEmpty(containerId) && generateContainer)
     {
-        containerId = "gigya-container-" + Guid.NewGuid();
+        containerId = generatedContainerId;
     }
 
     var screenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "ScreenSet") ?? "Default-RegistrationLogin";
@@ -21,7 +22,7 @@
 
 @if (!string.IsNullOrEmpty(containerId))
 {
-    <div id="@containerId" class="gigya-embedded-screen" data-gigya-screen="@screenSet" data-gigya-mobile-screen="@mobileScreenSet" data-gigya-start-screen="@startScreen"></div>
+    <div id="@generatedContainerId" data-gigya-container-id="@containerId" class="gigya-embedded-screen" data-gigya-screen="@screenSet" data-gigya-mobile-screen="@mobileScreenSet" data-gigya-start-screen="@startScreen"></div>
 }
 else
 {

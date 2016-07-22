@@ -174,11 +174,13 @@ var gigyaCms = {
             var elem = embeddedScreens[i];
 
             var settings = {
-                containerID: elem.getAttribute('id'),
+                containerID: elem.getAttribute('data-gigya-container-id'),
                 screenSet: elem.getAttribute('data-gigya-screen'),
                 mobileScreenSet: elem.getAttribute('data-gigya-mobile-screen'),
                 startScreen: elem.getAttribute('data-gigya-start-screen')
             };
+
+            gigyaCms.log('applying embedded screen with settings', settings);
 
             gigya.accounts.showScreenSet(settings);
         }

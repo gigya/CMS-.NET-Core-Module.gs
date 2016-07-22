@@ -57,6 +57,7 @@
           <form id="umbMasterForm" runat="server">
             <asp:contentplaceholder id="cp_content" runat="server"></asp:contentplaceholder>
           </form>
+          <div id="gigya-container"></div>
       </div> 
       </div>
       <asp:contentplaceholder id="cp_footer" runat="server">

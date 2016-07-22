@@ -16,6 +16,9 @@ angular.module("umbraco").controller("Gigya.GigyaSettingsEditController",
 	        if ($scope.model.CanViewApplicationSecret && ($scope.model.ApplicationSecretMasked == null || $scope.model.ApplicationSecretMasked == '')) {
 	            $scope.editApplicationSecret = true;
 	        }
+	    }).catch(function (response) {
+	        console.log(response);
+	        noty({ text: 'Error - ' + response.data.Message + '. ' + response.data.ExceptionMessage, timeout: 10000, type: 'error', layout: 'bottomCenter' });
 	    });
 
 	    $scope.publish = function (model) {
@@ -29,6 +32,9 @@ angular.module("umbraco").controller("Gigya.GigyaSettingsEditController",
 	            } else {
 	                noty({ text: 'Error - ' + response.data.Error, timeout: 10000, type: 'error', layout: 'bottomCenter' });
 	            }
+	        }).catch(function (response) {
+	            console.log(response);
+	            noty({ text: 'Error - ' + response.data.Message + '. ' + response.data.ExceptionMessage, timeout: 10000, type: 'error', layout: 'bottomCenter' });
 	        });
 	    };
 

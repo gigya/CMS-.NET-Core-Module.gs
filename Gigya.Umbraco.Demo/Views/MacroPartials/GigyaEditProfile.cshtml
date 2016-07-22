@@ -6,7 +6,7 @@
 @using Umbraco.Web.Controllers
 @using Gigya.Umbraco.Module.Connector
 
-@{ 
+@{
     var loginStatusModel = Members.GetCurrentLoginStatus();
     if (!loginStatusModel.IsLoggedIn)
     {
@@ -15,12 +15,14 @@
 
     var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Edit Profile";
     var containerId = Utils.UmbracoMacroProperty(Model.MacroParameters, "ContainerId");
+    var generatedContainerId = "gigya-container-" + Guid.NewGuid();
     var generateContainer = Utils.UmbracoMacroProperty(Model.MacroParameters, "GenerateContainer") == "1";
 
     if (string.IsNullOrEmpty(containerId) && generateContainer)
     {
-        containerId = "gigya-container-" + Guid.NewGuid();
+        containerId = generatedContainerId;
     }
+
     var screenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "ScreenSet") ?? "Default-ProfileUpdate";
     var mobileScreenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "MobileScreenSet") ?? "DefaultMobile-ProfileUpdate";
     var startScreen = Utils.UmbracoMacroProperty(Model.MacroParameters, "StartScreen");
@@ -28,7 +30,7 @@
 
 @if (!string.IsNullOrEmpty(containerId))
 {
-    <div id="@containerId" class="gigya-embedded-screen" data-gigya-screen="@screenSet" data-gigya-mobile-screen="@mobileScreenSet" data-gigya-start-screen="@startScreen"></div>
+    <div id="@generatedContainerId" data-gigya-container-id="@containerId" class="gigya-embedded-screen" data-gigya-screen="@screenSet" data-gigya-mobile-screen="@mobileScreenSet" data-gigya-start-screen="@startScreen"></div>
 }
 else
 {

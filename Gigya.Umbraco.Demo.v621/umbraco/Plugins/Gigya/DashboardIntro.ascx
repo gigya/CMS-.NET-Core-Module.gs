@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="DashboardIntro.ascx.cs" Inherits="Gigya.Umbraco._6._2._1.umbraco.Plugins.Gigya.DashboardIntro" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" %>
 
 <div ng-controller="Gigya.GigyaSettingsDashboardController">
     <h3>Gigya Settings</h3>
