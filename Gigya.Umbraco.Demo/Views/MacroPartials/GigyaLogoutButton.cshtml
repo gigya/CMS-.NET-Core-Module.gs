@@ -10,10 +10,14 @@
     var loginStatusModel = Members.GetCurrentLoginStatus();
     var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Logout";
     var greeting = Utils.UmbracoMacroProperty(Model.MacroParameters, "Greeting") ?? "Welcome";
+    var designMode = Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor");
 }
 
-@if (loginStatusModel.IsLoggedIn || Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor"))
+@if (loginStatusModel.IsLoggedIn || designMode)
 {
     <button type="button" class="gigya-logout">@label</button>
+    if (!designMode)
+    {
     <script>gigyaCms.authenticated = true</script>
+    }
 }
