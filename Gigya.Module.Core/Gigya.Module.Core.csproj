@@ -94,6 +94,7 @@
     <Compile Include="Connector\Logging\ICmsLogger.cs" />
     <Compile Include="Connector\Logging\LogCategory.cs" />
     <Compile Include="Connector\Logging\Logger.cs" />
+    <Compile Include="Data\GigyaModuleSettings.cs" />
     <Compile Include="Connector\Models\MappingField.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaLanguage.cs" />
@@ -108,12 +109,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Mvc\Scripts\gigya-cms.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mvc\Views\GigyaLoginStatus\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Mvc\Views\GigyaSettings\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Mvc\Scripts\gigya-cms.min.js">

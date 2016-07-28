@@ -16,11 +16,6 @@ else
     <a href="#" class="gigya-register">@Html.Resource("RegisterNow", "LoginStatusResources")</a>
 }
 
-<input id="gigya-redirect-url" type="hidden" value="@Model.LoggedInRedirectUrl" />
-<input id="gigya-logout-url" type="hidden" value="@Model.LogoutUrl" />
-<input id="gigya-error-message" type="hidden" value="@Model.ErrorMessage" />
-<input id="gigya-site-id" type="hidden" value="@Model.SiteId" />
-
 @if (!Model.IsDesignMode)
 {
 <script>

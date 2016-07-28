@@ -5,21 +5,51 @@ using Gigya.Module.Configuration;
 using Telerik.Sitefinity.Configuration;
 using Telerik.Sitefinity.SiteSettings;
 using Gigya.Module.Data;
-using Gigya.Module.Connector.Encryption;
 using System.Text;
 using Telerik.Sitefinity.Services;
 using Telerik.Sitefinity.Security.Claims;
 using Newtonsoft.Json;
-using Gigya.Module.Connector.Models;
 using System.Collections.Generic;
 using Newtonsoft.Json.Serialization;
 using Gigya.Module.Connector.Helpers;
+using Gigya.Module.Core.Data;
+using Gigya.Module.Core.Connector.Encryption;
+using Gigya.Module.Core.Connector.Helpers;
+using Gigya.Module.Core.Connector.Models;
+using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Connector.Logging;
 
 namespace Gigya.Module.BasicSettings
 {
     [DataContract]
     public class GigyaModuleSettingsContract : IGigyaSettingsDataContract
     {
+        private Logger _logger;
+        private Logger Logger
+        {
+            get
+            {
+                if (_logger == null)
+                {
+                    _logger = new Logger(new SitefinityLogger());
+                }
+                return _logger;
+            }
+        }
+
+        private Connector.Helpers.GigyaSettingsHelper _settingsHelper;
+        private Connector.Helpers.GigyaSettingsHelper SettingsHelper
+        {
+            get
+            {
+                if (_settingsHelper == null)
+                {
+                    _settingsHelper = new Connector.Helpers.GigyaSettingsHelper();
+                }
+                return _settingsHelper;
+            }
+        }
+
         #region Data Members
 
         [DataMember]
@@ -101,7 +131,7 @@ namespace Gigya.Module.BasicSettings
             {
                 // get settings for site or global settings or new settings
                 var siteSettingsAndGlobal = context.Settings.Where(i => i.SiteId == id || i.SiteId == Guid.Empty).ToList();
-                var settings = siteSettingsAndGlobal.FirstOrDefault(i => i.SiteId == id) ?? siteSettingsAndGlobal.FirstOrDefault() ?? new GigyaModuleSettings { SiteId = id, EnableRaas = true };
+                var settings = siteSettingsAndGlobal.FirstOrDefault(i => i.SiteId == id) ?? siteSettingsAndGlobal.FirstOrDefault() ?? new GigyaSitefinityModuleSettings { SiteId = id, EnableRaas = true };
 
                 // map settigs to this
                 this.ApiKey = settings.ApiKey;
@@ -113,10 +143,10 @@ namespace Gigya.Module.BasicSettings
 
                 if (CanViewApplicationSecret && !string.IsNullOrEmpty(settings.ApplicationSecret) && Encryptor.IsConfigured)
                 {
-                    var key = Encryptor.Decrypt(settings.ApplicationSecret);
+                    var key = TryDecryptApplicationSecret(settings.ApplicationSecret, false);
                     if (!string.IsNullOrEmpty(key))
                     {
-                        this.ApplicationSecretMasked = MaskedKey(key);
+                        this.ApplicationSecretMasked = StringHelper.MaskInput(key, "*", 2, 2);
                     }
                 }
 
@@ -132,9 +162,14 @@ namespace Gigya.Module.BasicSettings
                 this.SessionTimeout = settings.SessionTimeout;
 
                 var mappingFields = !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
+                AddMappingField(Constants.GigyaFields.UserId, Constants.SitefinityFields.UserId, ref mappingFields, true);
                 AddMappingField(Constants.GigyaFields.FirstName, Constants.SitefinityFields.FirstName, ref mappingFields, true);
                 AddMappingField(Constants.GigyaFields.LastName, Constants.SitefinityFields.LastName, ref mappingFields, true);
                 AddMappingField(Constants.GigyaFields.Email, Constants.SitefinityFields.Email, ref mappingFields, true);
+                
+                // required fields first
+                mappingFields = mappingFields.Where(i => !i.Required || !string.IsNullOrEmpty(i.CmsFieldName)).OrderByDescending(i => i.Required).ThenBy(i => i.CmsFieldName).ToList();
+
                 this.MappingFields = JsonConvert.SerializeObject(mappingFields, new JsonSerializerSettings
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
@@ -148,31 +183,21 @@ namespace Gigya.Module.BasicSettings
 
         private void AddMappingField(string gigyaFieldName, string defaultSitefinityFieldName, ref List<MappingField> fields, bool required)
         {
-            var field = fields.FirstOrDefault(i => i.GigyaFieldName == gigyaFieldName);
+            var field = fields.FirstOrDefault(i => i.CmsFieldName == defaultSitefinityFieldName);
             if (field != null)
             {
                 field.Required = required;
+                field.CmsFieldName = defaultSitefinityFieldName;
             }
             else
             {
                 fields.Add(new MappingField
                 {
                     GigyaFieldName = gigyaFieldName,
-                    SitefinityFieldName = defaultSitefinityFieldName,
+                    CmsFieldName = defaultSitefinityFieldName,
                     Required = required
                 });
             }
-        }
-
-        private string MaskedKey(string key)
-        {
-            var masked = new StringBuilder(string.Concat(Enumerable.Repeat("*", key.Length)));
-            masked = masked.Remove(0, 2);
-            masked = masked.Remove(masked.Length - 1, 1);
-            masked.Insert(0, key.Substring(0, 2));
-            masked.Append(key.Substring(key.Length - 1));
-
-            return masked.ToString();
         }
 
         public void SaveDefaults()
@@ -188,12 +213,12 @@ namespace Gigya.Module.BasicSettings
             using (var context = GigyaContext.Get())
             {
                 // get settings to update
-                var settings = context.Settings.FirstOrDefault(i => i.SiteId == id) ?? new GigyaModuleSettings { SiteId = id };
+                var settings = context.Settings.FirstOrDefault(i => i.SiteId == id) ?? new GigyaSitefinityModuleSettings { SiteId = id };
 
                 // update all fields
-                settings.ApiKey = this.ApiKey;
+                settings.ApiKey = this.ApiKey.Trim();
                 settings.DebugMode = this.DebugMode;
-                settings.ApplicationKey = this.ApplicationKey;
+                settings.ApplicationKey = this.ApplicationKey.Trim();
                 settings.DataCenter = !string.IsNullOrEmpty(this.DataCenter) ? this.DataCenter : this.DataCenterOther;
                 settings.EnableRaas = this.EnableRaas;
                 settings.GlobalParameters = this.GlobalParameters;
@@ -210,7 +235,7 @@ namespace Gigya.Module.BasicSettings
                 // check if user can view application secret
                 if (!string.IsNullOrEmpty(ApplicationSecret))
                 {
-                    plainTextApplicationSecret = ApplicationSecret;
+                    plainTextApplicationSecret = ApplicationSecret.Trim();
                     var identity = ClaimsManager.GetCurrentIdentity();
                     var canViewApplicationSecret = identity.IsAuthenticated && Gigya.Module.Connector.Admin.Roles.HasRole(identity);
                     if (canViewApplicationSecret)
@@ -219,61 +244,72 @@ namespace Gigya.Module.BasicSettings
                         {
                             throw new ArgumentException("Encryption key not specified. Refer to installation guide.");
                         }
-                        settings.ApplicationSecret = Encryptor.Encrypt(this.ApplicationSecret);
+
+                        settings.ApplicationSecret = Encryptor.Encrypt(plainTextApplicationSecret);
                     }
                 }
 
                 if (string.IsNullOrEmpty(plainTextApplicationSecret) && Encryptor.IsConfigured && !string.IsNullOrEmpty(settings.ApplicationSecret))
                 {
-                    plainTextApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
+                    plainTextApplicationSecret = TryDecryptApplicationSecret(settings.ApplicationSecret);
                 }
 
-                Validate(settings, plainTextApplicationSecret);
+                var mappedSettings = Map(settings);
+                
+                // validate input
+                SettingsHelper.Validate(mappedSettings);
+
+                // verify settings are correct
+                var apiHelper = new GigyaApiHelper(SettingsHelper, Logger);
+                var testResponse = apiHelper.VerifySettings(mappedSettings, plainTextApplicationSecret);
+                if (testResponse.GetErrorCode() != 0)
+                {
+                    throw new InvalidOperationException("Error: " + testResponse.GetErrorMessage());
+                }
+                
                 context.Add(settings);
                 context.SaveChanges();
             }
         }
 
-        private void Validate(GigyaModuleSettings settings, string applicationSecret)
+        private string TryDecryptApplicationSecret(string secret, bool throwOnException = true)
         {
-            if (string.IsNullOrEmpty(settings.ApiKey))
+            try
             {
-                throw new ArgumentException("API key is required");
+                return Encryptor.Decrypt(secret);
             }
-
-            if (string.IsNullOrEmpty(settings.ApplicationKey))
+            catch (Exception e)
             {
-                throw new ArgumentException("API key is required");
-            }
-
-            if (string.IsNullOrEmpty(settings.DataCenter))
-            {
-                throw new ArgumentException("DataCenter is required");
-            }
-
-            if (string.IsNullOrEmpty(settings.Language))
-            {
-                throw new ArgumentException("Language is required");
-            }
-
-            if (!string.IsNullOrEmpty(settings.GlobalParameters))
-            {
-                try
+                Logger.Error("Couldn't decrypt application secret.", e);
+                if (throwOnException)
                 {
-                    JsonConvert.DeserializeObject<dynamic>(settings.GlobalParameters);
-                }
-                catch
-                {
-                    throw new ArgumentException("Couldn't deserialize global parameters. Check it's valid JSON.");
+                    throw new ArgumentException("Couldn't decrypt application secret. Please enter it again.");
                 }
             }
+            return null;
+        }
 
-            // verify settings are correct
-            var testResponse = GigyaApiHelper.VerifySettings(settings, applicationSecret);
-            if (testResponse.GetErrorCode() != 0)
+        private IGigyaModuleSettings Map(GigyaSitefinityModuleSettings settings)
+        {
+            var model = new GigyaModuleSettings
             {
-                throw new InvalidOperationException("Error: " + testResponse.GetErrorMessage());
-            }
+                ApiKey = settings.ApiKey,
+                ApplicationSecret = settings.ApplicationSecret,
+                ApplicationKey = settings.ApplicationKey,
+                DataCenter = settings.DataCenter,
+                DebugMode = settings.DebugMode,
+                EnableRaas = settings.EnableRaas,
+                GlobalParameters = settings.GlobalParameters,
+                Id = settings.SiteId,
+                Language = settings.Language,
+                LanguageFallback = settings.LanguageFallback,
+                LogoutUrl = settings.LogoutUrl,
+                MappingFields = settings.MappingFields,
+                RedirectUrl = settings.RedirectUrl,
+                SessionTimeout = settings.SessionTimeout
+            };
+
+            return model;
         }
 
         #endregion

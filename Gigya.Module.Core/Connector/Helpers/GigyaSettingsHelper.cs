@@ -29,7 +29,6 @@ namespace Gigya.Module.Core.Connector.Helpers
         }
 
         protected abstract string Language(IGigyaModuleSettings settings);
-        protected abstract string ScriptPath(IGigyaModuleSettings settings);
         public abstract string CmsName { get; }
         public abstract string CmsVersion { get; }
         public abstract string ModuleVersion { get; }
@@ -50,6 +49,12 @@ namespace Gigya.Module.Core.Connector.Helpers
 
         protected abstract IGigyaModuleSettings EmptySettings(object id);
 
+        protected virtual string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
+        {
+            var scriptName = settings.DebugMode ? "gigya-cms.js" : "gigya-cms.min.js";
+            return string.Concat("~/scripts/", scriptName);
+        }
+
         /// <summary>
         /// Creates a view model for use in a view.
         /// </summary>
@@ -57,13 +62,11 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <param name="urlHelper">UrlHelper for the current request.</param>
         public virtual GigyaSettingsViewModel ViewModel(IGigyaModuleSettings settings, UrlHelper urlHelper, CurrentIdentity currentIdentity)
         {
-            var scriptName = settings.DebugMode ? "gigya-cms.js" : "gigya-cms.min.js";
-
             var model = new GigyaSettingsViewModel
             {
                 ApiKey = settings.ApiKey,
                 DebugMode = settings.DebugMode,
-                GigyaScriptPath = UrlUtils.AddQueryStringParam(_pathUtilities.ToAbsolute(ScriptPath(settings)), "v=" + CmsVersion),
+                GigyaScriptPath = UrlUtils.AddQueryStringParam(_pathUtilities.ToAbsolute(ClientScriptPath(settings, urlHelper)), "v=" + CmsVersion),
                 LoggedInRedirectUrl = settings.RedirectUrl,
                 LogoutUrl = settings.LogoutUrl,
                 IsLoggedIn = currentIdentity.IsAuthenticated,

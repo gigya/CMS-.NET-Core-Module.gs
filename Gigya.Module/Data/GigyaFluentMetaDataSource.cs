@@ -25,10 +25,10 @@ namespace Gigya.Module.Data
 		/// Maps the GigyaSetting class to a database table.
 		/// </summary>
 		/// <returns></returns>
-		private MappingConfiguration<GigyaModuleSettings> MapGigyaSettingsTable()
+		private MappingConfiguration<GigyaSitefinityModuleSettings> MapGigyaSettingsTable()
 		{
 			// map to table
-			var tableMapping = new MappingConfiguration<GigyaModuleSettings>();
+			var tableMapping = new MappingConfiguration<GigyaSitefinityModuleSettings>();
 			tableMapping.MapType().ToTable("sf_gigya_settings");
 
             // map properties

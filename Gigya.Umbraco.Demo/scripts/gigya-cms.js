@@ -141,21 +141,25 @@ var gigyaCms = {
 
         gigyaCms.attachEvents(document.getElementsByClassName('gigya-login'), 'click', function (event) {
             gigyaCms.showScreenSet(gigyaCms.screenSetSettings.login, event);
+            event.preventDefault();
             return false;
         });
 
         gigyaCms.attachEvents(document.getElementsByClassName('gigya-logout'), 'click', function (event) {
             gigya.accounts.logout({ callback: gigyaCms.onLogoutTriggeredByUser });
+            event.preventDefault();
             return false;
         });
 
         gigyaCms.attachEvents(document.getElementsByClassName('gigya-register'), 'click', function (event) {
             gigyaCms.showScreenSet(gigyaCms.screenSetSettings.register, event);
+            event.preventDefault();
             return false;
         });
 
         gigyaCms.attachEvents(document.getElementsByClassName('gigya-edit-profile'), 'click', function (event) {
             gigyaCms.showScreenSet(gigyaCms.screenSetSettings.editProfile, event);
+            event.preventDefault();
             return false;
         });
 

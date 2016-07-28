@@ -414,10 +414,10 @@
 
             var gigyaField = newRow.find('.gigya-mapping-field').val(gigyaValue);
             if (readOnly) {
-                newRow.find('input').prop('disabled', true);
+                newRow.find('input.sf-mapping-field').prop('disabled', true);
                 newRow.find('.remove').hide();
             } else {
-                newRow.find('input').prop('disabled', false);
+                newRow.find('input.sf-mapping-field').prop('disabled', false);
                 newRow.find('.remove').show();
             }
 
@@ -433,7 +433,7 @@
             var mappings = $.parseJSON(mappingsRaw);
             for (var i = 0; i < mappings.length; i++) {
                 var mapping = mappings[i];
-                gigyaSettings.addMappingRow(mapping.gigyaFieldName, mapping.sitefinityFieldName, mapping.required);
+                gigyaSettings.addMappingRow(mapping.gigyaFieldName, mapping.cmsFieldName, mapping.required);
             }
         },
         updateFieldMappings: function () {
@@ -443,7 +443,7 @@
 
                 mappings.push({
                     gigyaFieldName: $this.find('.gigya-mapping-field').val(),
-                    sitefinityFieldName: $this.find('.sf-mapping-field').val()
+                    cmsFieldName: $this.find('.sf-mapping-field').val()
                 });
             });
 

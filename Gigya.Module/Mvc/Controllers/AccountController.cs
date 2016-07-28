@@ -2,123 +2,50 @@
 using System.Linq;
 using System.Web.Mvc;
 using Telerik.Sitefinity.Security;
-using Gigya.Module.Connector.Logging;
 using Gigya.Module.Connector.Helpers;
-using Gigya.Module.Mvc.Models;
 using Telerik.Sitefinity.Security.Claims;
-using Telerik.Sitefinity.Abstractions;
+using Gigya.Module.Core.Mvc.Models;
+using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Connector.Logging;
+using Gigya.Module.Core.Connector.Helpers;
+using Telerik.Sitefinity.Services;
 
 namespace Gigya.Module.Mvc.Controllers
 {
-    public class AccountController : BaseController
+    public class AccountController : Gigya.Module.Core.Mvc.Controllers.AccountController
     {
-        private GigyaMembershipHelper _membershipHelper;
-
-        protected virtual GigyaMembershipHelper MembershipHelper
+        public AccountController() : base()
         {
-            get
-            {
-                if (_membershipHelper == null)
-                {
-                    _membershipHelper = ObjectFactory.Resolve<GigyaMembershipHelper>("GigyaMembershipHelper");
-                }
-                return _membershipHelper;
-            }
+            Logger = new Logger(new SitefinityLogger());
+            SettingsHelper = new Connector.Helpers.GigyaSettingsHelper();
+            var apiHelper = new GigyaApiHelper(SettingsHelper, Logger);
+            MembershipHelper = new GigyaMembershipHelper(apiHelper, Logger);
         }
 
-        [HttpPost]
-        public virtual ActionResult EditProfile(LoginModel model)
+        protected override CurrentIdentity GetCurrentIdentity()
         {
-            var response = new LoginResponseModel();
-            var siteId = model != null ? model.SiteId : Guid.Empty;
-            var settings = GigyaSettingsHelper.Get(siteId, true);
-
-            if (!ModelState.IsValid)
-            {
-                if (settings.DebugMode)
-                {
-                    var errorList = ModelState.Values.SelectMany(m => m.Errors)
-                                     .Select(e => e.ErrorMessage)
-                                     .ToList();
-
-                    Logger.Debug("Invalid login request. ModelState Errors:\n" + string.Join(". ", errorList));
-                }
-                return JsonNetResult(response);
-            }
-
-            // attempt to update the user profile
-            MembershipHelper.UpdateProfile(model, settings, ref response);
-            return JsonNetResult(response);
-        }
-
-        [HttpPost]
-        public virtual ActionResult Login(LoginModel model)
-        {
-            var response = new LoginResponseModel();
             var currentIdentity = ClaimsManager.GetCurrentIdentity();
-
-            if (currentIdentity.IsAuthenticated && currentIdentity.Name == model.UserId)
+            return new CurrentIdentity
             {
-                // already logged in
-                response.Status = ResponseStatus.AlreadyLoggedIn;
-                return JsonNetResult(response);
-            }
-
-            var siteId = model != null ? model.SiteId : Guid.Empty;
-            var settings = GigyaSettingsHelper.Get(siteId, true);
-
-            if (!ModelState.IsValid)
-            {
-                if (settings.DebugMode)
-                {
-                    var errorList = ModelState.Values.SelectMany(m => m.Errors)
-                                     .Select(e => e.ErrorMessage)
-                                     .ToList();
-
-                    Logger.Debug("Invalid login request. ModelState Errors:\n" + string.Join(". ", errorList));
-                }
-                return JsonNetResult(response);
-            }
-
-            // attempt to login or register the user
-            MembershipHelper.LoginOrRegister(model, settings, ref response);                           
-            return JsonNetResult(response);
+                IsAuthenticated = currentIdentity.IsAuthenticated,
+                Name = currentIdentity.Name
+            };
         }
 
-        /// <summary>
-        /// Should be called when a user is logged out of Gigya and therefore needs to be logged out of Sitefinity.
-        /// </summary>
-        public virtual ActionResult Logout(Guid? siteId)
+        public override ActionResult Login(LoginModel model)
         {
-            var settings = GigyaSettingsHelper.Get(siteId ?? Guid.Empty);
-            
-            var response = new ResponseModel { Status = ResponseStatus.Success };
-            var currentIdentity = ClaimsManager.GetCurrentIdentity();
-
-            if (!currentIdentity.IsAuthenticated)
+            if (SystemManager.IsDesignMode || SystemManager.IsPreviewMode)
             {
-                // not logged in so just return success
-                return JsonNetResult(response);
+                // can't login in design or preview mode
+                return JsonNetResult(new LoginResponseModel());
             }
 
-            SecurityManager.Logout();
-
-            if (settings.DebugMode)
-            {
-                Logger.Debug(currentIdentity.Name + " successfully logged out.");
-            }
-
-            response.RedirectUrl = settings.LogoutUrl;
-            return JsonNetResult(response);
+            return base.Login(model);
         }
 
-        /// <summary>
-        /// SSO Logout url which Gigya forwards the user to.
-        /// </summary>
-        public virtual ActionResult LogoutSSO()
+        protected override void Signout()
         {
             SecurityManager.Logout();
-            return new HttpStatusCodeResult(200);
         }
     }
 }

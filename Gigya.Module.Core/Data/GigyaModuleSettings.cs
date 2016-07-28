@@ -5,10 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Umbraco.Core.Persistence;
-using Umbraco.Core.Persistence.DatabaseAnnotations;
-
-namespace Gigya.Umbraco.Module.Data
+namespace Gigya.Module.Core.Data
 {
     public class GigyaModuleSettings : IGigyaModuleSettings
     {

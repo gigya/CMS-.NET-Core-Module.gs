@@ -13,8 +13,5 @@ namespace Gigya.Module.Mvc.ViewModels
         public string LastName { get; set; }
         public bool IsLoggedIn { get; set; }
         public bool IsDesignMode { get; set; }
-        public string ErrorMessage { get; set; }
-        public string LoggedInRedirectUrl { get; set; }
-        public string LogoutUrl { get; set; }
     }
 }

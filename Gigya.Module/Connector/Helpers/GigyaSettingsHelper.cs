@@ -5,29 +5,53 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Gigya.Module.Data;
-using Gigya.Module.Connector.Encryption;
 using System.Reflection;
 using System.Diagnostics;
 using Telerik.Sitefinity.Services;
 using System.Globalization;
-using Gigya.Module.Mvc.Models;
-using Newtonsoft.Json;
-using System.Dynamic;
-using Gigya.Module.Connector.Common;
 
 using Telerik.Sitefinity.Frontend.Mvc.Helpers;
 using System.Web.Mvc;
+using Gigya.Module.Core.Data;
+using Gigya.Module.Core.Connector.Helpers;
+using System.Web;
+using Gigya.Module.Core.Mvc.Models;
+using Gigya.Module.Core.Connector.Common;
 
 namespace Gigya.Module.Connector.Helpers
 {
-    public class GigyaSettingsHelper
+    public class GigyaSettingsHelper : Gigya.Module.Core.Connector.Helpers.GigyaSettingsHelper
     {
-        public static string SitefinityVersion { get; private set; }
+        public override string CmsName
+        {
+            get
+            {
+                return "Sitefinity";
+            }
+        }
+
+        public override string CmsVersion
+        {
+            get
+            {
+                return _sitefinityVersion;
+            }
+        }
+
+        public override string ModuleVersion
+        {
+            get
+            {
+                return ModuleClass.Version;
+            }
+        }
+
+        private static string _sitefinityVersion { get; set; }
 
         private static void LoadSitefinityAssemblyVersion()
         {
             var assembly = Assembly.Load("Telerik.Sitefinity");
-            SitefinityVersion = string.Concat("Sitefinity.", FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion);
+            _sitefinityVersion = FileVersionInfo.GetVersionInfo(assembly.Location).FileVersion;
         }
 
         static GigyaSettingsHelper()
@@ -35,35 +59,7 @@ namespace Gigya.Module.Connector.Helpers
             LoadSitefinityAssemblyVersion();
         }
 
-        /// <summary>
-        /// Creates a view model for use in a view.
-        /// </summary>
-        /// <param name="settings">The settings for the current site.</param>
-        /// <param name="urlHelper">UrlHelper for the current request.</param>
-        public static GigyaSettingsViewModel ViewModel(GigyaModuleSettings settings, UrlHelper urlHelper)
-        {
-            var scriptName = settings.DebugMode ? "gigya-sitefinity.js" : "gigya-sitefinity.min.js";
-            var scriptPath = FileHelper.GetPath("~/Mvc/Scripts/" + scriptName, urlHelper.WidgetContent("Mvc/Scripts/" + scriptName));
-
-            var model = new GigyaSettingsViewModel
-            {
-                ApiKey = settings.ApiKey,
-                DebugMode = settings.DebugMode,
-                GigyaScriptPath = UrlUtils.AddQueryStringParam(scriptPath, "v=" + ModuleClass.Version)
-            };
-            
-            model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<dynamic>(settings.GlobalParameters) : new ExpandoObject();
-            model.Settings.lang = GigyaLanguageHelper.Language(settings);
-            model.Settings.sessionExpiration = settings.SessionTimeout;
-            model.SettingsJson = JsonConvert.SerializeObject(model.Settings);
-            return model;
-        }
-
-        /// <summary>
-        /// Gets the Gigya module settings for the current site.
-        /// </summary>
-        /// <param name="decrypt">Whether to decrypt the application secret.</param>
-        public static GigyaModuleSettings GetForCurrentSite(bool decrypt = false)
+        public override IGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
         {
             var siteId = Guid.Empty;
             if (SystemManager.CurrentContext.IsMultisiteMode)
@@ -71,15 +67,78 @@ namespace Gigya.Module.Connector.Helpers
                 siteId = SystemManager.CurrentContext.CurrentSite.Id;
             }
 
-            return Get(siteId, decrypt);
+            var model = Get(siteId, decrypt);
+
+            // if we are using global settings we still want to tell the client to use the current homepage id
+            model.Id = siteId;
+            return model;
+        }
+
+        protected override List<IGigyaModuleSettings> GetForSiteAndDefault(object id)
+        {
+            var idList = id as string[];
+            if (idList != null)
+            {
+                id = idList[0];
+            }
+
+            var siteId = Guid.Parse(id.ToString());
+            var context = GigyaContext.Get();
+            return context.Settings.Where(i => i.SiteId == siteId || i.SiteId == Guid.Empty).Select(Map).ToList();
+        }
+
+        private IGigyaModuleSettings Map(GigyaSitefinityModuleSettings settings)
+        {
+            return new GigyaModuleSettings
+            {
+                Id = settings.SiteId,
+                ApiKey = settings.ApiKey,
+                ApplicationKey = settings.ApplicationKey,
+                ApplicationSecret = settings.ApplicationSecret,
+                Language = settings.Language,
+                LanguageFallback = settings.LanguageFallback,
+                DebugMode = settings.DebugMode,
+                DataCenter = settings.DataCenter,
+                EnableRaas = settings.EnableRaas,
+                RedirectUrl = settings.RedirectUrl,
+                LogoutUrl = settings.LogoutUrl,
+                MappingFields = settings.MappingFields,
+                GlobalParameters = settings.GlobalParameters,
+                SessionTimeout = settings.SessionTimeout
+            };
+        }
+
+        protected override string Language(IGigyaModuleSettings settings)
+        {
+            var languageHelper = new GigyaLanguageHelper();
+
+            var languageKey = CultureInfo.CurrentUICulture.Name.ToLowerInvariant();
+            var currentSite = SystemManager.CurrentContext.CurrentSite;
+            var cultures = currentSite.PublicContentCultures;
+            if (cultures != null && cultures.Length == 1 && !string.IsNullOrEmpty(currentSite.DefaultCulture))
+            {
+                languageKey = currentSite.DefaultCulture.ToLowerInvariant();
+            }
+
+            var culture = new CultureInfo(languageKey);
+            return languageHelper.Language(settings, culture);
+        }
+
+        protected override string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
+        {
+            var scriptName = settings.DebugMode ? "gigya-sitefinity.js" : "gigya-sitefinity.min.js";
+            var scriptPath = FileHelper.GetPath("~/Mvc/Scripts/" + scriptName, urlHelper.WidgetContent("Mvc/Scripts/" + scriptName));
+
+            return scriptPath;
         }
 
         /// <summary>
-        /// Deletes the Gigya module settings for the site with id of <paramref name="siteId"/>.
+        /// Deletes the Gigya module settings for the site with id of <paramref name="id"/>.
         /// </summary>
-        /// <param name="siteId">Id of the site whose settings will be deleted.</param>
-        internal static void Delete(Guid siteId)
+        /// <param name="id">Id of the site whose settings will be deleted.</param>
+        public override void Delete(object id)
         {
+            var siteId = Guid.Parse(id.ToString());
             using (var context = GigyaContext.Get())
             {
                 var setting = context.Settings.FirstOrDefault(i => i.SiteId == siteId);
@@ -91,26 +150,9 @@ namespace Gigya.Module.Connector.Helpers
             }
         }
 
-        /// <summary>
-        /// Gets Gigya Module settings for <paramref name="siteId"/>.
-        /// </summary>
-        /// <param name="siteId">The Id of the site.</param>
-        /// <param name="decrypt">Whether to decrypt the application secret.</param>
-        public static GigyaModuleSettings Get(Guid siteId, bool decrypt = false)
+        protected override IGigyaModuleSettings EmptySettings(object id)
         {
-            GigyaModuleSettings settings = null;
-
-            var context = GigyaContext.Get();
-            var siteSettingsAndGlobal = context.Settings.Where(i => i.SiteId == siteId || i.SiteId == Guid.Empty).ToList();
-            settings = siteSettingsAndGlobal.FirstOrDefault(i => i.SiteId == siteId) ?? siteSettingsAndGlobal.FirstOrDefault() ?? new GigyaModuleSettings { SiteId = siteId, DebugMode = true };
-
-            // decrypt application secret
-            if (decrypt && !string.IsNullOrEmpty(settings.ApplicationSecret))
-            {
-                settings.ApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
-            }
-
-            return settings;
+            return new GigyaModuleSettings { Id = id, DebugMode = true, EnableRaas = true };
         }
     }
 }

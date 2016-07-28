@@ -86,52 +86,6 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void SitefinityExceptionLogsInUser()
-        {
-            _newEmail = Gigya.Module.Core.Constants.Testing.EmailWhichThrowsException;
-
-            _driver.Navigate().GoToUrl(Config.Site1BaseURL);
-
-            // wait the usual 3 mins for sitefinity to start up....
-            _driver.FindElement(By.CssSelector(".gigya-register"), 180).Click();
-
-            var dialog = _driver.FindElement(By.Id("gigya-register-screen"), 2);
-            var email = dialog.FindElement(By.Name("email"));
-            email.SendKeys(_newEmail);
-
-            // wait for unique email validation to complete
-            Thread.Sleep(5000);
-
-            // see if email already exists
-            var emailError = email.FindElement(By.XPath("following-sibling::*"));
-            if (emailError == null || string.IsNullOrEmpty(emailError.Text))
-            {
-                // login
-                dialog.FindElement(By.Name("profile.firstName")).SendKeys(_firstName);
-                dialog.FindElement(By.Name("profile.lastName")).SendKeys(_lastName);
-                dialog.FindElement(By.Name("password")).SendKeys(_passsword);
-                dialog.FindElement(By.Name("passwordRetype")).SendKeys(_passsword);
-                dialog.FindElement(By.CssSelector("input.gigya-input-submit")).Click();
-
-                // wait for expected error alert
-                Thread.Sleep(5000);
-                _driver.SwitchTo().Alert().Dismiss();
-            }
-
-            _driver.Navigate().GoToUrl(Config.Site1BaseURL);
-            _driver.FindElement(By.CssSelector(".gigya-login"), 180).Click();
-
-            dialog = _driver.FindElement(By.Id("gigya-login-screen"), 5);
-            dialog.FindElement(By.Name("username")).SendKeys(_newEmail);
-            dialog.FindElement(By.Name("password")).SendKeys(_passsword);
-            dialog.FindElement(By.CssSelector("input.gigya-input-submit")).Click();
-
-            // wait for expected error alert
-            Thread.Sleep(5000);
-            _driver.SwitchTo().Alert().Dismiss();
-        }
-
-        [TestMethod]
         public void IsLoggedIntoSecondSiteAsWell621()
         {
             if (!_loggedIn)
@@ -320,7 +274,7 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void IsSessionExpiredCorrectly621()
+        public void IsSessionExpiredCorrectlyUmbraco621()
         {
             var application = new ConsoleApplicationBase();
             application.Start(application, new EventArgs());

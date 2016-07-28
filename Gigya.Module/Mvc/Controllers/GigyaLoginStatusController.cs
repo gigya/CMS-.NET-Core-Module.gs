@@ -1,4 +1,5 @@
 ﻿using Gigya.Module.Connector.Helpers;
+using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Mvc.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -35,10 +36,7 @@ namespace Gigya.Module.Mvc.Controllers
             {
                 SiteId = SystemManager.CurrentContext.IsMultisiteMode ? SystemManager.CurrentContext.CurrentSite.Id : Guid.Empty,
                 IsLoggedIn = currentIdentity.IsAuthenticated,
-                IsDesignMode = SystemManager.IsDesignMode,
-                ErrorMessage = Res.Get(Constants.Resources.ClassId, Constants.Resources.ErrorMessage),
-                LoggedInRedirectUrl = GetPageUrl(RedirectPageId),
-                LogoutUrl = GetPageUrl(LogoutPageId)
+                IsDesignMode = SystemManager.IsDesignMode
             };
 
             if (model.IsLoggedIn)

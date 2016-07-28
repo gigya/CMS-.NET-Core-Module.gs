@@ -83,7 +83,8 @@ namespace Gigya.Module.Web.Services
                 if (!string.IsNullOrEmpty(inheritanceState) && inheritanceState == "inherit")
                 {
                     // delete site specific settings
-                    GigyaSettingsHelper.Delete(id);
+                    var settingsHelper = new GigyaSettingsHelper();
+                    settingsHelper.Delete(id);
                     return;
                 }
             }

@@ -325,7 +325,7 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void IsSessionExpiredCorrectly()
+        public void IsSessionExpiredCorrectlyUmbraco()
         {
             var application = new ConsoleApplicationBase();
             application.Start(application, new EventArgs());

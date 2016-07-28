@@ -1,6 +1,12 @@
 [
   {
-    "outputFileName": "Mvc/Scripts/gigya-sitefinity.js",
+    "outputFileName": "Mvc/Scripts/gigya-cms.min.js",
+    "inputFiles": [
+      "Mvc/Scripts/gigya-cms.js"
+    ]
+  },
+  {
+    "outputFileName": "Mvc/Scripts/gigya-sitefinity.min.js",
     "inputFiles": [
       "Mvc/Scripts/gigya-sitefinity.js"
     ]

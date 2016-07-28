@@ -22,6 +22,7 @@ namespace Gigya.Module
             public const string FirstName = "FirstName";
             public const string LastName = "LastName";
             public const string Email = "Email";
+            public const string UserId = "UserId";
         }
 
         public class Testing

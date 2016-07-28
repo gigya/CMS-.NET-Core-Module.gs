@@ -129,7 +129,7 @@ namespace Gigya.Umbraco.Module.v621.Helpers
             return languageHelper.Language(settings, CultureInfo.CurrentUICulture);
         }
 
-        protected override string ScriptPath(IGigyaModuleSettings settings)
+        protected override string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
         {
             var scriptName = settings.DebugMode ? "gigya-cms.js" : "gigya-cms.min.js";
             return string.Concat("~/scripts/", scriptName);

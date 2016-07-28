@@ -1,11 +1,17 @@
-﻿@model Gigya.Module.Mvc.Models.GigyaSettingsViewModel
+﻿@model Gigya.Module.Core.Mvc.Models.GigyaSettingsViewModel
 
-@using Telerik.Sitefinity.Frontend.Mvc.Helpers
-@using Telerik.Sitefinity.Modules.Pages;
-
-@Html.Script(ScriptRef.JQuery, "top")
 @if (Model.RenderScript)
 {
+    <script>
+        var gigyaConfig = {
+            errorMessage: '@HttpUtility.JavaScriptStringEncode(Model.ErrorMessage)',
+            id: '@Model.Id',
+            loggedInRedirectUrl: '@HttpUtility.JavaScriptStringEncode(Model.LoggedInRedirectUrl)',
+            logoutRedirectUrl: '@HttpUtility.JavaScriptStringEncode(Model.LogoutUrl)',
+            debugMode: @Model.DebugMode.ToString().ToLowerInvariant(),
+            authenticated: @Model.IsLoggedIn.ToString().ToLowerInvariant()
+        };
+    </script>
     <script src="https://cdns.gigya.com/js/gigya.js?apiKey=@Model.ApiKey">
         @Html.Raw(Model.SettingsJson)
     </script>

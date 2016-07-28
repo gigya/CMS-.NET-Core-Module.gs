@@ -35,17 +35,17 @@ namespace Gigya.Module.Data
             base.Init(connectionString, cacheKey, backendConfiguration, metadataContainer, callingAssembly);
 
             // try and stop Sitefinity from caching everything
-            this.LevelTwoCache.EvictAll<GigyaModuleSettings>();
+            this.LevelTwoCache.EvictAll<GigyaSitefinityModuleSettings>();
         }
 
         /// <summary>
         /// Gets an IQueryable result of all gigya settings.
         /// </summary>
-        public IQueryable<GigyaModuleSettings> Settings
+        public IQueryable<GigyaSitefinityModuleSettings> Settings
 		{
 			get 
             {
-                return this.GetAll<GigyaModuleSettings>();
+                return this.GetAll<GigyaSitefinityModuleSettings>();
             }
 		}
 

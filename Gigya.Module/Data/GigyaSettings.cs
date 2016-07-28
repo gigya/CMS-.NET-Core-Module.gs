@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gigya.Module.Core.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,8 +9,8 @@ namespace Gigya.Module.Data
 	/// <summary>
 	/// Class used to represent a Gigya Setting
 	/// </summary>
-	public class GigyaModuleSettings
-	{
+	public class GigyaSitefinityModuleSettings
+    {
         public Guid SiteId { get; set; }
 
         public string ApiKey { get; set; }
@@ -41,7 +42,7 @@ namespace Gigya.Module.Data
         /// <summary>
         /// Initializes a new instance of the <see cref="GigyaModuleSettings"/> class.
         /// </summary>
-        public GigyaModuleSettings()
+        public GigyaSitefinityModuleSettings()
 		{
 		}
 	}

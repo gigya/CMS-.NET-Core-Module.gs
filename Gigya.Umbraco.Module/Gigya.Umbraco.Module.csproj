@@ -232,7 +232,6 @@
     <Compile Include="Connector\Logging\UmbracoLogger.cs" />
     <Compile Include="Connector\Utils.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Data\GigyaModuleSettings.cs" />
     <Compile Include="Data\GigyaUmbracoModuleSettings.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />

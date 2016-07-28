@@ -1,5 +1,4 @@
 ﻿using Gigya.Module.Data;
-using Gigya.Module.Mvc.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -9,36 +8,45 @@ using System.Web.Security;
 using Telerik.Sitefinity.Security;
 using Telerik.Sitefinity.Security.Model;
 using Telerik.Sitefinity.Model;
-using Gigya.Module.Connector.Logging;
 using Telerik.Sitefinity.Data;
-using Gigya.Socialize.SDK;
-using Gigya.Module.Connector.Models;
-using Newtonsoft.Json.Linq;
 using System.Dynamic;
-using Gigya.Module.Connector.Common;
-using Telerik.Sitefinity.Services.Events;
 using Telerik.Sitefinity.Services;
 using Gigya.Module.Connector.Events;
+using Gigya.Module.Core.Connector.Helpers;
+using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Core.Data;
+using Gigya.Module.Core.Mvc.Models;
+using Gigya.Module.Core.Connector.Common;
+using Gigya.Module.Core.Connector.Models;
 
 namespace Gigya.Module.Connector.Helpers
 {
-    public class GigyaMembershipHelper
+    public class GigyaMembershipHelper : IGigyaMembershipHelper
     {
+        private readonly GigyaApiHelper _gigyaApiHelper;
+        private readonly Logger _logger;
+
+        public GigyaMembershipHelper(GigyaApiHelper apiHelper, Logger logger)
+        {
+            _gigyaApiHelper = apiHelper;
+            _logger = logger;
+        }
+
         /// <summary>
         /// Updates the users Sitefinity profile.
         /// </summary>
-        /// <param name="userId">Id of the user to update.</param>
+        /// <param name="username">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected virtual void UpdateProfile(string userId, GigyaModuleSettings settings, dynamic gigyaModel)
+        protected virtual void MapProfileFieldsAndUpdate(string username, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             UserProfileManager profileManager = UserProfileManager.GetManager();
             UserManager userManager = UserManager.GetManager();
 
             using (new ElevatedModeRegion(userManager))
             {
-                var user = userManager.GetUser(userId);
-                user.Email = GetGigyaValue(gigyaModel, Constants.GigyaFields.Email, Constants.SitefinityFields.Email);
+                var user = userManager.GetUser(username);
+                user.Email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
 
                 SitefinityProfile profile = profileManager.GetUserProfile<SitefinityProfile>(user);
                 
@@ -51,7 +59,7 @@ namespace Gigya.Module.Connector.Helpers
                 }               
 
                 // map any custom fields
-                MapProfileFields(profile, gigyaModel, settings);
+                MapProfileFields(profile, gigyaModel, settings, mappingFields);
                 
                 try
                 {
@@ -60,7 +68,7 @@ namespace Gigya.Module.Connector.Helpers
                 }
                 catch(Exception e)
                 {
-                    Logger.Error("Failed to update profile for userId: " + userId, e);
+                    _logger.Error("Failed to update profile for userId: " + username, e);
                 }
             }
         }
@@ -104,54 +112,56 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="profile">The profile to update.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">The Gigya module settings.</param>
-        protected virtual void MapProfileFields(SitefinityProfile profile, dynamic gigyaModel, GigyaModuleSettings settings)
+        protected virtual void MapProfileFields(SitefinityProfile profile, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
         {
-            profile.FirstName = GetGigyaValue(gigyaModel, Constants.GigyaFields.FirstName, Constants.SitefinityFields.FirstName);
-            profile.LastName = GetGigyaValue(gigyaModel, Constants.GigyaFields.LastName, Constants.SitefinityFields.LastName);
+			if (mappingFields == null)
+            {
+                return;
+            }
+
+            profile.FirstName = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.FirstName, Constants.GigyaFields.FirstName, mappingFields);
+            profile.LastName = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.LastName, Constants.GigyaFields.LastName, mappingFields);
 
             // map custom fields
-            if (!string.IsNullOrEmpty(settings.MappingFields))
+            foreach (var field in mappingFields)
             {
-                var mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
-                foreach (var field in mappingFields)
+                // check if field is a custom one
+                switch (field.CmsFieldName)
                 {
-                    // check if field is a custom one
-                    switch (field.SitefinityFieldName)
-                    {
-                        case Constants.SitefinityFields.FirstName:
-                        case Constants.SitefinityFields.LastName:
-                        case Constants.SitefinityFields.Email:
-                            continue;
-                    }
+                    case Constants.SitefinityFields.UserId:
+                    case Constants.SitefinityFields.FirstName:
+                    case Constants.SitefinityFields.LastName:
+                    case Constants.SitefinityFields.Email:
+                        continue;
+                }
 
-                    if (!string.IsNullOrEmpty(field.SitefinityFieldName) && profile.DoesFieldExist(field.SitefinityFieldName))
+                if (!string.IsNullOrEmpty(field.CmsFieldName) && profile.DoesFieldExist(field.CmsFieldName))
+                {
+                    object gigyaValue = GetGigyaValue(gigyaModel, field.GigyaFieldName, field.CmsFieldName);
+                    if (gigyaValue != null)
                     {
-                        object gigyaValue = GetGigyaValue(gigyaModel, field.GigyaFieldName, field.SitefinityFieldName);
-                        if (gigyaValue != null)
+                        try
                         {
-                            try
-                            {
-                                profile.SetValue(field.SitefinityFieldName, gigyaValue);
-                            }
-                            catch (Exception e)
-                            {
-                                Logger.Error(string.Format("Couldn't set Sitefinity profile value for [{0}] and gigya field [{1}].", field.SitefinityFieldName, field.GigyaFieldName), e);
-                            }
-
-                            if (profile.GetValue(field.SitefinityFieldName) != gigyaValue)
-                            {
-                                Logger.Error(string.Format("Sitefinity field [{0}] type doesn't match Gigya field [{1}] type. You may need to add a conversion using EventHub.Subscribe<IMapGigyaFieldEvent>", field.SitefinityFieldName, field.GigyaFieldName));
-                            }
+                            profile.SetValue(field.CmsFieldName, gigyaValue);
                         }
-                        else if (settings.DebugMode)
+                        catch (Exception e)
                         {
-                            Logger.DebugFormat("Gigya field \"{0}\" is null so profile field not updated.", field.GigyaFieldName);
+                            _logger.Error(string.Format("Couldn't set Sitefinity profile value for [{0}] and gigya field [{1}].", field.CmsFieldName, field.GigyaFieldName), e);
+                        }
+
+                        if (profile.GetValue(field.CmsFieldName) != gigyaValue)
+                        {
+                            _logger.Error(string.Format("Sitefinity field [{0}] type doesn't match Gigya field [{1}] type. You may need to add a conversion using EventHub.Subscribe<IMapGigyaFieldEvent>", field.CmsFieldName, field.GigyaFieldName));
                         }
                     }
                     else if (settings.DebugMode)
                     {
-                        Logger.DebugFormat("Sitefinity field \"{0}\" not found.", field.SitefinityFieldName);
+                        _logger.DebugFormat("Gigya field \"{0}\" is null so profile field not updated.", field.GigyaFieldName);
                     }
+                }
+                else if (settings.DebugMode)
+                {
+                    _logger.DebugFormat("Sitefinity field \"{0}\" not found.", field.CmsFieldName);
                 }
             }
         }
@@ -159,42 +169,78 @@ namespace Gigya.Module.Connector.Helpers
         /// <summary>
         /// Creates a new Sitefinity user from a Gigya user.
         /// </summary>
-        /// <param name="userId">The Id of the new user.</param>
+        /// <param name="username">The Id of the new user.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">Gigya module settings for the site.</param>
         /// <returns></returns>
-        protected virtual MembershipCreateStatus CreateUser(string userId, dynamic gigyaModel, GigyaModuleSettings settings)
+        protected virtual MembershipCreateStatus CreateUser(string username, dynamic gigyaModel, IGigyaModuleSettings settings)
         {
+            List<MappingField> mappingFields = null;
+            if (!string.IsNullOrEmpty(settings.MappingFields))
+            {
+                mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
+            }
+
             UserManager userManager = UserManager.GetManager();
             UserProfileManager profileManager = UserProfileManager.GetManager();
 
             MembershipCreateStatus status;
-            var email = GetGigyaValueWithDefault(gigyaModel, Constants.GigyaFields.Email, null);
-            var firstName = GetGigyaValueWithDefault(gigyaModel, Constants.GigyaFields.FirstName, "First Name");
-            var lastName = GetGigyaValueWithDefault(gigyaModel, Constants.GigyaFields.LastName, "Last Name");
+            var email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
+            var firstName = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.FirstName, Constants.GigyaFields.FirstName, mappingFields);
+            var lastName = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.LastName, Constants.GigyaFields.LastName, mappingFields);
 
-            User user = userManager.CreateUser(userId, Guid.NewGuid().ToString(), email, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, null, out status);
+            User user = userManager.CreateUser(username, Guid.NewGuid().ToString(), email, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, null, out status);
+            SitefinityProfile profile = null;
 
             switch (status)
             {
                 case MembershipCreateStatus.Success:
-                    CreateProfile(gigyaModel, settings, userManager, profileManager, user);
+                    profile = CreateProfile(gigyaModel, settings, userManager, profileManager, user, mappingFields);
                     break;
                 case MembershipCreateStatus.DuplicateEmail:
                     // insert fails if there is a duplicate email even though duplicate emails are allowed...strange huh
                     var dummyEmail = string.Concat(Guid.NewGuid(), "@gigya.com");
 
                     // try insert again with a dummy email and update it afterwards
-                    user = userManager.CreateUser(userId, Guid.NewGuid().ToString(), dummyEmail, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, null, out status);
+                    user = userManager.CreateUser(username, Guid.NewGuid().ToString(), dummyEmail, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, null, out status);
                     if (status == MembershipCreateStatus.Success)
                     {
                         user.Email = email;
-                        CreateProfile(gigyaModel, settings, userManager, profileManager, user);
+                        profile = CreateProfile(gigyaModel, settings, userManager, profileManager, user, mappingFields);
                     }
                     break;
             }
 
+            if (user == null)
+            {
+                return status;
+            }
+
+            MapProfileFields(profile, gigyaModel, settings, mappingFields);
+
+            try
+            {
+                userManager.SaveChanges();
+                profileManager.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Failed to update profile for userId: " + username, e);
+            }
+
             return status;
+        }
+
+        private string GetMappedFieldWithFallback(dynamic gigyaModel, string cmsFieldName, string gigyaFallbackFieldName, List<MappingField> mappingFields)
+        {
+            var value = GetGigyaFieldFromCmsAlias(gigyaModel, cmsFieldName, null, mappingFields);
+            if (string.IsNullOrEmpty(value))
+            {
+                // no mapping provided for field so use the default
+                value = GetGigyaValueWithDefault(gigyaModel, gigyaFallbackFieldName, null);
+            }
+
+            return value;
         }
 
         /// <summary>
@@ -205,7 +251,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="userManager">Sitefinity user manager.</param>
         /// <param name="profileManager">Sitefinity profile manager.</param>
         /// <param name="user">The user that will be associated with the new profile.</param>
-        protected virtual void CreateProfile(dynamic gigyaModel, GigyaModuleSettings settings, UserManager userManager, UserProfileManager profileManager, User user)
+        protected virtual SitefinityProfile CreateProfile(dynamic gigyaModel, IGigyaModuleSettings settings, UserManager userManager, UserProfileManager profileManager, User user, List<MappingField> mappingFields)
         {
             SitefinityProfile profile = profileManager.CreateProfile(user, Guid.NewGuid(), typeof(SitefinityProfile)) as SitefinityProfile;
 
@@ -217,7 +263,7 @@ namespace Gigya.Module.Connector.Helpers
                 profileManager.RecompileItemUrls(profile);
                 profileManager.SaveChanges();
 
-                MapProfileFields(profile, gigyaModel, settings);
+                MapProfileFields(profile, gigyaModel, settings, mappingFields);
             }
 
             try
@@ -227,8 +273,21 @@ namespace Gigya.Module.Connector.Helpers
             }
             catch (Exception e)
             {
-                Logger.Error("Failed to create profile for userId: " + user.Id, e);
+                _logger.Error("Failed to create profile for userId: " + user.Id, e);
             }
+
+            return profile;
+        }
+
+        private string GetGigyaFieldFromCmsAlias(dynamic gigyaModel, string cmsFieldName, string fallback, List<MappingField> mappingFields)
+        {
+            var field = mappingFields.FirstOrDefault(i => i.CmsFieldName == cmsFieldName);
+            if (field != null && !string.IsNullOrEmpty(field.GigyaFieldName))
+            {
+                return GetGigyaValueWithDefault(gigyaModel, field.GigyaFieldName, fallback);
+            }
+
+            return fallback;
         }
 
         /// <summary>
@@ -237,7 +296,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="model">Details from the client e.g. signature and userId.</param>
         /// <param name="settings">Gigya module settings.</param>
         /// <param name="response">Response model that will be returned to the client.</param>
-        public virtual void LoginOrRegister(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
+        public virtual void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
         {
             response.Status = ResponseStatus.Error;
             
@@ -245,39 +304,43 @@ namespace Gigya.Module.Connector.Helpers
             {
                 if (settings.DebugMode)
                 {
-                    Logger.Debug("RaaS not enabled so login aborted.");
+                    _logger.Debug("RaaS not enabled so login aborted.");
                 }
                 return;
             }
             
-            if (!GigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
+            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
             {
                 if (settings.DebugMode)
                 {
-                    Logger.Debug("Invalid user signature for login request.");
+                    _logger.Debug("Invalid user signature for login request.");
                 }
                 return;
             }
 
             // get user info
-            var userInfoResponse = GigyaApiHelper.GetAccountInfo(model.UserId, settings);
+            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
             if (userInfoResponse == null || userInfoResponse.GetErrorCode() != 0)
             {
-                Logger.Error("Failed to getAccountInfo");
+                _logger.Error("Failed to getAccountInfo");
                 return;
             }
             
             var gigyaModel = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
             ThrowTestingExceptionIfRequired(settings, gigyaModel);
 
+			// find what field has been configured for the CMS username
+            List<MappingField> mappingFields = GetMappingFields(settings);
+            var username = GetCmsUsername(mappingFields, gigyaModel);
+
             UserManager manager = UserManager.GetManager();
-            var userExists = manager.UserExists(model.UserId);
+            var userExists = manager.UserExists(username);
             if (!userExists)
             {
                 // user doesn't exist so create a new one
                 using (new ElevatedModeRegion(manager))
                 {
-                    var createUserStatus = CreateUser(model.UserId, gigyaModel, settings);
+                    var createUserStatus = CreateUser(username, gigyaModel, settings);
                     if (createUserStatus != MembershipCreateStatus.Success)
                     {
                         return;
@@ -286,7 +349,7 @@ namespace Gigya.Module.Connector.Helpers
             }
 
             // user logged into Gigya so now needs to be logged into Sitefinity
-            var authenticated = AuthenticateUser(model, settings, userExists, gigyaModel);
+            var authenticated = AuthenticateUser(username, settings, userExists, gigyaModel, mappingFields);
             response.Status = authenticated ? ResponseStatus.Success : ResponseStatus.Error;
             if (authenticated)
             {
@@ -297,34 +360,54 @@ namespace Gigya.Module.Connector.Helpers
         /// <summary>
         /// Updates a user's profile in Sitefinity.
         /// </summary>
-        public virtual void UpdateProfile(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
+        public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
         {
             if (!settings.EnableRaas)
             {
                 if (settings.DebugMode)
                 {
-                    Logger.Debug("RaaS not enabled so login aborted.");
+                    _logger.Debug("RaaS not enabled so login aborted.");
                 }
                 return;
             }
 
-            var userInfoResponse = GigyaApiHelper.GetAccountInfo(model.UserId, settings);
+            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
             if (userInfoResponse == null || userInfoResponse.GetErrorCode() != 0)
             {
                 if (settings.DebugMode)
                 {
-                    Logger.Error("Failed to getAccountInfo");
+                    _logger.Error("Failed to getAccountInfo");
                 }
                 return;
             }
 
+			List<MappingField> mappingFields = GetMappingFields(settings);
+
             dynamic userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
             ThrowTestingExceptionIfRequired(settings, userInfo);
 
-            UpdateProfile(model, userInfo, settings, ref response);
+			string username = GetCmsUsername(mappingFields, userInfo);
+            MapProfileFieldsAndUpdate(username, settings, userInfo, mappingFields);
+            response.RedirectUrl = settings.RedirectUrl;
+            response.Status = ResponseStatus.Success;
         }
 
-        private void ThrowTestingExceptionIfRequired(GigyaModuleSettings settings, dynamic userInfo)
+		private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
+        {
+            return !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
+        }
+
+        private string GetCmsUsername(List<MappingField> mappingFields, dynamic userInfo)
+        {
+            if (!mappingFields.Any())
+            {
+                return userInfo.UID;
+            }
+
+            return GetGigyaFieldFromCmsAlias(userInfo, Constants.SitefinityFields.UserId, userInfo.UID, mappingFields);
+        }
+
+        private void ThrowTestingExceptionIfRequired(IGigyaModuleSettings settings, dynamic userInfo)
         {
             if (settings.DebugMode && DynamicUtils.GetValue<string>(userInfo, "profile.email") == Constants.Testing.EmailWhichThrowsException)
             {
@@ -333,49 +416,28 @@ namespace Gigya.Module.Connector.Helpers
         }
 
         /// <summary>
-        /// Updates a user's profile in Sitefinity.
-        /// </summary>
-        public virtual void UpdateProfile(LoginModel model, dynamic gigyaModel, GigyaModuleSettings settings, ref LoginResponseModel response)
-        {
-            response.Status = ResponseStatus.Error;
-
-            if (!settings.EnableRaas)
-            {
-                if (settings.DebugMode)
-                {
-                    Logger.Debug("RaaS not enabled so login aborted.");
-                }
-                return;
-            }
-
-            UpdateProfile(model.UserId, settings, gigyaModel);
-            response.RedirectUrl = settings.RedirectUrl;
-            response.Status = ResponseStatus.Success;
-        }
-
-        /// <summary>
         /// Authenticates a user in Sitefinity.
         /// </summary>
-        protected virtual bool AuthenticateUser(LoginModel model, GigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel)
+        protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             User user;
 
-            var loginStatus = AuthenticateWithRetry(model.UserId, 0, 2, out user);
+            var loginStatus = AuthenticateWithRetry(username, 0, 2, out user);
             switch (loginStatus)
             {
                 case UserLoggingReason.Success:
                     if (settings.DebugMode)
                     {
-                        Logger.Debug(string.Concat("User [", model.UserId, "] successfully logged into Sitefinity."));
+                        _logger.Debug(string.Concat("User [", username, "] successfully logged into Sitefinity."));
                     }
 
                     if (updateProfile)
                     {
-                        UpdateProfile(model.UserId, settings, gigyaModel);
+                        MapProfileFieldsAndUpdate(username, settings, gigyaModel, mappingFields);
                     }
                     return true;
                 default:
-                    Logger.Error(string.Format("User [{0}] not logged into Sitefinity. Reason: {1}.", model.UserId, loginStatus));
+                    _logger.Error(string.Format("User [{0}] not logged into Sitefinity. Reason: {1}.", username, loginStatus));
                     return false;
             }
         }

@@ -42,7 +42,13 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var user = memberService.GetByUsername(userId);
-            user.Email = GetGigyaValue(gigyaModel, Constants.GigyaFields.Email, Constants.CmsFields.Email);
+
+            var email = GetGigyaFieldFromCmsAlias(gigyaModel, Constants.CmsFields.Email, null, mappingFields);
+            if (string.IsNullOrEmpty(email))
+            {
+                email = GetGigyaValue(gigyaModel, Constants.GigyaFields.Email, Constants.CmsFields.Email);
+            }
+            user.Email = email;
 
             // map any custom fields
             MapProfileFields(user, gigyaModel, settings, mappingFields);
@@ -156,18 +162,17 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <returns></returns>
         protected virtual IMember CreateUser(string userId, dynamic gigyaModel, IGigyaModuleSettings settings)
         {
-            var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
-            var email = GetGigyaValueWithDefault(gigyaModel, Constants.GigyaFields.Email, null);
-            var name = email;
-
             // check if there is a name field for the member name otherwise fallback to email
             List<MappingField> mappingFields = null;
             if (!string.IsNullOrEmpty(settings.MappingFields))
             {
                 mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
-                name = GetGigyaFieldFromCmsAlias(gigyaModel, Constants.CmsFields.Name, email, mappingFields);
             }
 
+            var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
+            var email = GetMappedFieldWithFallback(gigyaModel, Constants.CmsFields.Email, Constants.GigyaFields.Email, mappingFields);
+            var name = GetGigyaFieldFromCmsAlias(gigyaModel, Constants.CmsFields.Name, email, mappingFields);
+            
             IMember user = memberService.CreateMemberWithIdentity(userId, email, name, Constants.MemberTypeAlias);
             if (user == null)
             {
@@ -187,8 +192,25 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             return user;
         }
 
+        private string GetMappedFieldWithFallback(dynamic gigyaModel, string cmsFieldName, string gigyaFallbackFieldName, List<MappingField> mappingFields)
+        {
+            var value = GetGigyaFieldFromCmsAlias(gigyaModel, cmsFieldName, null, mappingFields);
+            if (string.IsNullOrEmpty(value))
+            {
+                // no mapping provided for field so use the default
+                value = GetGigyaValueWithDefault(gigyaModel, gigyaFallbackFieldName, null);
+            }
+
+            return value;
+        }
+
         private string GetGigyaFieldFromCmsAlias(dynamic gigyaModel, string cmsFieldName, string fallback, List<MappingField> mappingFields)
         {
+            if (mappingFields == null)
+            {
+                return fallback;
+            }
+
             var field = mappingFields.FirstOrDefault(i => i.CmsFieldName == cmsFieldName);
             if (field != null && !string.IsNullOrEmpty(field.GigyaFieldName))
             {
