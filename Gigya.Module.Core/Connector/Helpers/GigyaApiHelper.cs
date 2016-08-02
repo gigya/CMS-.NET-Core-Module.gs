@@ -144,9 +144,10 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 dynamic gigyaModel = response != null ? JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText()) : new ExpandoObject();
                 var gigyaError = response != null ? response.GetErrorMessage() : string.Empty;
+                var gigyaErrorDetail = DynamicUtils.GetValue<string>(gigyaModel, "errorDetails");
                 var gigyaCallId = DynamicUtils.GetValue<string>(gigyaModel, "callId");
 
-                _logger.Error(string.Format("API call: {0}. CallId: {1}. Error: {2}.", apiMethod, gigyaCallId, gigyaError), e);
+                _logger.Error(string.Format("API call: {0}. CallId: {1}. Error: {2}. Error Details: {3}.", apiMethod, gigyaCallId, gigyaError, gigyaErrorDetail), e);
                 return response;
             }
 
@@ -192,9 +193,10 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 dynamic gigyaModel = response != null ? JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText()) : new ExpandoObject();
                 var gigyaError = response != null ? response.GetErrorMessage() : string.Empty;
+                var gigyaErrorDetail = DynamicUtils.GetValue<string>(gigyaModel, "errorDetails");
 
                 var callId = DynamicUtils.GetValue<string>(gigyaModel, "callId");
-                _logger.DebugFormat("API call: {0}. CallId: {1}. Error: {2}.", apiMethod, callId, gigyaError);
+                _logger.DebugFormat("API call: {0}. CallId: {1}. Error: {2}. Error Details: {3}.", apiMethod, callId, gigyaError, gigyaErrorDetail);
             }
         }
     }

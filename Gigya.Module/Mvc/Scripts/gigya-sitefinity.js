@@ -170,6 +170,22 @@ var gigyaSitefinity = {
 
         gigyaSitefinity.initEmbeddedScreens();
 
+        var loggedInUrlElems = document.getElementsByClassName('gigya-logged-in-url');
+        for (var i = 0; i < loggedInUrlElems.length; i++) {
+            if (loggedInUrlElems[i].value) {
+                gigyaSitefinity.loggedInRedirectUrl = loggedInUrlElems[i].value;
+                break;
+            }
+        }
+
+        var loggedOutUrlElems = document.getElementsByClassName('gigya-logged-out-url');
+        for (var i = 0; i < loggedOutUrlElems.length; i++) {
+            if (loggedOutUrlElems[i].value) {
+                gigyaSitefinity.logoutRedirectUrl = loggedOutUrlElems[i].value;
+                break;
+            }
+        }
+
         gigyaSitefinity.initialized = true;
     },
     initEmbeddedScreens: function () {

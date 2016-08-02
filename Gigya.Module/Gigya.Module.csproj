@@ -152,6 +152,10 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaLanguage.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaLoginController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaEditProfileController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaRegisterController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaLogoutController.cs" />
     <Compile Include="Mvc\Controllers\GigyaSettingsController.cs" />
     <Compile Include="Mvc\Controllers\GigyaLoginStatusController.cs" />
     <Compile Include="Mvc\JsonNetResult.cs" />
@@ -162,9 +166,15 @@
     <Compile Include="ModuleClass.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="ModuleResources.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaBaseViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaLogoutViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaEditProfileViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaRegisterViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaLoginViewModel.cs" />
     <Compile Include="Mvc\Proxy\MvcControllerProxyNoCache.cs" />
     <Compile Include="Mvc\ViewModels\GigyaLoginStatusViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SitefinityUtils.cs" />
     <Compile Include="Web\Services\GigyaSettingsService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +191,18 @@
     <None Include="bundleconfig.json" />
     <EmbeddedResource Include="Mvc\Views\GigyaSettings\DesignerView.Simple.cshtml" />
     <EmbeddedResource Include="Mvc\Views\GigyaSettings\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogin\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogin\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogin\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaRegister\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaRegister\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaRegister\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaEditProfile\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaEditProfile\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaEditProfile\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogout\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogout\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogout\Index.cshtml" />
     <None Include="OpenAccessNuGet.targets" />
     <None Include="packages.config" />
     <Content Include="Web.config" />

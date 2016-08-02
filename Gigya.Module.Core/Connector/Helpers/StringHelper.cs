@@ -23,5 +23,10 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             return masked.ToString();
         }
+
+        public static string FirstNotNullOrEmpty(params string[] values)
+        {
+            return values.FirstOrDefault(i => !string.IsNullOrEmpty(i));
+        }
     }
 }

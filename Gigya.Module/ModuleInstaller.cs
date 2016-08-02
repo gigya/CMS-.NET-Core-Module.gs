@@ -80,7 +80,10 @@ namespace Gigya.Module
             
             // register widgets
             restart = ModuleClass.RegisterControl("GigyaSettings", "Gigya Settings", typeof(GigyaSettingsController), "PageControls", ModuleClass.WidgetSectionName, "Telerik.Sitefinity.Mvc.Proxy.MvcControllerProxy") || restart;
-            restart = ModuleClass.RegisterControl("LoginStatus", "Gigya Login / Logout Button", typeof(GigyaLoginStatusController), "PageControls", ModuleClass.WidgetSectionName, "Gigya.Module.Mvc.Proxy.MvcControllerProxyNoCache") || restart;
+            restart = ModuleClass.RegisterControl("GigyaLogin", "Gigya Login", typeof(GigyaLoginController), "PageControls", ModuleClass.WidgetSectionName, "Gigya.Module.Mvc.Proxy.MvcControllerProxyNoCache") || restart;
+            restart = ModuleClass.RegisterControl("GigyaLogout", "Gigya Logout", typeof(GigyaLogoutController), "PageControls", ModuleClass.WidgetSectionName, "Gigya.Module.Mvc.Proxy.MvcControllerProxyNoCache") || restart;
+            restart = ModuleClass.RegisterControl("GigyaRegister", "Gigya Register", typeof(GigyaRegisterController), "PageControls", ModuleClass.WidgetSectionName, "Gigya.Module.Mvc.Proxy.MvcControllerProxyNoCache") || restart;
+            restart = ModuleClass.RegisterControl("GigyaEditProfile", "Gigya Edit Profile", typeof(GigyaEditProfileController), "PageControls", ModuleClass.WidgetSectionName, "Gigya.Module.Mvc.Proxy.MvcControllerProxyNoCache") || restart;
 
             if (restart)
             {

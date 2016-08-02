@@ -51,6 +51,8 @@ namespace Gigya.Module
 
             public class Designer
             {
+                public const string EmbeddedScreen = "Embedded";
+
                 public class SettingsWidget
                 {
                     public const string NothingToEditText = "SettingsWidgetNothingToEdit";
