@@ -66,12 +66,10 @@ var gigyaSitefinity = {
         },
         register: {
             screenSet: 'Default-RegistrationLogin',
-            mobileScreenSet: 'DefaultMobile-RegistrationLogin',
             startScreen: 'gigya-register-screen'
         },
         editProfile: {
             screenSet: 'Default-ProfileUpdate',
-            mobileScreenSet: 'DefaultMobile-ProfileUpdate',
             onAfterSubmit: function (eventObj) {
                 gigyaSitefinity.onProfileUpdated(eventObj);
             }

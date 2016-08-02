@@ -47,7 +47,7 @@ namespace Gigya.Module.Mvc.Controllers
                 Label = StringHelper.FirstNotNullOrEmpty(Label, "Register"),
                 ContainerId = ContainerId,
                 GeneratedContainerId = string.Concat("gigya-container-", Guid.NewGuid()),
-                MobileScreenSet = StringHelper.FirstNotNullOrEmpty(MobileScreenSet, "DefaultMobile-RegistrationLogin"),
+                MobileScreenSet = MobileScreenSet,
                 ScreenSet = StringHelper.FirstNotNullOrEmpty(ScreenSet, "Default-RegistrationLogin"),
                 StartScreen = StringHelper.FirstNotNullOrEmpty(StartScreen, "gigya-register-screen"),
                 LoggedInUrl = SitefinityUtils.GetPageUrl(LoggedInPage)

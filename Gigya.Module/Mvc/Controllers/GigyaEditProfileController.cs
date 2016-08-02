@@ -46,7 +46,7 @@ namespace Gigya.Module.Mvc.Controllers
                 Label = StringHelper.FirstNotNullOrEmpty(Label, "Edit Profile"),
                 ContainerId = ContainerId,
                 GeneratedContainerId = string.Concat("gigya-container-", Guid.NewGuid()),
-                MobileScreenSet = StringHelper.FirstNotNullOrEmpty(MobileScreenSet, "DefaultMobile-ProfileUpdate"),
+                MobileScreenSet = MobileScreenSet,
                 ScreenSet = StringHelper.FirstNotNullOrEmpty(ScreenSet, "Default-ProfileUpdate"),
                 StartScreen = StartScreen
             };
