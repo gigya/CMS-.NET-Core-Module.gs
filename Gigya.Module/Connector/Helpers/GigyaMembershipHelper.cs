@@ -149,7 +149,8 @@ namespace Gigya.Module.Connector.Helpers
                             _logger.Error(string.Format("Couldn't set Sitefinity profile value for [{0}] and gigya field [{1}].", field.CmsFieldName, field.GigyaFieldName), e);
                         }
 
-                        if (profile.GetValue(field.CmsFieldName) != gigyaValue)
+                        var profileValue = profile.GetValue(field.CmsFieldName);
+                        if (profileValue == null || profileValue.ToString() != gigyaValue.ToString())
                         {
                             _logger.Error(string.Format("Sitefinity field [{0}] type doesn't match Gigya field [{1}] type. You may need to add a conversion using EventHub.Subscribe<IMapGigyaFieldEvent>", field.CmsFieldName, field.GigyaFieldName));
                         }
