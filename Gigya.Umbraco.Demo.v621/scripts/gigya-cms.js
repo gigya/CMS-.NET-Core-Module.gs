@@ -80,7 +80,7 @@ var gigyaCms = {
     initGetAccountInfo: function () {
         gigya.accounts.getAccountInfo({ callback: gigyaCms.onGetAccountInfo });
     },
-    attachEvents: function(elems, eventName, eventHandler) {
+    attachEvents: function (elems, eventName, eventHandler) {
         for (var i = 0; i < elems.length; i++) {
             elems[i].addEventListener(eventName, eventHandler, false);
         }
@@ -172,7 +172,7 @@ var gigyaCms = {
 
         gigyaCms.initialized = true;
     },
-    initEmbeddedScreens: function() {
+    initEmbeddedScreens: function () {
         var embeddedScreens = document.getElementsByClassName('gigya-embedded-screen');
         for (var i = 0; i < embeddedScreens.length; i++) {
             var elem = embeddedScreens[i];
@@ -183,6 +183,10 @@ var gigyaCms = {
                 mobileScreenSet: elem.getAttribute('data-gigya-mobile-screen'),
                 startScreen: elem.getAttribute('data-gigya-start-screen')
             };
+
+            if (elem.getAttribute('data-update-profile')) {
+                settings.onAfterSubmit = gigyaCms.onProfileUpdated;
+            }
 
             gigyaCms.log('applying embedded screen with settings', settings);
 
@@ -245,7 +249,7 @@ var gigyaCms = {
         qwest.post(gigyaCms.baseUrl + 'login', data)
          .then(function (xhr, response) {
              gigyaCms.loggingIn = false;
-             
+
              if (response != null) {
                  switch (response.status) {
                      case gigyaCms.responseCodes.AlreadyLoggedIn:
@@ -287,7 +291,7 @@ var gigyaCms = {
              }
          });
     },
-    onLogoutTriggeredByUser: function(response) {
+    onLogoutTriggeredByUser: function (response) {
         gigyaCms.log('onLogout triggered by user');
         gigyaCms.logout(true);
     },
@@ -297,7 +301,7 @@ var gigyaCms = {
     },
     logout: function (redirectAfterLogout) {
         var data = { Id: gigyaCms.id };
-        
+
         qwest.post(gigyaCms.baseUrl + gigyaCms.logoutApiAction, data)
          .then(function (xhr, response) {
              if (response != null && response.status == gigyaCms.responseCodes.Success) {

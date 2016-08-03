@@ -198,6 +198,10 @@ var gigyaSitefinity = {
                 startScreen: elem.getAttribute('data-gigya-start-screen')
             };
 
+            if (elem.getAttribute('data-update-profile')) {
+                settings.onAfterSubmit = gigyaSitefinity.onProfileUpdated;
+            }
+
             gigyaSitefinity.log('applying embedded screen with settings', settings);
 
             gigya.accounts.showScreenSet(settings);
