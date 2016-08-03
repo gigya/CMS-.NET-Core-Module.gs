@@ -40,6 +40,20 @@ namespace Gigya.UnitTests.Selenium
             element.SendKeys(text);
             return element;
         }
+
+        public static IWebElement ClearWithBackspaceAndSendKeys(this IWebElement element, string text)
+        {
+            var value = element.GetAttribute("value");
+            element.SendKeys(Keys.End);
+
+            for (int i = 0; i < value.Length; i++)
+            {
+                element.SendKeys(Keys.Backspace);
+            }
+
+            element.SendKeys(text);
+            return element;
+        }
     }
 
 }

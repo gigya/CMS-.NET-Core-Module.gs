@@ -352,6 +352,7 @@ namespace Gigya.Module
 
         #region Private members & constants
         public const string Version = "Gigya.Sitefinity.1.0";
+        public const string AssemblyName = "Gigya.Module";
         public const string ModuleName = "Gigya Module";
         internal const string ModuleTitle = "Gigya Module";
         internal const string ModuleDescription = "This is a Custom Module which has been built to integrate with Gigya.";

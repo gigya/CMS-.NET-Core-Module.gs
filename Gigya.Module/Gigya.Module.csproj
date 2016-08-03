@@ -181,9 +181,9 @@
     <None Include="app.config" />
     <EmbeddedResource Include="Mvc\Views\GigyaSettings\Index.cshtml" />
     <EmbeddedResource Include="Mvc\Scripts\gigya-sitefinity.js" />
-    <Content Include="Mvc\Scripts\gigya-sitefinity.min.js">
+    <EmbeddedResource Include="Mvc\Scripts\gigya-sitefinity.min.js">
       <DependentUpon>gigya-sitefinity.js</DependentUpon>
-    </Content>
+    </EmbeddedResource>
     <Content Include="Mvc\Views\Web.config" />
     <EmbeddedResource Include="Mvc\Views\GigyaLoginStatus\Index.cshtml" />
     <EmbeddedResource Include="Mvc\Views\GigyaLoginStatus\DesignerView.Simple.json" />

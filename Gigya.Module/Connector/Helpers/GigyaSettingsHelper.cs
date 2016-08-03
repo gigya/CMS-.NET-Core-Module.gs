@@ -127,7 +127,7 @@ namespace Gigya.Module.Connector.Helpers
         protected override string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
         {
             var scriptName = settings.DebugMode ? "gigya-sitefinity.js" : "gigya-sitefinity.min.js";
-            var scriptPath = FileHelper.GetPath("~/Mvc/Scripts/" + scriptName, urlHelper.WidgetContent("Mvc/Scripts/" + scriptName));
+            var scriptPath = FileHelper.GetPath("~/Mvc/Scripts/" + scriptName, urlHelper.WidgetContent("Mvc/Scripts/" + scriptName, ModuleClass.AssemblyName));
 
             return scriptPath;
         }

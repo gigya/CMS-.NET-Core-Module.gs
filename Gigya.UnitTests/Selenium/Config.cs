@@ -19,5 +19,17 @@ namespace Gigya.UnitTests.Selenium
         public static readonly string AdminEmail = ConfigurationManager.AppSettings["SitefinityEmail"] ?? "admin@purestone.co.uk";
 
         public static readonly string LicensePath = ConfigurationManager.AppSettings["SitefinityLicensePath"];
+
+        public static readonly string Site1ApiKey = ConfigurationManager.AppSettings["Site1ApiKey"];
+        public static readonly string Site2ApiKey = ConfigurationManager.AppSettings["Site2ApiKey"];
+
+        public static readonly string Site1ApplicationKey = ConfigurationManager.AppSettings["Site1ApplicationKey"];
+        public static readonly string Site2ApplicationKey = ConfigurationManager.AppSettings["Site2ApplicationKey"];
+
+        public static readonly string Site1DataCenter = ConfigurationManager.AppSettings["Site1DataCenter"] ?? "EU";
+        public static readonly string Site2DataCenter = ConfigurationManager.AppSettings["Site2DataCenter"] ?? "EU";
+
+        public static readonly string Site1ApplicationSecret = ConfigurationManager.AppSettings["Site1ApplicationSecret"];
+        public static readonly string Site2ApplicationSecret = ConfigurationManager.AppSettings["Site2ApplicationSecret"];
     }
 }

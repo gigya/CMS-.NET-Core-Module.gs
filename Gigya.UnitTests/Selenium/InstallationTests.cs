@@ -41,7 +41,35 @@ namespace Gigya.UnitTests.Selenium
             SelectDb();
             EnterAdminDetails();
             SitefinityUtils.LoginToSitefinity(_driver, 300);
+            
             CreateHomepage();
+            AddGigyaSettings();
+
+
+        }
+
+        [TestMethod]
+        public void AddGigyaSettings()
+        {
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
+
+            var loginUsername = _driver.FindElement(By.Id("wrap_name"), 30); ;
+            if (loginUsername != null)
+            {
+                SitefinityUtils.LoginToSitefinity(_driver, 300);
+                _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
+            }
+
+            _driver.FindElementFromLabel("API Key", 20).ClearWithBackspaceAndSendKeys(Config.Site1ApiKey);
+            _driver.FindElementFromLabel("Application Key", 20).ClearWithBackspaceAndSendKeys(Config.Site1ApplicationKey);
+            _driver.FindElement(By.Id("edit-application-secret")).Click();
+            _driver.FindElementFromLabel("Application Secret", 20).ClearWithBackspaceAndSendKeys(Config.Site1ApplicationSecret);
+
+            _driver.FindElement(By.CssSelector("#data-center-wrapper select"), 20).SendKeys(Config.Site1DataCenter);
+            _driver.FindElement(By.ClassName("sfSave"), 5).Click();
+
+            var positiveMessage = _driver.FindElement(By.ClassName("sfMsgPositive"), 20);
+            Assert.IsNotNull(positiveMessage);
         }
         
         private void CreateHomepage()
@@ -68,8 +96,10 @@ namespace Gigya.UnitTests.Selenium
 
             var gigyaWidgets = _driver.FindElements(By.CssSelector(".sf_gigya.sfMvcIcn"));
 
-            DragGigyaWidget(headerPlaceholder, gigyaWidgets[0]);
-            DragGigyaWidget(headerPlaceholder, gigyaWidgets[1]);
+            foreach (var widget in gigyaWidgets)
+            {
+                DragGigyaWidget(headerPlaceholder, widget);
+            }
 
             Thread.Sleep(5000);
 
