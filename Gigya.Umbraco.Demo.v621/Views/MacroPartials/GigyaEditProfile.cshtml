@@ -20,7 +20,7 @@
     }
 
     var screenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "ScreenSet") ?? "Default-ProfileUpdate";
-    var mobileScreenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "MobileScreenSet") ?? "DefaultMobile-ProfileUpdate";
+    var mobileScreenSet = Utils.UmbracoMacroProperty(Model.MacroParameters, "MobileScreenSet");
     var startScreen = Utils.UmbracoMacroProperty(Model.MacroParameters, "StartScreen");
 
     var loginStatusModel = Members.GetCurrentLoginStatus();

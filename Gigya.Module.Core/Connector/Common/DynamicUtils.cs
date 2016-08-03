@@ -59,7 +59,7 @@ namespace Gigya.Module.Core.Connector.Common
                 }
 
                 var index = Convert.ToInt32(indexMatches.Groups[1].Value);
-                if (index >= list.Count())
+                if (index < 0 || index > list.Count())
                 {
                     return null;
                 }

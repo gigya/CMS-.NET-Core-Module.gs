@@ -9,7 +9,6 @@
 @{ 
     var loginStatusModel = Members.GetCurrentLoginStatus();
     var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Logout";
-    var greeting = Utils.UmbracoMacroProperty(Model.MacroParameters, "Greeting") ?? "Welcome";
     var designMode = Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor");
 }
 

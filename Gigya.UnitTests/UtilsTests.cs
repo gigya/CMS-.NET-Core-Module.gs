@@ -26,6 +26,10 @@ namespace Gigya.UnitTests
                             ""phone"": 4567
                         }
                     ],
+                    ""phoneNumbers2"": [
+                        ""0123456789"",
+                        ""1111111111""
+                    ]
               },
               ""phoneNumbers"": [
                     {
@@ -94,6 +98,22 @@ namespace Gigya.UnitTests
 
             Assert.IsNotNull(value, "Value not found");
             Assert.AreEqual(4567, value, "Value doesn't match");
+        }
+
+        [TestMethod]
+        public void CanGetNestedArrayPropertyFromDynamic2()
+        {
+            dynamic data = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(_json);
+
+            var value = DynamicUtils.GetValue<string>(data, "data.phoneNumbers2[1]");
+
+            Assert.IsNotNull(value, "Value not found");
+            Assert.AreEqual("1111111111", value, "Value doesn't match");
+
+            value = DynamicUtils.GetValue<string>(data, "data.phoneNumbers2[0]");
+
+            Assert.IsNotNull(value, "Value not found");
+            Assert.AreEqual("0123456789", value, "Value doesn't match");
         }
 
         [TestMethod]
