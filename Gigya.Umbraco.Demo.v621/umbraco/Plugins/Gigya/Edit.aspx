@@ -123,7 +123,7 @@
                     <input type="checkbox" id="debug-mode" name="DebugMode" ng-disabled="model.Inherited" ng-model="model.DebugMode" val-server="value" />
                 </umb:PropertyPanel>
 
-                <umb:PropertyPanel ID="PropertyPanel12" runat="server" Text="Enable RaaS">
+                <umb:PropertyPanel ID="PropertyPanel12" runat="server" Text="Enable Module">
                     <input type="checkbox" id="enable-raas" name="EnableRaas" ng-disabled="model.Inherited" ng-model="model.EnableRaas" val-server="value" />
                 </umb:PropertyPanel>
                 

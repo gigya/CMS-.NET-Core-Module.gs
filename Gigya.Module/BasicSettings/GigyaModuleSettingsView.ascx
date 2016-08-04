@@ -298,7 +298,7 @@
         </Choices>
     </sfFields:ChoiceField>
 
-    <sfFields:ChoiceField ID="EnableRaasField" Title="Enable RaaS" runat="server" DataFieldName="EnableRaas" CssClass="sfRadioList" DisplayMode="Write" RenderChoicesAs="SingleCheckBox">
+    <sfFields:ChoiceField ID="EnableRaasField" Title="Enable Module" runat="server" DataFieldName="EnableRaas" CssClass="sfRadioList" DisplayMode="Write" RenderChoicesAs="SingleCheckBox">
         <Choices>
             <sfFields:ChoiceItem Text="Yes" Value="1" />
         </Choices>

@@ -264,7 +264,14 @@ namespace Gigya.Module.BasicSettings
                 var testResponse = apiHelper.VerifySettings(mappedSettings, plainTextApplicationSecret);
                 if (testResponse.GetErrorCode() != 0)
                 {
-                    throw new InvalidOperationException("Error: " + testResponse.GetErrorMessage());
+                    var gigyaErrorDetail = testResponse.GetString("errorDetails", string.Empty);
+                    var message = string.Concat("Error: ", testResponse.GetErrorMessage());
+                    if (!string.IsNullOrEmpty(gigyaErrorDetail))
+                    {
+                        message = string.Concat(message, ". ", gigyaErrorDetail);
+                    }
+
+                    throw new InvalidOperationException(message);
                 }
                 
                 context.Add(settings);

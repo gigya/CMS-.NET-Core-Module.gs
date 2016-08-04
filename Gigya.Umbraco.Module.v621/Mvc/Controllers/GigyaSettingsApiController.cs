@@ -173,7 +173,14 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
             var testResponse = apiHelper.VerifySettings(mappedSettings, plainTextApplicationSecret);
             if (testResponse.GetErrorCode() != 0)
             {
-                response.Error = "Error: " + testResponse.GetErrorMessage();
+                var gigyaErrorDetail = testResponse.GetString("errorDetails", string.Empty);
+                var message = string.Concat("Error: ", testResponse.GetErrorMessage());
+                if (!string.IsNullOrEmpty(gigyaErrorDetail))
+                {
+                    message = string.Concat(message, ". ", gigyaErrorDetail);
+                }
+
+                response.Error = message;
                 return response;
             }
 
