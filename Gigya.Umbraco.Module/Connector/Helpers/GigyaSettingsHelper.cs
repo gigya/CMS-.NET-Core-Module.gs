@@ -101,7 +101,7 @@ namespace Gigya.Umbraco.Module.Helpers
 
         protected override IGigyaModuleSettings EmptySettings(object id)
         {
-            return new GigyaModuleSettings { Id = id, DebugMode = true };
+            return new GigyaModuleSettings { Id = id, DebugMode = true, EnableRaas = true };
         }
 
         protected override List<IGigyaModuleSettings> GetForSiteAndDefault(object id)

@@ -33,6 +33,8 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
     [PluginController("Gigya")]
     public class GigyaSettingsApiController : UmbracoAuthorizedApiController
     {
+        private Logger _logger = new Logger(new UmbracoLogger());
+
         /// <summary>
         /// Gets all the settings data required for the client.
         /// </summary>
@@ -149,7 +151,7 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
 
             if (string.IsNullOrEmpty(plainTextApplicationSecret) && Encryptor.IsConfigured && !string.IsNullOrEmpty(settings.ApplicationSecret))
             {
-                plainTextApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
+                plainTextApplicationSecret = TryDecryptApplicationSecret(settings.ApplicationSecret);
             }
 
             var mappedSettings = Map(settings);
@@ -188,6 +190,23 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
 
             response.Success = true;
             return response;
+        }
+
+        private string TryDecryptApplicationSecret(string secret, bool throwOnException = true)
+        {
+            try
+            {
+                return Encryptor.Decrypt(secret);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Couldn't decrypt application secret.", e);
+                if (throwOnException)
+                {
+                    throw new ArgumentException("Couldn't decrypt application secret. Please enter it again.");
+                }
+            }
+            return null;
         }
 
         private IGigyaModuleSettings Map(GigyaUmbracoModuleSettings settings)
@@ -248,7 +267,7 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
             // check if authorised to view application secret
             if (model.CanViewApplicationSecret && !string.IsNullOrEmpty(settings.ApplicationSecret) && Encryptor.IsConfigured)
             {
-                var key = Encryptor.Decrypt(settings.ApplicationSecret);
+                var key = TryDecryptApplicationSecret(settings.ApplicationSecret, false);
                 if (!string.IsNullOrEmpty(key))
                 {
                     model.ApplicationSecretMasked = StringHelper.MaskInput(key, "*", 2, 2);

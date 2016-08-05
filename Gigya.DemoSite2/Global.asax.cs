@@ -29,26 +29,30 @@ namespace SitefinityWebApp
 
         private void GigyaMembershipHelper_MapGigyaField(IMapGigyaFieldEvent @event)
         {
-            switch (@event.GigyaFieldName)
-            {
-                case "profile.country":
-                    {
-                        if (@event.GigyaValue != null)
-                        {
-                            var value = @event.GigyaValue.ToString();
-                            @event.GigyaValue = value == "United Kingdom" ? 826 : 0;
-                        }
-                    }
-                    return;
-            }
+            //switch (@event.GigyaFieldName)
+            //{
+            //    case "profile.country":
+            //        {
+            //            if (@event.GigyaValue != null)
+            //            {
+            //                var value = @event.GigyaValue.ToString();
+            //                @event.GigyaValue = value == "United Kingdom" ? 826 : 0;
+            //            }
+            //        }
+            //        return;
+            //}
 
             var profile = @event.GigyaModel.profile;
             switch (@event.SitefinityFieldName)
             {
-                case "BirthDate":
+                case "BirthOfDate":
                     if (@event.GigyaValue != null)
                     {
-                        @event.GigyaValue = new DateTime(Convert.ToInt32(profile.birthYear), Convert.ToInt32(profile.birthMonth), Convert.ToInt32(profile.birthDay));
+                        try
+                        {
+                            @event.GigyaValue = new DateTime(Convert.ToInt32(profile.birthYear), Convert.ToInt32(profile.birthMonth), Convert.ToInt32(profile.birthDay));
+                        }
+                        catch { }
                     }
                     return;
             }
