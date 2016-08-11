@@ -93,6 +93,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                                      .ToList();
 
                 response.Error = string.Join(" ", errorList);
+                _logger.Error(response.Error);
                 return response;
             }
 
@@ -139,6 +140,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                     if (!Encryptor.IsConfigured)
                     {
                         response.Error = "Encryption key not specified. Refer to installation guide.";
+                        _logger.Error(response.Error);
                         return response;
                     }
                     settings.ApplicationSecret = Encryptor.Encrypt(model.ApplicationSecret);
@@ -147,7 +149,13 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
 
             if (string.IsNullOrEmpty(plainTextApplicationSecret) && Encryptor.IsConfigured && !string.IsNullOrEmpty(settings.ApplicationSecret))
             {
-                plainTextApplicationSecret = TryDecryptApplicationSecret(settings.ApplicationSecret);
+                plainTextApplicationSecret = TryDecryptApplicationSecret(settings.ApplicationSecret, false);
+                if (string.IsNullOrEmpty(plainTextApplicationSecret))
+                {
+                    response.Error = "Application Secret could not be decrypted. Please re-enter it.";
+                    _logger.Error(response.Error);
+                    return response;
+                }
             }
 
             var mappedSettings = Map(settings);
@@ -160,19 +168,18 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             }
             catch (Exception e)
             {
+                _logger.Error(response.Error);
                 response.Error = e.Message;
                 return response;
             }
 
-            var logger = new Logger(new UmbracoLogger());
-
             // verify settings are correct
-            var apiHelper = new GigyaApiHelper(settingsHelper, logger);
+            var apiHelper = new GigyaApiHelper(settingsHelper, _logger);
             var testResponse = apiHelper.VerifySettings(mappedSettings, plainTextApplicationSecret);
             if (testResponse.GetErrorCode() != 0)
             {
                 var gigyaErrorDetail = testResponse.GetString("errorDetails", string.Empty);
-                var message = string.Concat("Error: ", testResponse.GetErrorMessage());
+                var message = testResponse.GetErrorMessage();
                 if (!string.IsNullOrEmpty(gigyaErrorDetail))
                 {
                     message = string.Concat(message, ". ", gigyaErrorDetail);

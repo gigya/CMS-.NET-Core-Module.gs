@@ -119,7 +119,7 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             if (string.IsNullOrEmpty(settings.ApplicationKey))
             {
-                throw new ArgumentException("API key is required");
+                throw new ArgumentException("Application key is required");
             }
 
             if (string.IsNullOrEmpty(settings.ApplicationSecret))

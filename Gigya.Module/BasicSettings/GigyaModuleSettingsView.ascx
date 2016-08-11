@@ -195,6 +195,7 @@
                 <sfFields:ChoiceItem Text="US" Value="us1" />
                 <sfFields:ChoiceItem Text="EU" Value="eu1" />
                 <sfFields:ChoiceItem Text="AU" Value="au1" />
+                <sfFields:ChoiceItem Text="RU" Value="ru1" />
                 <sfFields:ChoiceItem Text="Other" Value="" />
             </Choices>
         </sfFields:ChoiceField>
