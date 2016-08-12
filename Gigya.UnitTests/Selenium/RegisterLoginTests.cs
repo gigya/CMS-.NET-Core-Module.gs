@@ -45,7 +45,11 @@ namespace Gigya.UnitTests.Selenium
         public void SetupTest()
         {
             _driver = new FirefoxDriver();
+            _driver.Manage().Window.Maximize();
             _newEmail = string.Concat(Guid.NewGuid(), "@purestone.co.uk");
+
+            var installation = new UmbracoInstallationTests(_driver);
+            installation.SetupNewUmbracoSiteIfRequired();
         }
 
         [TestCleanup]
@@ -193,22 +197,34 @@ namespace Gigya.UnitTests.Selenium
         {
             var memberType = context.Services.MemberTypeService.Get("member");
             var textBoxDefinition = new DataTypeDefinition( -1, "text");
+            const int textStringId = -88;
+            const int numericId = -51;
             var numericDefinition = new DataTypeDefinition(-1, "numeric");
+            
+            var updated = false;
 
             if (!memberType.PropertyTypeExists("firstName"))
             {
-                memberType.AddPropertyType(new PropertyType(textBoxDefinition) { Alias = "firstName", Name = "First Name", Description = "", Mandatory = false, SortOrder = 1 }, "Membership");
+                var propertyType = new PropertyType(textBoxDefinition) { Alias = "firstName", DataTypeDefinitionId = textStringId, Name = "First Name", Description = "", Mandatory = false, SortOrder = 1 };
+
+                memberType.AddPropertyType(propertyType, "Membership");
+                updated = true;
             }
             if (!memberType.PropertyTypeExists("lastName"))
             {
-                memberType.AddPropertyType(new PropertyType(textBoxDefinition) { Alias = "lastName", Name = "Last Name", Description = "", Mandatory = false, SortOrder = 1 }, "Membership");
+                memberType.AddPropertyType(new PropertyType(textBoxDefinition) { Alias = "lastName", DataTypeDefinitionId = textStringId, Name = "Last Name", Description = "", Mandatory = false, SortOrder = 1 }, "Membership");
+                updated = true;
             }
             if (!memberType.PropertyTypeExists("age"))
             {
-                memberType.AddPropertyType(new PropertyType(numericDefinition) { Alias = "age", Name = "Age", Description = "", Mandatory = false, SortOrder = 1 }, "Membership");
+                memberType.AddPropertyType(new PropertyType(numericDefinition) { Alias = "age", DataTypeDefinitionId = numericId, Name = "Age", Description = "", Mandatory = false, SortOrder = 1 }, "Membership");
+                updated = true;
             }
 
-            context.Services.MemberTypeService.Save(memberType);
+            if (updated)
+            {
+                context.Services.MemberTypeService.Save(memberType);
+            }
         }
 
         [TestMethod]

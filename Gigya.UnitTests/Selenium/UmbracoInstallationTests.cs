@@ -14,11 +14,26 @@ namespace Gigya.UnitTests.Selenium
     public class UmbracoInstallationTests
     {
         private IWebDriver _driver;
-        
+
+        public UmbracoInstallationTests()
+        {
+
+        }
+
+        public UmbracoInstallationTests(IWebDriver driver)
+        {
+            _driver = driver;
+        }
+
         [TestInitialize]
         public void SetupTest()
         {
-            _driver = new FirefoxDriver();
+            if (_driver == null)
+            {
+                _driver = new FirefoxDriver();
+                _driver.Manage().Window.Maximize();
+            }
+            SetupNewUmbracoSiteIfRequired();
         }
 
         [TestCleanup]
@@ -33,16 +48,20 @@ namespace Gigya.UnitTests.Selenium
                 // Ignore errors if unable to close the browser
             }
         }
-
-        [TestMethod]
-        public void CanSetupNewUmbracoSite()
+        
+        public void SetupNewUmbracoSiteIfRequired()
         {
-            _driver.Navigate().GoToUrl(Config.Site1BaseURL);
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
 
-            CreateUser();
+            if (!CreateUser())
+            {
+                return;
+            }
+
+            // close upgrade notification if visible
+            _driver.FindElement(By.CssSelector(".alert-info .close"), 5).Click();
+
             InstallPackage();
-
-            //LoginToUmbraco();
             EnableGigyaForAdmin();
             AddGigyaSettingsToMaster();
             EnableMacrosOnHomepage();
@@ -72,6 +91,7 @@ namespace Gigya.UnitTests.Selenium
         {
             Thread.Sleep(5000);
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco#/developer/datatype/edit/1051");
+            _driver.SwitchTo().DefaultContent();
 
             _driver.FindElement(By.CssSelector(".uSky-templates-rows .preview-row .preview-col"), 10).Click();
             _driver.FindElement(By.CssSelector(".usky-grid-configuration .uSky-templates-column"), 10).Click();
@@ -83,10 +103,23 @@ namespace Gigya.UnitTests.Selenium
 
         private void AddMacroToHomepage(string macroName)
         {
+            Thread.Sleep(2000);
             _driver.FindElement(By.CssSelector(".cell-tools-add .iconBox"), 10).Click();
-            Thread.Sleep(1000);
-            _driver.FindElement(By.PartialLinkText("Macro"), 5).Click();
+            Thread.Sleep(500);
+
+            var macro = _driver.FindElement(By.PartialLinkText("Macro"), 5);
+
+            if (macro == null)
+            {
+                // try again...
+                _driver.FindElement(By.CssSelector(".cell-tools-add .iconBox"), 10).Click();
+                Thread.Sleep(500);
+                macro = _driver.FindElement(By.PartialLinkText("Macro"), 5);
+            }
+
+            macro.Click();
             var modal = _driver.FindElement(By.Name("insertMacroForm"), 5);
+            Thread.Sleep(2000);
 
             var select = modal.FindElement(By.TagName("select"));
             select.SendKeys(macroName);
@@ -94,12 +127,17 @@ namespace Gigya.UnitTests.Selenium
 
             Thread.Sleep(2000);
             modal.FindElement(By.ClassName("btn-primary")).Click();
-            Thread.Sleep(2000);
+            Thread.Sleep(5000);
         }
 
         private void AddMacrosToHomepage()
         {
-            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco#/content/content/edit/1063");
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco#/content");
+
+            Thread.Sleep(5000);
+
+            var tree = _driver.FindElement(By.Id("tree"), 5);
+            tree.FindElement(By.LinkText("Home")).Click();
 
             Thread.Sleep(5000);
 
@@ -200,7 +238,8 @@ namespace Gigya.UnitTests.Selenium
         private void EnableGigyaForAdmin()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco#/users/framed/%252Fumbraco%252Fusers%252FeditUser.aspx%253Fid%253D0");
-            _driver.FindElement(By.Id("right"), 10);
+            _driver.SwitchTo().DefaultContent();
+            _driver.FindElement(By.Id("right"), 30);
             _driver.SwitchTo().Frame("right");
 
             var gigyaSection = _driver.FindElementFromLabel("[gigya]", 10);
@@ -326,7 +365,16 @@ namespace Gigya.UnitTests.Selenium
 
             _driver.FindElement(By.Id("body_file1")).SendKeys(Config.UmbracoPackagePath);
             _driver.FindElement(By.Id("body_ButtonLoadPackage")).Click();
-            
+            Thread.Sleep(5000);
+
+            // check if package already installed
+            var alerts = _driver.FindElements(By.ClassName("alert-error"));
+            if (alerts.Count > 1)
+            {
+                // should only be one alert
+                return;
+            }
+
             // accept license
             _driver.FindElement(By.Id("body_acceptCheckbox"), 30).Click();
             _driver.FindElement(By.Id("body_ButtonInstall")).Click();
@@ -334,17 +382,25 @@ namespace Gigya.UnitTests.Selenium
             Thread.Sleep(60000);
         }
 
-        private void CreateUser()
+        private bool CreateUser()
         {
+            var newsletterField = _driver.FindElement(By.Id("subscribeToNewsLetter"), 5);
+            if (newsletterField == null)
+            {
+                return false;
+            }
+
             _driver.FindElement(By.Id("name"), 20).SendKeys(Config.AdminFirstName + " " + Config.AdminLastName);
             _driver.FindElement(By.Id("email"), 0).SendKeys(Config.AdminEmail);
             _driver.FindElement(By.Id("password"), 0).SendKeys(Config.AdminPassword);
-            _driver.FindElement(By.Id("subscribeToNewsLetter")).Click();
+            newsletterField.Click();
             Thread.Sleep(100);
             _driver.FindElement(By.CssSelector("input[type=\"submit\"]")).Click();
 
             var loginLogo = _driver.FindElement(By.ClassName("avatar"), 120);
             Assert.IsNotNull(loginLogo, "Umbraco dashboard not loaded.");
+
+            return true;
         }
     }
 
