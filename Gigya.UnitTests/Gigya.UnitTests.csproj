@@ -190,6 +190,8 @@
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
       <HintPath>..\packages\UmbracoCms.Core.7.2.2\lib\TidyNet.dll</HintPath>
       <Private>True</Private>
@@ -264,6 +266,7 @@
   <ItemGroup>
     <Compile Include="Encryption\EncryptionTests.cs" />
     <Compile Include="Selenium\Config.cs" />
+    <Compile Include="Selenium\UmbracoInstallationTests.cs" />
     <Compile Include="Selenium\InstallationTests.cs" />
     <Compile Include="Selenium\LanguageTests.cs" />
     <Compile Include="Selenium\RegisterLoginTests.cs" />

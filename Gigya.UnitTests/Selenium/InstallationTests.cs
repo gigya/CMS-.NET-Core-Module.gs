@@ -44,12 +44,9 @@ namespace Gigya.UnitTests.Selenium
             
             CreateHomepage();
             AddGigyaSettings();
-
-
         }
-
-        [TestMethod]
-        public void AddGigyaSettings()
+        
+        private void AddGigyaSettings()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
 

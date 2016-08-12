@@ -30,8 +30,14 @@ namespace Gigya.UnitTests.Selenium
 
         public static IWebElement FindElementFromLabel(this IWebDriver driver, string labelText, int timeout = 0)
         {
-            var label = driver.FindElement(By.XPath("//*[text() = '" + labelText + "']"), timeout);
+            var label = driver.FindLabel(labelText, timeout);
             return driver.FindElement(By.Id(label.GetAttribute("for")));
+        }
+
+        public static IWebElement FindLabel(this IWebDriver driver, string labelText, int timeout = 0)
+        {
+            var label = driver.FindElement(By.XPath("//*[translate(normalize-space(text()), ' ', '') = '" + labelText + "']"), timeout);
+            return label;
         }
 
         public static IWebElement ClearAndSendKeys(this IWebElement element, string text)

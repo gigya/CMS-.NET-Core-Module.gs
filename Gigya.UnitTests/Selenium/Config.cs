@@ -29,7 +29,13 @@ namespace Gigya.UnitTests.Selenium
         public static readonly string Site1DataCenter = ConfigurationManager.AppSettings["Site1DataCenter"] ?? "EU";
         public static readonly string Site2DataCenter = ConfigurationManager.AppSettings["Site2DataCenter"] ?? "EU";
 
+        public static readonly string Site1LangFallback = ConfigurationManager.AppSettings["Site1LangFallback"] ?? "English (default)";
+        public static readonly string Site2LangFallback = ConfigurationManager.AppSettings["Site2LangFallback"] ?? "English (default)";
+
         public static readonly string Site1ApplicationSecret = ConfigurationManager.AppSettings["Site1ApplicationSecret"];
         public static readonly string Site2ApplicationSecret = ConfigurationManager.AppSettings["Site2ApplicationSecret"];
+
+        public static readonly string UmbracoRootPath = ConfigurationManager.AppSettings["UmbracoRootPath"];
+        public static readonly string UmbracoPackagePath = ConfigurationManager.AppSettings["UmbracoPackagePath"];
     }
 }
