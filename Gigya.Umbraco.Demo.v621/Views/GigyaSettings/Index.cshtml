@@ -1,7 +1,7 @@
 ﻿@model Gigya.Module.Core.Mvc.Models.GigyaSettingsViewModel
 @using System.Web
 
-<script src="https://cdns.gigya.com/js/gigya.js?apiKey=@Model.ApiKey">
+<script src="https://cdns.@(Model.DataCenter).gigya.com/js/gigya.js?apiKey=@Model.ApiKey">
     @Html.Raw(Model.SettingsJson)
 </script>
 <script>

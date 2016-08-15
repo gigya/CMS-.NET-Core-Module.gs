@@ -384,7 +384,7 @@ namespace Gigya.UnitTests.Selenium
 
         private bool CreateUser()
         {
-            var newsletterField = _driver.FindElement(By.Id("subscribeToNewsLetter"), 5);
+            var newsletterField = _driver.FindElement(By.Id("subscribeToNewsLetter"), 2);
             if (newsletterField == null)
             {
                 return false;

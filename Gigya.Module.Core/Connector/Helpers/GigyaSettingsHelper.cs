@@ -70,7 +70,8 @@ namespace Gigya.Module.Core.Connector.Helpers
                 LoggedInRedirectUrl = settings.RedirectUrl,
                 LogoutUrl = settings.LogoutUrl,
                 IsLoggedIn = currentIdentity.IsAuthenticated,
-                Id = settings.Id
+                Id = settings.Id,
+                DataCenter = settings.DataCenter
             };
             
             model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<ExpandoObject>(settings.GlobalParameters) : new ExpandoObject();

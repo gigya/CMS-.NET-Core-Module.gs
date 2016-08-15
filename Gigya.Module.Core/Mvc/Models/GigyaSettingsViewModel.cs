@@ -10,6 +10,7 @@ namespace Gigya.Module.Core.Mvc.Models
     {
         public object Id { get; set; }
         public string ApiKey { get; set; }
+        public string DataCenter { get; set; }
         public dynamic Settings { get; set; }
         public string SettingsJson { get; set; }
         public bool DebugMode { get; set; }

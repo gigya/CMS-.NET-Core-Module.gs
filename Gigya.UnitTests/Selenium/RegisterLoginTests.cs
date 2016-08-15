@@ -17,6 +17,8 @@ using Umbraco.Core.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using Gigya.Module.Core.Connector.Models;
+using System.Xml;
+using System.IO;
 
 namespace Gigya.UnitTests.Selenium
 {
@@ -394,6 +396,132 @@ namespace Gigya.UnitTests.Selenium
             }
         }
 
+        [TestMethod]
+        public void IsUserLoggedInAfterUmbracoSessionExpired()
+        {
+            XmlDocument webConfigDoc = new XmlDocument();
+            webConfigDoc.Load(Path.Combine(Config.UmbracoRootPath, "web.config"));
+
+            // update session timeout in web.config
+            var sessionElem = webConfigDoc.SelectSingleNode("/configuration/system.web/sessionState");
+            if (sessionElem == null)
+            {
+                sessionElem = webConfigDoc.CreateElement("sessionState");
+                webConfigDoc.SelectSingleNode("/configuration/system.web").AppendChild(sessionElem);
+            }
+
+            var timeoutAttribute = sessionElem.Attributes["timeout"];
+            if (timeoutAttribute == null)
+            {
+                timeoutAttribute = webConfigDoc.CreateAttribute("timeout");
+                sessionElem.Attributes.Append(timeoutAttribute);
+            }
+
+            timeoutAttribute.Value = "1";
+
+            // update forms timeout in web.config
+            var formsElem = webConfigDoc.SelectSingleNode("/configuration/system.web/authentication/forms");
+            var formsTimeoutAttribute = formsElem.Attributes["timeout"];
+            if (formsTimeoutAttribute == null)
+            {
+                formsTimeoutAttribute = webConfigDoc.CreateAttribute("timeout");
+                formsElem.Attributes.Append(formsTimeoutAttribute);
+            }
+
+            formsTimeoutAttribute.Value = "1";
+            timeoutAttribute.Value = "1";
+
+            webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
+
+            var application = new ConsoleApplicationBase();
+            application.Start(application, new EventArgs());
+            var context = ApplicationContext.Current;
+            var db = context.DatabaseContext.Database;
+
+            var sql = "SELECT * FROM gigya_settings";
+            var settings = db.Fetch<GigyaUmbracoModuleSettings>(sql);
+            var currentGlobalSettings = settings.Select(i => i.GlobalParameters).ToList();
+
+            // update all to 80 seconds
+            foreach (var setting in settings)
+            {
+                setting.GlobalParameters = "{ \"sessionExpiration\": 500 }";
+                db.Save(setting);
+            }
+
+            var reset = false;
+
+            try
+            {
+                // test session expiration works now that we know all sites are using 10 second timeout
+                CanRegisterAndLoginToCms();
+
+                IsLoggedIntoSecondSiteAsWell();
+
+                _driver.Navigate().GoToUrl(Config.Site1BaseURL);
+
+                // wait for umbraco session to expire
+                Thread.Sleep(70000);
+
+                // refresh page and should now be logged out as umbraco session is set to 1 min
+                _driver.Navigate().Refresh();
+
+                // user should now be logged out
+                var loginButton = _driver.FindElement(By.ClassName("gigya-login"), 10);
+                Assert.IsNotNull(loginButton, "Login button not found. User should be logged out.");
+
+                Thread.Sleep(5000);
+
+                // refresh page and should now be logged in as gigya session timeout is more than umbraco
+                _driver.Navigate().Refresh();
+
+                var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+                Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
+                
+                ResetSettings(db, settings, currentGlobalSettings);
+
+                // reset
+                formsTimeoutAttribute.Value = "30";
+                timeoutAttribute.Value = "30";
+                webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
+
+                reset = true;
+            }
+            catch
+            {
+                if (!reset)
+                {
+                    ResetSettings(db, settings, currentGlobalSettings);
+
+                    // reset
+                    formsTimeoutAttribute.Value = "30";
+                    timeoutAttribute.Value = "30";
+                    webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
+                }
+                throw;
+            }
+        }
+
+        [TestMethod]
+        public void RemoveUmbracoCookieAndUserIsLoggedInAfterRefresh()
+        {
+            CanRegisterAndLoginToCms();
+
+            _driver.Manage().Cookies.DeleteCookieNamed("yourAuthCookie");
+
+            _driver.Navigate().Refresh();
+
+            // user should be logged out as cookie deleted
+            var loginButton = _driver.FindElement(By.ClassName("gigya-login"), 10);
+            Assert.IsNotNull(loginButton, "Login button not found. User should be logged out.");
+
+            Thread.Sleep(5000);
+
+            _driver.Navigate().Refresh();
+            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
+        }
+
         private void HasSessionExpired()
         {
             // reload page and should still be logged in
@@ -410,7 +538,7 @@ namespace Gigya.UnitTests.Selenium
             Assert.IsNull(logoutButton, "Still logged in after session timeout");
         }
 
-        private static void ResetSettings(UmbracoDatabase db, System.Collections.Generic.List<GigyaUmbracoModuleSettings> settings, System.Collections.Generic.List<string> currentGlobalSettings)
+        private static void ResetSettings(UmbracoDatabase db, List<GigyaUmbracoModuleSettings> settings, List<string> currentGlobalSettings)
         {
             // reset back to original values
             for (int i = 0; i < settings.Count; i++)
