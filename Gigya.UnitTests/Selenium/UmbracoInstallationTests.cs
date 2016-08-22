@@ -49,6 +49,7 @@ namespace Gigya.UnitTests.Selenium
             }
         }
         
+        [TestMethod]
         public void SetupNewUmbracoSiteIfRequired()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
@@ -58,8 +59,14 @@ namespace Gigya.UnitTests.Selenium
                 return;
             }
 
+            //LoginToUmbraco();
+
             // close upgrade notification if visible
-            _driver.FindElement(By.CssSelector(".alert-info .close"), 5).Click();
+            var alert = _driver.FindElement(By.CssSelector(".alert-info .close"), 5);
+            if (alert != null)
+            {
+                alert.Click();
+            }
 
             InstallPackage();
             EnableGigyaForAdmin();
@@ -227,7 +234,7 @@ namespace Gigya.UnitTests.Selenium
         private void LoginToUmbraco()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
-            _driver.FindElement(By.Name("username"), 10).SendKeys(Config.AdminEmail);
+            _driver.FindElement(By.Name("username"), 10).SendKeys(Config.AdminUsername);
             _driver.FindElement(By.Name("password"), 1).SendKeys(Config.AdminPassword);
             _driver.FindElement(By.CssSelector("button[type=\"submit\"]")).Click();
 
