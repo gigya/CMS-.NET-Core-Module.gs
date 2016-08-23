@@ -18,6 +18,12 @@ namespace Gigya.UnitTests.Selenium
         public static readonly string AdminLastName = ConfigurationManager.AppSettings["CmsLastName"] ?? "Admin";
         public static readonly string AdminEmail = ConfigurationManager.AppSettings["CmsEmail"] ?? "admin@purestone.co.uk";
 
+        public static readonly string NonAdminUsername = ConfigurationManager.AppSettings["CmsNonAdminUserName"] ?? "nonadmin";
+        public static readonly string NonAdminPassword = ConfigurationManager.AppSettings["CmsNonAdminPassword"] ?? "aa234567";
+        public static readonly string NonAdminFirstName = ConfigurationManager.AppSettings["CmsNonAdminFirstName"] ?? "Non";
+        public static readonly string NonAdminLastName = ConfigurationManager.AppSettings["CmsNonAdminLastName"] ?? "Admin";
+        public static readonly string NonAdminEmail = ConfigurationManager.AppSettings["CmsNonAdminEmail"] ?? "nonadmin@purestone.co.uk";
+
         public static readonly string LicensePath = ConfigurationManager.AppSettings["SitefinityLicensePath"];
 
         public static readonly string Site1ApiKey = ConfigurationManager.AppSettings["Site1ApiKey"];

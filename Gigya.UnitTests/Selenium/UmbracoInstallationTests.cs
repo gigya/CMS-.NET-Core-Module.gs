@@ -7,6 +7,10 @@ using System.Threading;
 using OpenQA.Selenium.Interactions;
 using System.Xml;
 using System.Xml.Linq;
+using Gigya.UnitTests.Umbraco;
+using Umbraco.Core;
+using umbraco.BusinessLogic;
+using System.Text.RegularExpressions;
 
 namespace Gigya.UnitTests.Selenium
 {
@@ -54,12 +58,12 @@ namespace Gigya.UnitTests.Selenium
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
 
-            if (!CreateUser())
-            {
-                return;
-            }
+            //if (!CreateUser())
+            //{
+            //    return;
+            //}
 
-            //LoginToUmbraco();
+            LoginToUmbraco(Config.AdminUsername, Config.AdminPassword);
 
             // close upgrade notification if visible
             var alert = _driver.FindElement(By.CssSelector(".alert-info .close"), 5);
@@ -68,14 +72,34 @@ namespace Gigya.UnitTests.Selenium
                 alert.Click();
             }
 
-            InstallPackage();
-            EnableGigyaForAdmin();
-            AddGigyaSettingsToMaster();
-            EnableMacrosOnHomepage();
-            AddMacrosToHomepage();
-            CopyHomepage();
-            AddEncryptionKey();
+            //InstallPackage();
+            //EnableGigyaForAdmin();
+            //AddGigyaSettingsToMaster();
+            //EnableMacrosOnHomepage();
+            //AddMacrosToHomepage();
+            //CopyHomepage();
+            //AddEncryptionKey();
             EnterAllGigyaSettings();
+        }
+
+        [TestMethod]
+        public void IsApplicationSecretHiddenForNonAdmin()
+        {
+            // create non admin user if required
+            if (!LoginToUmbraco(Config.NonAdminUsername, Config.NonAdminPassword, false))
+            {
+                Assert.Fail(string.Format("Could not login to Umbraco with a non admin user with username: {0} and password: {1}. Please create a new non admin user with these credentials and enable the Gigya section.", Config.NonAdminUsername, Config.NonAdminPassword));
+            }
+
+            // navigate to gigya settings and shouldn't see application secret field
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco#/gigya/gigyaTree/edit/-1");
+            _driver.Navigate().Refresh();
+
+            var apiKeyField = _driver.FindElement(By.Id("api-key"), 10);
+            Assert.IsNotNull(apiKeyField, "Application key field should be visible.");
+
+            var applicationSecret = _driver.FindElement(By.Id("application-secret"), 2);
+            Assert.IsNull(applicationSecret, "Application secret should not be visible.");
         }
 
         private void AddGigyaSettingsToMaster()
@@ -231,15 +255,31 @@ namespace Gigya.UnitTests.Selenium
             }
         }
 
-        private void LoginToUmbraco()
+        private bool LoginToUmbraco(string userName, string password, bool throwOnError = true)
         {
+            if (string.IsNullOrEmpty(userName))
+            {
+                userName = Config.AdminUsername;
+            }
+
+            if (string.IsNullOrEmpty(password))
+            {
+                password = Config.AdminPassword;
+            }
+
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
-            _driver.FindElement(By.Name("username"), 10).SendKeys(Config.AdminUsername);
-            _driver.FindElement(By.Name("password"), 1).SendKeys(Config.AdminPassword);
+            _driver.FindElement(By.Name("username"), 10).SendKeys(userName);
+            _driver.FindElement(By.Name("password"), 1).SendKeys(password);
             _driver.FindElement(By.CssSelector("button[type=\"submit\"]")).Click();
 
             var loginLogo = _driver.FindElement(By.ClassName("avatar"), 30);
-            Assert.IsNotNull(loginLogo, "Umbraco dashboard not loaded.");
+
+            if (loginLogo == null && throwOnError)
+            {
+                Assert.IsNotNull(loginLogo, "Umbraco dashboard not loaded.");
+            }
+
+            return loginLogo != null;
         }
 
         private void EnableGigyaForAdmin()
@@ -325,12 +365,12 @@ namespace Gigya.UnitTests.Selenium
         {
             _driver.FindElement(By.Id("api-key"), 10).ClearAndSendKeys(settings.ApiKey);
             _driver.FindElement(By.Id("application-key")).ClearAndSendKeys(settings.ApplicationKey);
-
+            IWebElement applicationSecretLabel = null;
 
             var applicationSecret = _driver.FindElement(By.Id("application-secret"), 2);
             if (applicationSecret == null || !applicationSecret.Displayed)
             {
-                var applicationSecretLabel = _driver.FindElement(By.XPath("//label[@for='application-secret']"));
+                applicationSecretLabel = _driver.FindElement(By.XPath("//label[@for='application-secret']"));
                 var buttons = applicationSecretLabel.FindElement(By.XPath("..")).FindElements(By.TagName("button"));
                 foreach (var button in buttons)
                 {
@@ -354,6 +394,15 @@ namespace Gigya.UnitTests.Selenium
 
             // wait for speech bubble to hide
             Thread.Sleep(7000);
+
+            // refresh and make sure application secret is masked
+            _driver.Navigate().Refresh();
+
+            applicationSecretLabel = _driver.FindElement(By.XPath("//label[@for='application-secret']"), 10);
+            var applicationSecretValue = applicationSecretLabel.FindElement(By.XPath("..")).FindElement(By.CssSelector("span")).Text;
+            var nonEncryptedValues = applicationSecretValue.Replace("*", string.Empty);
+
+            Assert.AreEqual(nonEncryptedValues.Length, 4, "Should only be 4 non encrypted values.");
         }
 
         private void InstallPackage()
