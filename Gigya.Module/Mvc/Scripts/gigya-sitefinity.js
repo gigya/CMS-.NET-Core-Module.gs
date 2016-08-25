@@ -84,6 +84,11 @@ var gigyaSitefinity = {
         }
     },
     applyConfig: function () {
+        gigya.accounts.addEventHandlers({
+            onLogin: gigyaSitefinity.onLogin,
+            onLogout: gigyaSitefinity.onLogout
+        });
+
         if (window.gigyaConfig.errorMessage && window.gigyaConfig.errorMessage.length > 0) {
             gigyaSitefinity.genericErrorMessage = window.gigyaConfig.errorMessage;
         }
@@ -159,11 +164,6 @@ var gigyaSitefinity = {
             gigyaSitefinity.showScreenSet(gigyaSitefinity.screenSetSettings.editProfile, event);
             event.preventDefault();
             return false;
-        });
-
-        gigya.accounts.addEventHandlers({
-            onLogin: gigyaSitefinity.onLogin,
-            onLogout: gigyaSitefinity.onLogout
         });
 
         gigyaSitefinity.initEmbeddedScreens();
@@ -242,9 +242,11 @@ var gigyaSitefinity = {
          });
     },
     onLogin: function (eventObj) {
+        gigyaSitefinity.loginEventFired = true;
         gigyaSitefinity.log('onLogin', eventObj);
         gigyaSitefinity.login(eventObj, true);
     },
+    loginEventFired: false,
     loggingIn: false,
     login: function (eventObj, redirectAfterLogin) {
         if (gigyaSitefinity.loggingIn) {
@@ -268,15 +270,14 @@ var gigyaSitefinity = {
                  switch (response.status) {
                      case gigyaSitefinity.responseCodes.AlreadyLoggedIn:
                          gigyaSitefinity.authenticated = true;
-                         if (redirectAfterLogin === true && gigyaSitefinity.authenticatedOnServerByCurrentPage) {
+                         if ((redirectAfterLogin === true && gigyaSitefinity.authenticatedOnServerByCurrentPage) || gigyaSitefinity.loginEventFired) {
                              gigyaSitefinity.redirectAfterLogin(response.redirectUrl);
                          }
-                         gigyaSitefinity.authenticatedOnServerByCurrentPage = true;
                          return;
                      case gigyaSitefinity.responseCodes.Success:
                          gigyaSitefinity.authenticated = true;
                          gigyaSitefinity.authenticatedOnServerByCurrentPage = true;
-                         if (redirectAfterLogin === true) {
+                         if (redirectAfterLogin === true || gigyaSitefinity.loginEventFired) {
                              gigyaSitefinity.redirectAfterLogin(response.redirectUrl);
                          }
                          return;
@@ -286,7 +287,6 @@ var gigyaSitefinity = {
                          gigyaSitefinity.handleError(response.errorMessage);
                          return;
                  }
-
              } else {
                  // failed to login to CMS so logout of Gigya
                  gigyaSitefinity.log('logout');
@@ -297,7 +297,14 @@ var gigyaSitefinity = {
          .catch(function (e, xhr, response) {
              // Process the error
              gigyaSitefinity.loggingIn = false;
-             gigyaSitefinity.log('login error');
+
+             var error = {
+                 e: e,
+                 xhr: xhr,
+                 response: response
+             };
+
+             gigyaSitefinity.log('login error', error);
              gigya.accounts.logout();
 
              if (xhr.status === 500) {
@@ -337,6 +344,6 @@ var gigyaSitefinity = {
 gigyaSitefinity.applyConfig();
 gigyaSitefinity.initGetAccountInfo();
 
-onDomReady(function () {
+onDomReady(function () {    
     gigyaSitefinity.init();
 });

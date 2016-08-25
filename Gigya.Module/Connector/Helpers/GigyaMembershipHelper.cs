@@ -350,7 +350,7 @@ namespace Gigya.Module.Connector.Helpers
             }
 
             // user logged into Gigya so now needs to be logged into Sitefinity
-            var authenticated = AuthenticateUser(username, settings, userExists, gigyaModel, mappingFields);
+            var authenticated = AuthenticateUser(settings, userExists, gigyaModel, mappingFields);
             response.Status = authenticated ? ResponseStatus.Success : ResponseStatus.Error;
             if (authenticated)
             {
@@ -419,8 +419,9 @@ namespace Gigya.Module.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Sitefinity.
         /// </summary>
-        protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected virtual bool AuthenticateUser(IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
+            string username = gigyaModel.UID;
             User user;
 
             var loginStatus = AuthenticateWithRetry(username, 0, 2, out user);
