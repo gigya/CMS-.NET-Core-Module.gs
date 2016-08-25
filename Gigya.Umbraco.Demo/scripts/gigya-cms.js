@@ -86,6 +86,11 @@ var gigyaCms = {
         }
     },
     applyConfig: function () {
+        gigya.accounts.addEventHandlers({
+            onLogin: gigyaCms.onLogin,
+            onLogout: gigyaCms.onLogout
+        });
+
         if (window.gigyaConfig.errorMessage && window.gigyaConfig.errorMessage.length > 0) {
             gigyaCms.genericErrorMessage = window.gigyaConfig.errorMessage;
         }
@@ -163,11 +168,6 @@ var gigyaCms = {
             return false;
         });
 
-        gigya.accounts.addEventHandlers({
-            onLogin: gigyaCms.onLogin,
-            onLogout: gigyaCms.onLogout
-        });
-
         gigyaCms.initEmbeddedScreens();
 
         gigyaCms.initialized = true;
@@ -223,14 +223,16 @@ var gigyaCms = {
                  gigyaCms.handleError(response.errorMessage);
              }
          })
-         .catch(function (e, xhr, response) {
+        .catch(function (e, xhr, response) {
              gigyaCms.handleError();
          });
     },
     onLogin: function (eventObj) {
+        gigyaCms.loginEventFired = true;
         gigyaCms.log('onLogin', eventObj);
         gigyaCms.login(eventObj, true);
     },
+    loginEventFired: false,
     loggingIn: false,
     login: function (eventObj, redirectAfterLogin) {
         if (gigyaCms.loggingIn) {
@@ -254,15 +256,14 @@ var gigyaCms = {
                  switch (response.status) {
                      case gigyaCms.responseCodes.AlreadyLoggedIn:
                          gigyaCms.authenticated = true;
-                         if (redirectAfterLogin === true && gigyaCms.authenticatedOnServerByCurrentPage) {
+                         if ((redirectAfterLogin === true && gigyaCms.authenticatedOnServerByCurrentPage) || gigyaCms.loginEventFired) {
                              gigyaCms.redirectAfterLogin(response.redirectUrl);
                          }
-                         gigyaCms.authenticatedOnServerByCurrentPage = true;
                          return;
                      case gigyaCms.responseCodes.Success:
                          gigyaCms.authenticated = true;
                          gigyaCms.authenticatedOnServerByCurrentPage = true;
-                         if (redirectAfterLogin === true) {
+                         if (redirectAfterLogin === true || gigyaCms.loginEventFired) {
                              gigyaCms.redirectAfterLogin(response.redirectUrl);
                          }
                          return;
@@ -280,16 +281,15 @@ var gigyaCms = {
                  gigyaCms.handleError(response.errorMessage);
              }
          })
-         .catch(function (e, xhr, response) {
-             // Process the error
-             gigyaCms.loggingIn = false;
-             gigyaCms.log('login error');
-             gigya.accounts.logout();
+        .catch(function (e, xhr, response) {
+            gigyaCms.loggingIn = false;
+            gigyaCms.log('login error');
+            gigya.accounts.logout();
 
-             if (xhr.status === 500) {
-                 gigyaCms.handleError();
-             }
-         });
+            if (xhr.status === 500) {
+                gigyaCms.handleError();
+            }
+        });
     },
     onLogoutTriggeredByUser: function (response) {
         gigyaCms.log('onLogout triggered by user');

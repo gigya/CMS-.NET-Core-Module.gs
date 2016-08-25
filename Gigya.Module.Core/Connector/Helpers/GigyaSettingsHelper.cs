@@ -66,7 +66,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 ApiKey = settings.ApiKey,
                 DebugMode = settings.DebugMode,
-                GigyaScriptPath = UrlUtils.AddQueryStringParam(_pathUtilities.ToAbsolute(ClientScriptPath(settings, urlHelper)), "v=" + CmsVersion),
+                GigyaScriptPath = UrlUtils.AddQueryStringParam(_pathUtilities.ToAbsolute(ClientScriptPath(settings, urlHelper)), "v=" + CmsVersion + ModuleVersion),
                 LoggedInRedirectUrl = settings.RedirectUrl,
                 LogoutUrl = settings.LogoutUrl,
                 IsLoggedIn = currentIdentity.IsAuthenticated,

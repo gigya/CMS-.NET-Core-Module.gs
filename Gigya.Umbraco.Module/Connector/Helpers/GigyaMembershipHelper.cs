@@ -276,7 +276,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
 
             // user logged into Gigya so now needs to be logged into Umbraco
-            var authenticated = AuthenticateUser(username, settings, userExists, gigyaModel, mappingFields);
+            var authenticated = AuthenticateUser(settings, userExists, gigyaModel, mappingFields);
             response.Status = authenticated ? ResponseStatus.Success : ResponseStatus.Error;
             if (authenticated)
             {
@@ -345,8 +345,9 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Umbraco.
         /// </summary>
-        protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected virtual bool AuthenticateUser(IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
+            var username = gigyaModel.UID;
             FormsAuthentication.SetAuthCookie(username, false);
 
             if (settings.DebugMode)
