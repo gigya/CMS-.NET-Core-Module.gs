@@ -32,6 +32,13 @@ namespace Gigya.Module.Core.Mvc.Controllers
         public virtual ActionResult EditProfile(LoginModel model)
         {
             var response = new LoginResponseModel();
+            var currentIdentity = GetCurrentIdentity();
+            if (!currentIdentity.IsAuthenticated)
+            {
+                // not logged in
+                return JsonNetResult(response);
+            }
+
             var id = model != null ? model.Id : null;
             var settings = SettingsHelper.Get(id, true);
 
