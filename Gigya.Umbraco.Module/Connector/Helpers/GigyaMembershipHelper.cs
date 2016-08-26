@@ -40,7 +40,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="userId">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected void MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var user = memberService.GetByUsername(currentUsername);
@@ -63,11 +63,14 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             try
             {
                 memberService.Save(user);
+                return true;
             }
             catch (Exception e)
             {
                 _logger.Error("Failed to update profile for user: " + currentUsername, e);
             }
+
+            return false;
         }
 
         /// <summary>
@@ -310,14 +313,17 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             ThrowTestingExceptionIfRequired(settings, userInfo);
 
             string username = GetUmbracoUsername(mappingFields, userInfo);
-            MapProfileFieldsAndUpdate(currentUserName, username, settings, userInfo, mappingFields);
-            response.RedirectUrl = settings.RedirectUrl;
-            response.Status = ResponseStatus.Success;
-
-            if (currentUserName != username)
+            var success = MapProfileFieldsAndUpdate(currentUserName, username, settings, userInfo, mappingFields);
+            if (success)
             {
-                // user has updated their username (probably an email) so we need to update the auth cookie to reflect it
-                FormsAuthentication.SetAuthCookie(username, false);
+                response.RedirectUrl = settings.RedirectUrl;
+                response.Status = ResponseStatus.Success;
+
+                if (currentUserName != username)
+                {
+                    // user has updated their username (probably an email) so we need to update the auth cookie to reflect it
+                    FormsAuthentication.SetAuthCookie(username, false);
+                }
             }
         }
 

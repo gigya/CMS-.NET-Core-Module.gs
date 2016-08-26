@@ -17,6 +17,8 @@ using U = Umbraco;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using System.Web.Security;
+using Gigya.Socialize.SDK;
+using System.Web;
 
 namespace Gigya.Umbraco.Module.v621.Connector.Helpers
 {
@@ -38,10 +40,10 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// <param name="userId">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected void MapProfileFieldsAndUpdate(string userId, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
-            var user = memberService.GetByUsername(userId);
+            var user = memberService.GetByUsername(currentUsername);
 
             var email = GetGigyaFieldFromCmsAlias(gigyaModel, Constants.CmsFields.Email, null, mappingFields);
             if (string.IsNullOrEmpty(email))
@@ -50,17 +52,25 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             }
             user.Email = email;
 
+            if (user.Username != updatedUsername)
+            {
+                user.Username = updatedUsername;
+            }
+
             // map any custom fields
             MapProfileFields(user, gigyaModel, settings, mappingFields);
 
             try
             {
                 memberService.Save(user);
+                return true;
             }
             catch (Exception e)
             {
-                _logger.Error("Failed to update profile for userId: " + userId, e);
+                _logger.Error("Failed to update profile for userId: " + currentUsername, e);
             }
+
+            return false;
         }
 
         /// <summary>
@@ -284,13 +294,52 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// </summary>
         public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
         {
+            var userInfoResponse = ValidateRequest(model, settings);
+            if (userInfoResponse == null)
+            {
+                return;
+            }
+
+            var currentUserName = HttpContext.Current.User.Identity.Name;
+
+            List<MappingField> mappingFields = GetMappingFields(settings);
+
+            dynamic userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
+            ThrowTestingExceptionIfRequired(settings, userInfo);
+
+            string username = GetUmbracoUsername(mappingFields, userInfo);
+            var success = MapProfileFieldsAndUpdate(currentUserName, username, settings, userInfo, mappingFields);
+            if (success)
+            {
+                response.RedirectUrl = settings.RedirectUrl;
+                response.Status = ResponseStatus.Success;
+                
+                if (currentUserName != username)
+                {
+                    // user has updated their username (probably an email) so we need to update the auth cookie to reflect it
+                    FormsAuthentication.SetAuthCookie(username, false);
+                }
+            }
+        }
+
+        protected GSResponse ValidateRequest(LoginModel model, IGigyaModuleSettings settings)
+        {
             if (!settings.EnableRaas)
             {
                 if (settings.DebugMode)
                 {
                     _logger.Debug("RaaS not enabled so login aborted.");
                 }
-                return;
+                return null;
+            }
+
+            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
+            {
+                if (settings.DebugMode)
+                {
+                    _logger.Debug("Invalid user signature for login request.");
+                }
+                return null;
             }
 
             var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
@@ -300,18 +349,10 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
                 {
                     _logger.Error("Failed to getAccountInfo");
                 }
-                return;
+                return null;
             }
 
-            List<MappingField> mappingFields = GetMappingFields(settings);
-
-            dynamic userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
-            ThrowTestingExceptionIfRequired(settings, userInfo);
-
-            string username = GetUmbracoUsername(mappingFields, userInfo);
-            MapProfileFieldsAndUpdate(username, settings, userInfo, mappingFields);
-            response.RedirectUrl = settings.RedirectUrl;
-            response.Status = ResponseStatus.Success;
+            return userInfoResponse;
         }
 
         private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
@@ -351,7 +392,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
 
             if (updateProfile)
             {
-                MapProfileFieldsAndUpdate(username, settings, gigyaModel, mappingFields);
+                MapProfileFieldsAndUpdate(username, username, settings, gigyaModel, mappingFields);
             }
             return true;
         }

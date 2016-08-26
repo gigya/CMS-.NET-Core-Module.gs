@@ -18,6 +18,8 @@ using Gigya.Module.Core.Data;
 using Gigya.Module.Core.Mvc.Models;
 using Gigya.Module.Core.Connector.Common;
 using Gigya.Module.Core.Connector.Models;
+using Gigya.Socialize.SDK;
+using Telerik.Sitefinity.Security.Claims;
 
 namespace Gigya.Module.Connector.Helpers
 {
@@ -38,15 +40,20 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="username">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected virtual void MapProfileFieldsAndUpdate(string username, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected virtual bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             UserProfileManager profileManager = UserProfileManager.GetManager();
             UserManager userManager = UserManager.GetManager();
 
             using (new ElevatedModeRegion(userManager))
             {
-                var user = userManager.GetUser(username);
+                var user = userManager.GetUser(currentUsername);
                 user.Email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
+
+                if (user.UserName != updatedUsername)
+                {
+                    user.SetUserName(updatedUsername);
+                }
 
                 SitefinityProfile profile = profileManager.GetUserProfile<SitefinityProfile>(user);
                 
@@ -65,12 +72,15 @@ namespace Gigya.Module.Connector.Helpers
                 {
                     userManager.SaveChanges();
                     profileManager.SaveChanges();
+                    return true;
                 }
                 catch(Exception e)
                 {
-                    _logger.Error("Failed to update profile for userId: " + username, e);
+                    _logger.Error("Failed to update profile for userId: " + currentUsername, e);
                 }
             }
+
+            return false;
         }
 
         /// <summary>
@@ -363,13 +373,52 @@ namespace Gigya.Module.Connector.Helpers
         /// </summary>
         public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
         {
+            var userInfoResponse = ValidateRequest(model, settings);
+            if (userInfoResponse == null)
+            {
+                return;
+            }
+
+            var currentIdentity = ClaimsManager.GetCurrentIdentity();
+            var currentUsername = currentIdentity.Name;
+
+            List<MappingField> mappingFields = GetMappingFields(settings);
+
+            dynamic userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
+            ThrowTestingExceptionIfRequired(settings, userInfo);
+
+			string username = GetCmsUsername(mappingFields, userInfo);
+            var success = MapProfileFieldsAndUpdate(currentUsername, username, settings, userInfo, mappingFields);
+            if (success)
+            {
+                response.RedirectUrl = settings.RedirectUrl;
+                response.Status = ResponseStatus.Success;
+
+                if (currentUsername != username)
+                {
+                    AuthenticateUser(username, settings, false, userInfo, mappingFields);
+                }
+            }
+        }
+
+        protected GSResponse ValidateRequest(LoginModel model, IGigyaModuleSettings settings)
+        {
             if (!settings.EnableRaas)
             {
                 if (settings.DebugMode)
                 {
                     _logger.Debug("RaaS not enabled so login aborted.");
                 }
-                return;
+                return null;
+            }
+
+            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
+            {
+                if (settings.DebugMode)
+                {
+                    _logger.Debug("Invalid user signature for login request.");
+                }
+                return null;
             }
 
             var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
@@ -379,21 +428,13 @@ namespace Gigya.Module.Connector.Helpers
                 {
                     _logger.Error("Failed to getAccountInfo");
                 }
-                return;
+                return null;
             }
 
-			List<MappingField> mappingFields = GetMappingFields(settings);
-
-            dynamic userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
-            ThrowTestingExceptionIfRequired(settings, userInfo);
-
-			string username = GetCmsUsername(mappingFields, userInfo);
-            MapProfileFieldsAndUpdate(username, settings, userInfo, mappingFields);
-            response.RedirectUrl = settings.RedirectUrl;
-            response.Status = ResponseStatus.Success;
+            return userInfoResponse;
         }
 
-		private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
+        private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
         {
             return !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
         }
@@ -434,7 +475,7 @@ namespace Gigya.Module.Connector.Helpers
 
                     if (updateProfile)
                     {
-                        MapProfileFieldsAndUpdate(username, settings, gigyaModel, mappingFields);
+                        MapProfileFieldsAndUpdate(username, username, settings, gigyaModel, mappingFields);
                     }
                     return true;
                 default:
