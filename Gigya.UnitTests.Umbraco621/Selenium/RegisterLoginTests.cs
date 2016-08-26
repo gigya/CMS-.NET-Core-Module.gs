@@ -67,7 +67,11 @@ namespace Gigya.UnitTests.Selenium
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
             // wait the usual 3 mins for sitefinity to start up....
-            _driver.FindElement(By.CssSelector(".gigya-register"), 180).Click();
+            var button = _driver.FindElement(By.CssSelector(".gigya-register"), 10);
+            if (button != null)
+            {
+                button.Click();
+            }
             
             var dialog = _driver.FindElement(By.Id("gigya-register-screen"), 2);
             dialog.FindElement(By.Name("email")).SendKeys(_newEmail);
@@ -111,13 +115,13 @@ namespace Gigya.UnitTests.Selenium
             _driver.FindElement(By.CssSelector(".gigya-logout")).Click();
 
             // make sure register button is displayed which indicates that the user is logged out
-            Assert.IsNotNull(_driver.FindElement(By.CssSelector(".gigya-register"), 5), "Register button not displayed. User may still be logged in or another error occurred.");
+            Assert.IsNotNull(_driver.FindElement(By.CssSelector(".gigya-register, #gigya-register-screen"), 5), "Register button not displayed. User may still be logged in or another error occurred.");
 
             // make sure user logged out of second site as well
             _driver.Navigate().GoToUrl(Config.Site2BaseURL);
             
             // make sure register button is displayed which indicates that the user is logged out
-            Assert.IsNotNull(_driver.FindElement(By.CssSelector(".gigya-register"), 5), "Register button not displayed. User may still be logged in to second site or another error occurred.");
+            Assert.IsNotNull(_driver.FindElement(By.CssSelector(".gigya-register, #gigya-register-screen"), 5), "Register button not displayed. User may still be logged in to second site or another error occurred.");
         }
         
         public void CanLoginToFrontEnd621()
@@ -125,7 +129,11 @@ namespace Gigya.UnitTests.Selenium
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
             // wait the usual 3 mins for sitefinity to start up....
-            _driver.FindElement(By.CssSelector(".gigya-login"), 180).Click();
+            var button = _driver.FindElement(By.CssSelector(".gigya-login"), 10);
+            if (button != null)
+            {
+                button.Click();
+            }
 
             var dialog = _driver.FindElement(By.Id("gigya-login-screen"), 5);
             dialog.FindElement(By.Name("username")).SendKeys(_newEmail);
@@ -170,8 +178,12 @@ namespace Gigya.UnitTests.Selenium
             CreateMemberTypesIfRequired(context);
             CreateFieldMappings(context.DatabaseContext.Database);
             Umbraco621_CanRegisterAndLoginToUmbraco();
-
-            _driver.FindElement(By.CssSelector(".gigya-edit-profile")).Click();
+            
+            var button = _driver.FindElement(By.CssSelector(".gigya-edit-profile"), 10);
+            if (button != null)
+            {
+                button.Click();
+            }
 
             // wait for form
             var form = _driver.FindElement(By.Id("gigya-profile-form"), 5);
@@ -325,6 +337,30 @@ namespace Gigya.UnitTests.Selenium
                 }
                 throw;
             }
+        }
+
+        [TestMethod]
+        public void Umbraco621_RemoveCookieAndUserIsLoggedInAfterRefresh()
+        {
+            Umbraco621_CanRegisterAndLoginToUmbraco();
+
+            _driver.Manage().Cookies.DeleteCookieNamed("yourAuthCookie");
+
+            _driver.Navigate().Refresh();
+
+            // user should be logged out as cookie deleted
+            var button = _driver.FindElement(By.CssSelector(".gigya-login"), 1);
+            if (button == null)
+            {
+                var loginScreen = _driver.FindElement(By.Id("gigya-login-screen"), 1);
+                Assert.IsNotNull(loginScreen, "Login button not found. User should be logged out.");
+            }
+
+            Thread.Sleep(5000);
+
+            _driver.Navigate().Refresh();
+            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
         }
 
         private void HasSessionExpired()
