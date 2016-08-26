@@ -41,6 +41,8 @@ namespace Gigya.UnitTests.Selenium
         public static readonly string Site1ApplicationSecret = ConfigurationManager.AppSettings["Site1ApplicationSecret"];
         public static readonly string Site2ApplicationSecret = ConfigurationManager.AppSettings["Site2ApplicationSecret"];
 
+        public static readonly string SitefinityRootPath = ConfigurationManager.AppSettings["SitefinityRootPath"];
+
         public static readonly string UmbracoRootPath = ConfigurationManager.AppSettings["UmbracoRootPath"];
         public static readonly string UmbracoPackagePath = ConfigurationManager.AppSettings["UmbracoPackagePath"];
     }

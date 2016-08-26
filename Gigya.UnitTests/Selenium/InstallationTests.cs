@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
@@ -33,17 +34,98 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void CanSetupNewSitefinitySite()
+        public void Sitefinity_CanSetupNewSitefinitySite()
         {
+            Utils.AddEncryptionKey(Config.SitefinityRootPath);
+
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
             UploadLicense();
             SelectDb();
             EnterAdminDetails();
+
             SitefinityUtils.LoginToSitefinity(_driver, 300);
-            
+
+            _driver.SwitchTo().DefaultContent();
             CreateHomepage();
+
             AddGigyaSettings();
+            CreateSecondSite();
+
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity");
+            Thread.Sleep(5000);
+            _driver.FindElement(By.PartialLinkText("Logout"), 5).Click();
+            Thread.Sleep(10000);
+
+            SitefinityUtils.LoginToSitefinity(_driver, 20);
+
+            AddGigyaSettingsForSecondSite();
+        }
+
+        private void CreateSecondSite()
+        {
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/MultisiteManagement");
+            _driver.FindElement(By.PartialLinkText("Create a site"), 10).Click();
+
+            var form = _driver.FindElement(By.ClassName("sfFirstForm"), 5);
+            var textFields = form.FindElements(By.ClassName("sfTxt"));
+            textFields[0].SendKeys("Gigya 2");
+            textFields[1].SendKeys(Config.Site2BaseURL);
+            _driver.FindElementFromLabel("Duplicate pages and settings from existing site...", 5).Click();
+
+            Thread.Sleep(1000);
+
+            _driver.FindElement(By.CssSelector(".sfButtonArea.sfMainFormBtns .sfLinkBtn.sfPrimary"), 2).Click();
+
+            Thread.Sleep(5000);
+
+            _driver.FindElement(By.PartialLinkText("Create this site"), 5).Click();
+
+            Assert.IsNotNull(_driver.FindElement(By.PartialLinkText("Logout"), 30));
+        }
+
+        private void AddGigyaSettingsForSecondSite()
+        {
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity");
+            Thread.Sleep(3000);
+
+            _driver.FindElement(By.CssSelector(".sfSiteSelectorMenuWrp .clickMenu .main"), 5).Click();
+            Thread.Sleep(1000);
+
+            var gigya2Site = _driver.FindElement(By.PartialLinkText("Gigya 2"), 5);
+            if (gigya2Site == null)
+            {
+                // try again
+                _driver.FindElement(By.CssSelector(".sfSiteSelectorMenuWrp .clickMenu .main"), 5).Click();
+                Thread.Sleep(1000);
+            }
+            
+            gigya2Site.Click();
+
+            Thread.Sleep(5000);
+
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
+
+            var loginUsername = _driver.FindElement(By.Id("wrap_name"), 30); ;
+            if (loginUsername != null)
+            {
+                SitefinityUtils.LoginToSitefinity(_driver, 300);
+                _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
+            }
+
+            var saveButton = _driver.FindElement(By.ClassName("sfSave"), 5);
+
+            // enter valid settings
+            _driver.FindElementFromLabel("API Key", 5).ClearWithBackspaceAndSendKeys(Config.Site2ApiKey);
+            _driver.FindElementFromLabel("Application Key", 2).ClearWithBackspaceAndSendKeys(Config.Site2ApplicationKey);
+            _driver.FindElement(By.Id("edit-application-secret")).Click();
+            _driver.FindElementFromLabel("Application Secret", 2).ClearWithBackspaceAndSendKeys(Config.Site2ApplicationSecret);
+
+            _driver.FindElement(By.CssSelector("#data-center-wrapper select"), 2).SendKeys(Config.Site2DataCenter);
+            saveButton.Click();
+
+            var positiveMessage = _driver.FindElement(By.ClassName("sfMsgPositive"), 2);
+            Assert.IsNotNull(positiveMessage, "Settings not saved. Check they are correct.");
         }
         
         private void AddGigyaSettings()
@@ -57,23 +139,56 @@ namespace Gigya.UnitTests.Selenium
                 _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
             }
 
-            _driver.FindElementFromLabel("API Key", 20).ClearWithBackspaceAndSendKeys(Config.Site1ApiKey);
-            _driver.FindElementFromLabel("Application Key", 20).ClearWithBackspaceAndSendKeys(Config.Site1ApplicationKey);
+            var saveButton = _driver.FindElement(By.ClassName("sfSave"), 5);
+            
+            // enter valid settings
+            _driver.FindElementFromLabel("API Key", 5).ClearWithBackspaceAndSendKeys(Config.Site1ApiKey);
+            _driver.FindElementFromLabel("Application Key", 2).ClearWithBackspaceAndSendKeys(Config.Site1ApplicationKey);
             _driver.FindElement(By.Id("edit-application-secret")).Click();
-            _driver.FindElementFromLabel("Application Secret", 20).ClearWithBackspaceAndSendKeys(Config.Site1ApplicationSecret);
+            _driver.FindElementFromLabel("Application Secret", 2).ClearWithBackspaceAndSendKeys(Config.Site1ApplicationSecret);
+            
+            _driver.FindElement(By.CssSelector("#data-center-wrapper select"), 2).SendKeys(Config.Site1DataCenter);
+            saveButton.Click();
 
-            _driver.FindElement(By.CssSelector("#data-center-wrapper select"), 20).SendKeys(Config.Site1DataCenter);
-            _driver.FindElement(By.ClassName("sfSave"), 5).Click();
+            var positiveMessage = _driver.FindElement(By.ClassName("sfMsgPositive"), 2);
+            Assert.IsNotNull(positiveMessage, "Settings not saved. Check they are correct.");
 
-            var positiveMessage = _driver.FindElement(By.ClassName("sfMsgPositive"), 20);
-            Assert.IsNotNull(positiveMessage);
+            // test invalid settings
+            EnterInvalidSettingAndWaitForAlert(_driver.FindElementFromLabel("API Key", 2), saveButton, Config.Site1ApiKey);
+            EnterInvalidSettingAndWaitForAlert(_driver.FindElementFromLabel("Application Key", 2), saveButton, Config.Site1ApplicationKey);
+            EnterInvalidSettingAndWaitForAlert(_driver.FindElementFromLabel("Application Secret", 2), saveButton, Config.Site1ApplicationSecret);
+
+            var dcs = new string[] { "EU", "RU", "US" };
+            var invalidDc = dcs.First(i => i != Config.Site1DataCenter);
+
+            _driver.FindElement(By.CssSelector("#data-center-wrapper select"), 2).SendKeys(invalidDc);
+            saveButton.Click();
+            Thread.Sleep(5000);
+            _driver.SwitchTo().Alert().Dismiss();
+
+            _driver.Navigate().Refresh();
+
+            var applicationSecretValue = _driver.FindElement(By.CssSelector(".application-secret-masked .sfTxtContent"), 5).Text;
+            var nonEncryptedValues = applicationSecretValue.Replace("*", string.Empty);
+
+            Assert.AreEqual(nonEncryptedValues.Length, 4, "Should only be 4 non encrypted values.");
+        }
+
+        private void EnterInvalidSettingAndWaitForAlert(IWebElement element, IWebElement saveButton, string correctValue)
+        {
+            element.ClearWithBackspaceAndSendKeys("adsfasdf");
+            saveButton.Click();
+            Thread.Sleep(5000);
+            _driver.SwitchTo().Alert().Dismiss();
+
+            element.ClearWithBackspaceAndSendKeys(correctValue);
         }
         
         private void CreateHomepage()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Pages");
 
-            _driver.FindElement(By.Id("ctl04_frontendPagesListView_ctl00_ctl00_noItemsExistScreen_ctl00_ctl00_actionsRepeater_actionItem_0"), 30).Click();
+            _driver.FindElement(By.PartialLinkText("Create a page"), 30).Click();
 
             _driver.SwitchTo().Frame("create");
             _driver.FindElementFromLabel("Name", 20).SendKeys("Home");

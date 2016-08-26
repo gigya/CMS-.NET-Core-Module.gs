@@ -11,6 +11,7 @@ using Gigya.UnitTests.Umbraco;
 using Umbraco.Core;
 using umbraco.BusinessLogic;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Gigya.UnitTests.Selenium
 {
@@ -37,7 +38,7 @@ namespace Gigya.UnitTests.Selenium
                 _driver = new FirefoxDriver();
                 _driver.Manage().Window.Maximize();
             }
-            SetupNewUmbracoSiteIfRequired();
+            Umbraco_SetupNewUmbracoSiteIfRequired();
         }
 
         [TestCleanup]
@@ -54,16 +55,16 @@ namespace Gigya.UnitTests.Selenium
         }
         
         [TestMethod]
-        public void SetupNewUmbracoSiteIfRequired()
+        public void Umbraco_SetupNewUmbracoSiteIfRequired()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
 
-            //if (!CreateUser())
-            //{
-            //    return;
-            //}
+            //LoginToUmbraco(Config.AdminEmail, Config.AdminPassword);
 
-            LoginToUmbraco(Config.AdminUsername, Config.AdminPassword);
+            if (!CreateUser())
+            {
+                return;
+            }
 
             // close upgrade notification if visible
             var alert = _driver.FindElement(By.CssSelector(".alert-info .close"), 5);
@@ -72,18 +73,18 @@ namespace Gigya.UnitTests.Selenium
                 alert.Click();
             }
 
-            //InstallPackage();
-            //EnableGigyaForAdmin();
-            //AddGigyaSettingsToMaster();
-            //EnableMacrosOnHomepage();
-            //AddMacrosToHomepage();
-            //CopyHomepage();
-            //AddEncryptionKey();
+            InstallPackage();
+            EnableGigyaForAdmin();
+            AddGigyaSettingsToMaster();
+            EnableMacrosOnHomepage();
+            AddMacrosToHomepage();
+            CopyHomepage();
+            Utils.AddEncryptionKey(Config.UmbracoRootPath);
             EnterAllGigyaSettings();
         }
 
         [TestMethod]
-        public void IsApplicationSecretHiddenForNonAdmin()
+        public void Umbraco_IsApplicationSecretHiddenForNonAdmin()
         {
             // create non admin user if required
             if (!LoginToUmbraco(Config.NonAdminUsername, Config.NonAdminPassword, false))
@@ -304,7 +305,9 @@ namespace Gigya.UnitTests.Selenium
         public void EnterAllGigyaSettings()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco#/gigya/gigyaTree/edit/-1");
+            Thread.Sleep(5000);
             _driver.Navigate().Refresh();
+            Thread.Sleep(5000);
 
             var model = new GigyaConfigSettings
             {
@@ -334,33 +337,6 @@ namespace Gigya.UnitTests.Selenium
             EnterGigyaSettings(model);
         }
 
-        private void AddEncryptionKey()
-        {
-            XmlDocument webConfigDoc = new XmlDocument();
-            webConfigDoc.Load(Path.Combine(Config.UmbracoRootPath, "web.config"));
-
-            // add encryption key to web.config
-            var encryptionElem = webConfigDoc.SelectSingleNode("/configuration/appSettings/add[@key='Gigya.Encryption.Key']");
-            if (encryptionElem == null)
-            {
-                var appSettings = webConfigDoc.SelectSingleNode("/configuration/appSettings");
-
-                encryptionElem = webConfigDoc.CreateElement("add");
-                var keyAttribute = webConfigDoc.CreateAttribute("key");
-                keyAttribute.Value = "Gigya.Encryption.Key";
-
-                var valueAttribute = webConfigDoc.CreateAttribute("value");
-                valueAttribute.Value = "secret";
-
-                encryptionElem.Attributes.Append(keyAttribute);
-                encryptionElem.Attributes.Append(valueAttribute);
-
-                appSettings.AppendChild(encryptionElem);
-
-                webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
-            }
-        }
-
         private void EnterGigyaSettings(GigyaConfigSettings settings)
         {
             _driver.FindElement(By.Id("api-key"), 10).ClearAndSendKeys(settings.ApiKey);
@@ -388,7 +364,7 @@ namespace Gigya.UnitTests.Selenium
             _driver.FindElement(By.Id("data-center")).SendKeys(settings.DataCenter);
             _driver.FindElement(By.Id("language-fallback")).SendKeys(settings.LanguageFallback);
             _driver.FindElement(By.CssSelector("button[type=\"submit\"]")).Click();
-            
+
             var successAlert = _driver.FindElement(By.ClassName("alert-success"), 10);
             Assert.IsNotNull(successAlert, "Failed to save settings.");
 
@@ -403,6 +379,52 @@ namespace Gigya.UnitTests.Selenium
             var nonEncryptedValues = applicationSecretValue.Replace("*", string.Empty);
 
             Assert.AreEqual(nonEncryptedValues.Length, 4, "Should only be 4 non encrypted values.");
+
+            // test invalid settings shows alert
+            var saveButton = _driver.FindElement(By.CssSelector("button[type=\"submit\"]"));
+            TestErrorShownForInvalidSetting(saveButton, _driver.FindElement(By.Id("api-key"), 10));
+            TestErrorShownForInvalidSetting(saveButton, _driver.FindElement(By.Id("application-key"), 10));
+
+            applicationSecret = _driver.FindElement(By.Id("application-secret"), 2);
+            if (applicationSecret == null || !applicationSecret.Displayed)
+            {
+                applicationSecretLabel = _driver.FindElement(By.XPath("//label[@for='application-secret']"));
+                var buttons = applicationSecretLabel.FindElement(By.XPath("..")).FindElements(By.TagName("button"));
+                foreach (var button in buttons)
+                {
+                    if (button.Displayed)
+                    {
+                        // edit button is only one visible
+                        button.Click();
+                        applicationSecret = _driver.FindElement(By.Id("application-secret"), 2);
+                        break;
+                    }
+                }
+            }
+
+            applicationSecret.ClearAndSendKeys(settings.ApplicationSecret);
+            SaveSettingsAndCheckForError(saveButton);
+
+            var dcs = new string[] { "EU", "RU", "US" };
+            var invalidDc = dcs.First(i => i != Config.Site1DataCenter);
+            _driver.FindElement(By.Id("data-center")).SendKeys(invalidDc);
+            SaveSettingsAndCheckForError(saveButton);
+        }
+
+        private void SaveSettingsAndCheckForError(IWebElement saveButton)
+        {
+            saveButton.Click();
+            var errorAlert = _driver.FindElement(By.CssSelector(".alert-error .close"), 10);
+            Assert.IsNotNull(errorAlert, "Error not shown when saving settings.");
+
+            errorAlert.Click();
+            Thread.Sleep(500);
+        }
+
+        private void TestErrorShownForInvalidSetting(IWebElement saveButton, IWebElement field)
+        {
+            field.ClearAndSendKeys("aaaaaaa");
+            SaveSettingsAndCheckForError(saveButton);
         }
 
         private void InstallPackage()
@@ -440,7 +462,7 @@ namespace Gigya.UnitTests.Selenium
 
         private bool CreateUser()
         {
-            var newsletterField = _driver.FindElement(By.Id("subscribeToNewsLetter"), 2);
+            var newsletterField = _driver.FindElement(By.Id("subscribeToNewsLetter"), 5);
             if (newsletterField == null)
             {
                 return false;

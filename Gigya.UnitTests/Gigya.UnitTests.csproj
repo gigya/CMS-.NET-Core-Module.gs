@@ -138,6 +138,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.2.2\lib\System.Data.SqlServerCe.dll</HintPath>
       <Private>True</Private>
@@ -261,11 +262,13 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Encryption\EncryptionTests.cs" />
+    <Compile Include="Selenium\Authentication\UmbracoRegisterLoginTests.cs" />
+    <Compile Include="Selenium\Authentication\SitefinityRegisterLoginTests.cs" />
     <Compile Include="Selenium\Config.cs" />
     <Compile Include="Selenium\UmbracoInstallationTests.cs" />
     <Compile Include="Selenium\InstallationTests.cs" />
     <Compile Include="Selenium\LanguageTests.cs" />
-    <Compile Include="Selenium\RegisterLoginTests.cs" />
+    <Compile Include="Selenium\Authentication\RegisterLoginTests.cs" />
     <Compile Include="Selenium\SitefinityUtils.cs" />
     <Compile Include="Selenium\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -311,6 +314,9 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Sitefinity.Tests.playlist" />
+    <None Include="Umbraco6.2.1.Tests.playlist" />
+    <None Include="Umbraco7.2.Tests.playlist" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Plugins\" />

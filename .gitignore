@@ -40,3 +40,6 @@
 /Gigya.UnitTests/bin
 /Gigya.UnitTests/obj/Release
 /Gigya.Umbraco.Demo/obj/Release
+/Gigya.UnitTests.Umbraco621/obj
+/Gigya.UnitTests.Umbraco621/bin
+/Gigya.UnitTests.Common/obj

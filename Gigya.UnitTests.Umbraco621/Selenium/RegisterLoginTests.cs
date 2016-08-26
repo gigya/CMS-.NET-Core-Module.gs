@@ -62,7 +62,7 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void CanRegisterAndLoginToUmbraco621()
+        public void Umbraco621_CanRegisterAndLoginToUmbraco()
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
@@ -86,11 +86,11 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void IsLoggedIntoSecondSiteAsWell621()
+        public void Umbraco621_IsLoggedIntoSecondSiteAsWell()
         {
             if (!_loggedIn)
             {
-                CanRegisterAndLoginToUmbraco621();
+                Umbraco621_CanRegisterAndLoginToUmbraco();
             }
 
             _driver.Navigate().GoToUrl(Config.Site2BaseURL);
@@ -100,11 +100,11 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void CanLogoutAndIsLoggedOutOfSecondSiteAsWell621()
+        public void Umbraco621_CanLogoutAndIsLoggedOutOfSecondSiteAsWell()
         {
             if (!_loggedIn)
             {
-                CanRegisterAndLoginToUmbraco621();
+                Umbraco621_CanRegisterAndLoginToUmbraco();
             }
 
             // logout
@@ -146,7 +146,7 @@ namespace Gigya.UnitTests.Selenium
 
             if (!memberType.PropertyTypeExists(_umbracoFirstName))
             {
-                memberType.AddPropertyType(new PropertyType(textBoxDefinition) { Alias = _umbracoFirstName, Name = "First Name", Description = "", Mandatory = false, SortOrder = 1 }, "Membership");
+                memberType.AddPropertyType(new PropertyType(textBoxDefinition) { Alias = _umbracoFirstName, CreateDate = DateTime.UtcNow, UpdateDate = DateTime.UtcNow, Name = "First Name", Description = "", Mandatory = false, SortOrder = 1 }, "Membership");
             }
             if (!memberType.PropertyTypeExists(_lastName))
             {
@@ -169,7 +169,7 @@ namespace Gigya.UnitTests.Selenium
 
             CreateMemberTypesIfRequired(context);
             CreateFieldMappings(context.DatabaseContext.Database);
-            CanRegisterAndLoginToUmbraco621();
+            Umbraco621_CanRegisterAndLoginToUmbraco();
 
             _driver.FindElement(By.CssSelector(".gigya-edit-profile")).Click();
 
@@ -240,7 +240,7 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
-        public void UmbracoFieldOverriddenOnLogin621()
+        public void Umbraco621_FieldOverriddenOnLogin()
         {
             var application = new ConsoleApplicationBase();
             application.Start(application, new EventArgs());
@@ -248,7 +248,7 @@ namespace Gigya.UnitTests.Selenium
 
             CreateFieldMappings(context.DatabaseContext.Database);
             CreateMemberTypesIfRequired(context);
-            CanRegisterAndLoginToUmbraco621();
+            Umbraco621_CanRegisterAndLoginToUmbraco();
 
             var memberService = context.Services.MemberService;
             var member = memberService.GetByEmail(_newEmail);
@@ -269,12 +269,12 @@ namespace Gigya.UnitTests.Selenium
             Assert.IsNotNull(member, "Member not found in Umbraco after creation");
 
             // check fields have been updated
-            Assert.AreEqual(_firstName, member.GetValue("firstName"), "First name not mapped");
+            Assert.AreEqual(_firstName, member.GetValue("firstName"), "First name not mapped. Check that member type has been updated to include firstName, lastName and age.");
             Assert.AreEqual(_lastName, member.GetValue("lastName"), "Last name not mapped");
         }
 
         [TestMethod]
-        public void IsSessionExpiredCorrectlyUmbraco621()
+        public void Umbraco621_IsSessionExpiredCorrectly()
         {
             var application = new ConsoleApplicationBase();
             application.Start(application, new EventArgs());
@@ -297,9 +297,9 @@ namespace Gigya.UnitTests.Selenium
             try
             {
                 // test session expiration works now that we know all sites are using 10 second timeout
-                CanRegisterAndLoginToUmbraco621();
+                Umbraco621_CanRegisterAndLoginToUmbraco();
 
-                IsLoggedIntoSecondSiteAsWell621();
+                Umbraco621_IsLoggedIntoSecondSiteAsWell();
 
                 _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
