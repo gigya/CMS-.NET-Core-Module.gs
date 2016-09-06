@@ -252,7 +252,7 @@
     </sfFields:TextField>
 
     <div class="sfTxtLbl sfInlineBlock">
-        Fields Mapping
+        Fields Mapping (UserId must be mapped to a unique field e.g. UID)
     </div>
     <table class="mapping-fields-table">
         <thead>

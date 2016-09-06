@@ -27,7 +27,7 @@ namespace Gigya.UnitTests.Selenium
                 keyAttribute.Value = "Gigya.Encryption.Key";
 
                 var valueAttribute = webConfigDoc.CreateAttribute("value");
-                valueAttribute.Value = "secret";
+                valueAttribute.Value = Config.EncryptionKey;
 
                 encryptionElem.Attributes.Append(keyAttribute);
                 encryptionElem.Attributes.Append(valueAttribute);

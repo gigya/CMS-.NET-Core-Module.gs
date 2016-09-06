@@ -24,6 +24,8 @@ namespace Gigya.UnitTests.Selenium
         public static readonly string NonAdminLastName = ConfigurationManager.AppSettings["CmsNonAdminLastName"] ?? "Admin";
         public static readonly string NonAdminEmail = ConfigurationManager.AppSettings["CmsNonAdminEmail"] ?? "nonadmin@purestone.co.uk";
 
+        public static readonly string EncryptionKey = ConfigurationManager.AppSettings["Gigya.Encryption.Key"] ?? "secret";
+
         public static readonly string LicensePath = ConfigurationManager.AppSettings["SitefinityLicensePath"];
 
         public static readonly string Site1ApiKey = ConfigurationManager.AppSettings["Site1ApiKey"];

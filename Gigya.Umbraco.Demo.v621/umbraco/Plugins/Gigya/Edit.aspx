@@ -86,7 +86,7 @@
                     <input type="text" id="session-timeout" name="SessionTimeout" ng-disabled="model.Inherited" ng-model="model.SessionTimeout" class="input-large umb-textstring textstring" val-server="value" required="required" />
                 </umb:PropertyPanel>
 
-                <umb:PropertyPanel ID="PropertyPanel9" runat="server" Text="Fields Mapping">
+                <umb:PropertyPanel ID="PropertyPanel9" runat="server" Text="Fields Mapping (username must be mapped to a unique field e.g. UID)">
                     <table class="mapping-fields-table">
                         <thead>
                             <tr>
