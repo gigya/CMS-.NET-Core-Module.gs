@@ -1,5 +1,5 @@
 ﻿{
-  "method": "Get",
+  "method": "Search",
   "mappings": [
     {
       "cmsName": "custom2",
@@ -8,6 +8,25 @@
       "gigyaType": "string",
       "custom": {
         "oid": "8436d64670e3497c93ab7a6c0afec936"
+      }
+    },
+    {
+      "cmsName": "custom2",
+      "cmsType": "string",
+      "gigyaName": "ds.userinfo.middleName_s",
+      "gigyaType": "string",
+      "custom": {
+        "oid": "a9d000d39dbf4e0e80eccaa982357b2c"
+      }
+	  
+    },
+    {
+      "cmsName": "custom2",
+      "cmsType": "string",
+      "gigyaName": "ds.userinfo.address.line1",
+      "gigyaType": "string",
+      "custom": {
+        "oid": "a1aca014a62c41d4a35238b519f516be"
       }
     }
   ]

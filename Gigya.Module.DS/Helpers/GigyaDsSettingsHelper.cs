@@ -16,6 +16,8 @@ namespace Gigya.Module.DS.Helpers
 {
     public class GigyaDsSettingsHelper
     {
+        private static readonly object _padlock = new object();
+        private static FileSystemWatcher _watcher;
         private readonly Logger _logger;
         private static readonly string _configLocation = ConfigurationManager.AppSettings["Gigya.Ds.MappingFilePath"] ?? "~/App_Data/Gigya/dsMappings.json";
         private const string _cacheKey = "GigyaDsSettingsHelper-7F2E4041-553F-4FF4-9A3A-2BFBB1C05F17";
@@ -74,6 +76,9 @@ namespace Gigya.Module.DS.Helpers
                 }
 
                 model.MappingsByType = model.Mappings.GroupBy(i => i.GigyaDsType).ToDictionary(i => i.Key, j => j.ToList());
+
+                AddFileWatcher(filePath);
+
                 return model;
             }
             catch(Exception e)
@@ -81,6 +86,34 @@ namespace Gigya.Module.DS.Helpers
                 _logger.Error("Failed to parse Gigya DS config file.", e);
                 throw;
             }
+        }
+
+        private static void AddFileWatcher(string path)
+        {
+            if (_watcher != null)
+            {
+                return;
+            }
+
+            lock (_padlock)
+            {
+                if(_watcher != null)
+                {
+                    return;
+                }
+
+                var dir = Path.GetDirectoryName(path);
+                var filename = Path.GetFileName(path);
+                _watcher = new FileSystemWatcher(dir, filename);
+                _watcher.NotifyFilter = NotifyFilters.LastWrite;
+                _watcher.EnableRaisingEvents = true;
+                _watcher.Changed += Watcher_Changed;
+            }
+        }
+
+        private static void Watcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            MemoryCache.Default.Remove(_cacheKey);
         }
     }
 }

@@ -15,7 +15,6 @@ namespace Gigya.Module.DS.Helpers
 {
     public class GigyaDsHelper
     {
-        //private readonly GigyaSettingsHelper _settingsHelper;
         private readonly IGigyaModuleSettings _settings;
         private readonly Logger _logger;
         private readonly GigyaDsSettingsHelper _dsSettingsHelper;
@@ -23,7 +22,6 @@ namespace Gigya.Module.DS.Helpers
 
         public GigyaDsHelper(IGigyaModuleSettings settings, Logger logger, GigyaDsApiHelper apiHelper = null, GigyaDsSettingsHelper dsSettingsHelper = null)
         {
-            //_settingsHelper = settingsHelper;
             _settings = settings;
             _logger = logger;
             _apiHelper = apiHelper ?? new GigyaDsApiHelper(_logger);
@@ -61,10 +59,24 @@ namespace Gigya.Module.DS.Helpers
             {
                 var fields = mappingType.Value.Select(i => i.GigyaFieldName).Distinct();
                 var data = Search(uid, mappingType.Key, fields);
-
-                // do some merge of the data
+                if (data != null)
+                {
+                    // do some merge of the data
+                    Dictionary<string, object> mappedDsResult = MapDataToDsType(mappingType.Key, data);
+                    model = DynamicUtils.Merge(model, mappedDsResult);
+                }
             }
             return model;
+        }
+
+        private static Dictionary<string, object> MapDataToDsType(string mappingType, dynamic data)
+        {
+            var mappingTypeResult = new Dictionary<string, object>();
+            mappingTypeResult[mappingType] = data;
+
+            var result = new Dictionary<string, object>();
+            result["ds"] = mappingTypeResult;
+            return result;
         }
 
         public dynamic Search(string uid, string dsType, IEnumerable<string> fields = null)
@@ -77,7 +89,24 @@ namespace Gigya.Module.DS.Helpers
             }
 
             dynamic model = JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText());
-            return model.data;
+            
+            var modelDictionary = model as IDictionary<string, object>;
+            if (!modelDictionary.ContainsKey("results"))
+            {
+                return null;
+            }
+
+            var mergedResults = new ExpandoObject();
+            foreach (var result in model.results)
+            {
+                var resultDictionary = result as IDictionary<string, object>;
+                if (resultDictionary.ContainsKey("data"))
+                {
+                    mergedResults = DynamicUtils.Merge(mergedResults, result.data);
+                }
+            }
+
+            return mergedResults;
         }
 
         public dynamic Get(string uid, string oid, string dsType, IEnumerable<string> fields = null)
@@ -98,49 +127,26 @@ namespace Gigya.Module.DS.Helpers
             {
                 return null;
             }
-            
-            var model = new Dictionary<string, object>();
+
+            var model = new ExpandoObject();
 
             foreach (var mappingType in settings.MappingsByType)
             {
                 var dsType = mappingType.Key;
                 foreach (var mapping in mappingType.Value.GroupBy(i => i.Custom.Oid))
                 {
-                    //var fieldName
                     var fields = mapping.Select(i => i.GigyaFieldName).Distinct();
                     var data = Get(uid, mapping.Key, dsType, fields);
 
                     if (data != null)
                     {
-                        var dataDict = data as Dictionary<string, object>;
-                        
-                        // prob needs to be recursive and use method below:
-
-
-
-
-
-                        //DynamicUtils.SetValue(model, string.Join(".", mappingType.Key, mapping.Key))
-                        if (!model.ContainsKey(dsType))
-                        {
-                            model[dsType] = dataDict;
-                        }
-                        else
-                        {
-                            foreach (var pair in model.Concat(dataDict))
-                            {
-                                var typeProperties = model[dsType] as Dictionary<string, object>;
-                                typeProperties[pair.Key] = pair.Value;
-
-                            }
-                        }
+                        Dictionary<string, object> mappedDsResult = MapDataToDsType(mappingType.Key, data);
+                        model = DynamicUtils.Merge(model, mappedDsResult);
                     }
                 }
-
-                // do some merge of the data
             }
 
-            return model.ToExpando();
+            return model;
         }
 
         public dynamic Merge(dynamic accountInfo)
@@ -153,7 +159,7 @@ namespace Gigya.Module.DS.Helpers
             }
 
             // merge with accountInfo
-            accountInfo.ds = DynamicUtils.GetValue<object>(data, "ds");
+            accountInfo = DynamicUtils.Merge(accountInfo, data);
             return accountInfo;
         }
     }

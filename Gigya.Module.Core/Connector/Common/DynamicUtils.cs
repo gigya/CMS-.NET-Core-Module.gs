@@ -78,6 +78,12 @@ namespace Gigya.Module.Core.Connector.Common
         /// <returns>A new object with the merged properties.</returns>
         public static ExpandoObject Merge(IDictionary<string, object> source, IDictionary<string, object> updated)
         {
+            var result = MergeToDictionary(source, updated);
+            return result.ToExpando();
+        }
+
+        public static Dictionary<string, object> MergeToDictionary(IDictionary<string, object> source, IDictionary<string, object> updated)
+        {
             var result = new Dictionary<string, object>();
 
             foreach (var kv in source.Concat(updated))
@@ -97,7 +103,7 @@ namespace Gigya.Module.Core.Connector.Common
                 }
             }
 
-            return result.ToExpando();
+            return result;
         }
 
         public static T GetValue<T>(dynamic model, string key)

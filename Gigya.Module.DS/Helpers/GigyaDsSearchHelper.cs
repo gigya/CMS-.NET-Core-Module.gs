@@ -12,9 +12,14 @@ namespace Gigya.Module.DS.Helpers
         {
             var builder = new StringBuilder();
 
-            var fieldValue = fields != null && fields.Any() ? string.Join(",", fields) : "*";
+            var fieldValue = fields != null && fields.Any() ? string.Join(",", fields.Select(PrefixField)) : "*";
             builder.AppendFormat("SELECT {0} FROM {1} WHERE UID = '{2}'", fieldValue, dsType, uid);
             return builder.ToString();
+        }
+
+        private static string PrefixField(string field)
+        {
+            return field == "uid" ? field: string.Concat("data.", field);
         }
     }
 }
