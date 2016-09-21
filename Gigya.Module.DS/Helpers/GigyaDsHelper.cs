@@ -27,7 +27,7 @@ namespace Gigya.Module.DS.Helpers
             _apiHelper = apiHelper ?? new GigyaDsApiHelper(_logger);
             _dsSettingsHelper = dsSettingsHelper ?? new GigyaDsSettingsHelper(_logger);
         }
-
+        
         public dynamic GetOrSearch(string uid)
         {
             var settings = _dsSettingsHelper.Get();
@@ -53,7 +53,7 @@ namespace Gigya.Module.DS.Helpers
                 return null;
             }
 
-            var model = new ExpandoObject();
+            var model = new Dictionary<string, object>();
 
             foreach (var mappingType in settings.MappingsByType)
             {
@@ -63,10 +63,10 @@ namespace Gigya.Module.DS.Helpers
                 {
                     // do some merge of the data
                     Dictionary<string, object> mappedDsResult = MapDataToDsType(mappingType.Key, data);
-                    model = DynamicUtils.Merge(model, mappedDsResult);
+                    model = DynamicUtils.MergeToDictionary(model, mappedDsResult);
                 }
             }
-            return model;
+            return model.ToExpando();
         }
 
         private static Dictionary<string, object> MapDataToDsType(string mappingType, dynamic data)
@@ -118,6 +118,14 @@ namespace Gigya.Module.DS.Helpers
             }
 
             dynamic model = JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText());
+
+            // check data property exists
+            var resultDictionary = model as IDictionary<string, object>;
+            if (!resultDictionary.ContainsKey("data"))
+            {
+                return null;
+            }
+
             return model.data;
         }
 
@@ -128,7 +136,7 @@ namespace Gigya.Module.DS.Helpers
                 return null;
             }
 
-            var model = new ExpandoObject();
+            var model = new Dictionary<string, object>();
 
             foreach (var mappingType in settings.MappingsByType)
             {
@@ -141,7 +149,7 @@ namespace Gigya.Module.DS.Helpers
                     if (data != null)
                     {
                         Dictionary<string, object> mappedDsResult = MapDataToDsType(mappingType.Key, data);
-                        model = DynamicUtils.Merge(model, mappedDsResult);
+                        model = DynamicUtils.MergeToDictionary(model, mappedDsResult);
                     }
                 }
             }

@@ -18,7 +18,7 @@ namespace Gigya.Module.DS
         private static void GigyaEventHub_GetAccountInfoCompleted(object sender, GetAccountInfoCompletedEventArgs e)
         {
             var helper = new GigyaDsHelper(e.Settings, e.Logger);
-            helper.Merge(e.GigyaModel);
+            e.GigyaModel = helper.Merge(e.GigyaModel);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿{
-  "method": "Search",
+  "method": "Get",
   "mappings": [
     {
       "cmsName": "custom2",
@@ -27,6 +27,33 @@
       "gigyaType": "string",
       "custom": {
         "oid": "a1aca014a62c41d4a35238b519f516be"
+      }
+    },
+	{
+      "cmsName": "custom2",
+      "cmsType": "string",
+      "gigyaName": "ds.userinfo.isCool",
+      "gigyaType": "string",
+      "custom": {
+        "oid": "d4e04aa6183f48dba260735642aa777a"
+      }
+    },
+	{
+      "cmsName": "custom2",
+      "cmsType": "string",
+      "gigyaName": "ds.userinfo.birthDate_d",
+      "gigyaType": "string",
+      "custom": {
+        "oid": "8436d64670e3497c93ab7a6c0afec936"
+      }
+    },
+	{
+      "cmsName": "custom2",
+      "cmsType": "string",
+      "gigyaName": "ds.addressInfo.addressLine1",
+      "gigyaType": "string",
+      "custom": {
+        "oid": "ad72d16c69f74983a42f0624db7b4f2a"
       }
     }
   ]

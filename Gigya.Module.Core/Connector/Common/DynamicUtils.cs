@@ -92,8 +92,8 @@ namespace Gigya.Module.Core.Connector.Common
 
                 if (source.ContainsKey(kv.Key) && updated.ContainsKey(kv.Key))
                 {
-                    var sourceValue = source[kv.Key] as ExpandoObject;
-                    var updatedValue = updated[kv.Key] as ExpandoObject;
+                    var sourceValue = source[kv.Key] as IDictionary<string, object>;
+                    var updatedValue = updated[kv.Key] as IDictionary<string, object>;
 
                     if (sourceValue != null && updatedValue != null)
                     {
