@@ -34,14 +34,13 @@ namespace Gigya.Module.DS.Helpers
         public GigyaDsSettings Get()
         {
             var settings = MemoryCache.Default[_cacheKey] as GigyaDsSettings;
-            if (settings != null)
+            if (settings == null)
             {
-                return settings;
-            }
+                settings = Load();
+                MemoryCache.Default[_cacheKey] = settings;
+            }            
 
-            settings = Load();
-            MemoryCache.Default[_cacheKey] = settings;
-            return settings;
+            return settings.Mappings != null && settings.Mappings.Any() ? settings : null;
         }
 
         /// <summary>
@@ -51,15 +50,15 @@ namespace Gigya.Module.DS.Helpers
         private GigyaDsSettings Load()
         {
             var filePath = _configLocation;
-            if (filePath.StartsWith("~/"))
+            if (!string.IsNullOrEmpty(filePath) && filePath.StartsWith("~/"))
             {
                 filePath = HostingEnvironment.MapPath(filePath);
             }
 
             if (!File.Exists(filePath))
             {
-                _logger.Error("Gigya DS config file does not exist.");
-                return null;
+                _logger.Error(string.Concat("Data Storage JSON file wasn't found. Tried to use: ", filePath));
+                return new GigyaDsSettings();
             }
 
             try
@@ -89,11 +88,16 @@ namespace Gigya.Module.DS.Helpers
 
                 return model;
             }
+            catch (JsonReaderException e)
+            {
+                _logger.Error("Invalid Gigya Data Storage mapping JSON structure.", e);
+            }
             catch(Exception e)
             {
                 _logger.Error("Failed to parse Gigya DS config file.", e);
-                throw;
             }
+
+            return new GigyaDsSettings();
         }
 
         /// <summary>
