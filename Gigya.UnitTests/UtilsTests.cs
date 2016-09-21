@@ -45,6 +45,36 @@ namespace Gigya.UnitTests
               }
             }";
 
+        private const string _json2 = @"{
+              ""profile2"": {
+                ""firstName"": ""new"",
+                ""age"": 1
+              }
+            }";
+
+        private const string _json3 = @"{
+              ""profile"": {
+                ""firstName"": ""updated3"",
+                ""age"": 1
+              }
+            }";
+
+        private const string _jsonProfileAddress = @"{
+              ""profile"": {
+                ""address"": {
+                    ""line1"": ""line 1""
+                }
+              }
+            }";
+
+        private const string _jsonProfileAddress2 = @"{
+              ""profile"": {
+                ""address"": {
+                    ""line2"": ""line 2""
+                }
+              }
+            }";
+
         [TestMethod]
         public void CanGetNestedPropertyFromDynamic()
         {
@@ -162,6 +192,80 @@ namespace Gigya.UnitTests
             var newVersionMs = stopwatch.ElapsedMilliseconds;
 
             Assert.Inconclusive(string.Format("Old version: {0}, New version: {1}", oldVersionMs, newVersionMs));
+        }
+
+        [TestMethod]
+        public void CanMergeJson()
+        {
+            dynamic data1 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(_json);
+            dynamic data2 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(_json2);
+
+            var result = DynamicUtils.Merge(data1, data2);
+
+            Assert.IsNotNull(result);
+
+            Assert.AreEqual(result.profile2.firstName, "new", "profile2.firstName doesn't contain expected values.");
+
+            // check old properties remain
+            Assert.AreEqual(result.profile.firstName, "Jason", "profile.firstName doesn't contain expected values.");
+        }
+
+        [TestMethod]
+        public void CanMergeNestedJson()
+        {
+            dynamic data1 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(_jsonProfileAddress);
+            dynamic data2 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(_jsonProfileAddress2);
+
+            var result = DynamicUtils.Merge(data1, data2);
+            
+            Assert.IsNotNull(result);
+            Assert.IsNotNull(result.profile);
+            Assert.AreEqual(result.profile.address.line1, "line 1", "profile.address.line1 doesn't contain expected values.");
+
+            Assert.AreEqual(result.profile.address.line2, "line 2", "profile.address.line2 doesn't contain expected values.");
+        }
+
+        [TestMethod]
+        public void MergeSameProperty()
+        {
+            dynamic data1 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(@"{
+              ""profile"": {
+                ""firstName"": ""original"",
+                ""age"": 1
+              }
+            }");
+            dynamic data2 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(@"{
+              ""profile"": {
+                ""firstName"": ""new"",
+                ""age"": 1
+              }
+            }");
+
+            var result = DynamicUtils.Merge(data1, data2);
+            
+            Assert.AreEqual(result.profile.firstName, "new");
+        }
+
+        [TestMethod]
+        public void MergeProfile2()
+        {
+            dynamic data1 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(@"{
+              ""profile"": {
+                ""firstName"": ""original"",
+                ""age"": 1
+              }
+            }");
+            dynamic data2 = JsonConvert.DeserializeObject<System.Dynamic.ExpandoObject>(@"{
+              ""profile2"": {
+                ""firstName"": ""new"",
+                ""age"": 1
+              }
+            }");
+
+            var result = DynamicUtils.Merge(data1, data2);
+
+            Assert.AreEqual(result.profile.firstName, "original");
+            Assert.AreEqual(result.profile2.firstName, "new");
         }
     }
 }

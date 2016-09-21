@@ -25,6 +25,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
     public class GigyaMembershipHelper : IGigyaMembershipHelper
     {
         public static event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
+
         private readonly GigyaApiHelper _gigyaApiHelper;
         private readonly Logger _logger;
 
@@ -265,10 +266,9 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                 _logger.Error("Failed to getAccountInfo");
                 return;
             }
-
-            var gigyaModel = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
-            ThrowTestingExceptionIfRequired(settings, gigyaModel);
-
+            
+            var gigyaModel = GetAccountInfo(settings, userInfoResponse);
+            
             // find what field has been configured for the Umbraco username
             List<MappingField> mappingFields = GetMappingFields(settings);
             var username = GetUmbracoUsername(mappingFields, gigyaModel);
@@ -306,14 +306,12 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
 
             var currentUserName = HttpContext.Current.User.Identity.Name;
-            
+
             List<MappingField> mappingFields = GetMappingFields(settings);
+            var gigyaModel = GetAccountInfo(settings, userInfoResponse);
 
-            dynamic userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
-            ThrowTestingExceptionIfRequired(settings, userInfo);
-
-            string username = GetUmbracoUsername(mappingFields, userInfo);
-            var success = MapProfileFieldsAndUpdate(currentUserName, username, settings, userInfo, mappingFields);
+            string username = GetUmbracoUsername(mappingFields, gigyaModel);
+            var success = MapProfileFieldsAndUpdate(currentUserName, username, settings, gigyaModel, mappingFields);
             if (success)
             {
                 response.RedirectUrl = settings.RedirectUrl;
@@ -325,6 +323,21 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                     FormsAuthentication.SetAuthCookie(username, false);
                 }
             }
+        }
+
+        private ExpandoObject GetAccountInfo(IGigyaModuleSettings settings, GSResponse userInfoResponse)
+        {
+            var userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
+            ThrowTestingExceptionIfRequired(settings, userInfo);
+
+            // fire getAccountInfo completed event
+            var getAccountInfoCompletedArgs = new GetAccountInfoCompletedEventArgs { GigyaModel = userInfo, Settings = settings, Logger = _logger };
+            GigyaEventHub.Instance.RaiseGetAccountInfoCompleted(this, getAccountInfoCompletedArgs);
+
+            // fire merge getAccountInfo completed event
+            var accountInfoMergeCompletedArgs = new AccountInfoMergeCompletedEventArgs { GigyaModel = getAccountInfoCompletedArgs.GigyaModel, Settings = settings, Logger = _logger };
+            GigyaEventHub.Instance.RaiseAccountInfoMergeCompleted(this, accountInfoMergeCompletedArgs);
+            return accountInfoMergeCompletedArgs.GigyaModel;
         }
 
         protected GSResponse ValidateRequest(LoginModel model, IGigyaModuleSettings settings)

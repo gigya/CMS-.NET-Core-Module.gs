@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Core.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -32,5 +34,19 @@ namespace Gigya.Module.Core.Connector.Events
         public string GigyaFieldName { get; set; }
         public object GigyaValue { get; set; }
         public string Origin { get; set; }
+    }
+
+    public class GetAccountInfoCompletedEventArgs : EventArgs
+    {
+        public Logger Logger { get; set; }
+        public IGigyaModuleSettings Settings { get; set; }
+        public dynamic GigyaModel { get; set; }
+    }
+
+    public class AccountInfoMergeCompletedEventArgs : EventArgs
+    {
+        public Logger Logger { get; set; }
+        public IGigyaModuleSettings Settings { get; set; }
+        public dynamic GigyaModel { get; set; }
     }
 }

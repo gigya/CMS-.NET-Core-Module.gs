@@ -189,6 +189,11 @@ namespace Gigya.Module.Core.Connector.Helpers
 
         private void LogResponseIfRequired(IGigyaModuleSettings settings, string apiMethod, GSResponse response)
         {
+            LogResponseIfRequired(_logger, settings, apiMethod, response);
+        }
+
+        public static void LogResponseIfRequired(Logger logger, IGigyaModuleSettings settings, string apiMethod, GSResponse response)
+        {
             if (settings.DebugMode)
             {
                 dynamic gigyaModel = response != null ? JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText()) : new ExpandoObject();
@@ -196,7 +201,7 @@ namespace Gigya.Module.Core.Connector.Helpers
                 var gigyaErrorDetail = DynamicUtils.GetValue<string>(gigyaModel, "errorDetails");
 
                 var callId = DynamicUtils.GetValue<string>(gigyaModel, "callId");
-                _logger.DebugFormat("API call: {0}. CallId: {1}. Error: {2}. Error Details: {3}.", apiMethod, callId, gigyaError, gigyaErrorDetail);
+                logger.DebugFormat("API call: {0}. CallId: {1}. Error: {2}. Error Details: {3}.", apiMethod, callId, gigyaError, gigyaErrorDetail);
             }
         }
     }

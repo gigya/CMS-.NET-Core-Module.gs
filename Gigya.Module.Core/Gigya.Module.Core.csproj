@@ -82,6 +82,7 @@
     <Compile Include="Connector\Common\DynamicUtils.cs" />
     <Compile Include="Connector\Common\UrlUtils.cs" />
     <Compile Include="Connector\Encryption\Encryptor.cs" />
+    <Compile Include="Connector\Events\GigyaEventHub.cs" />
     <Compile Include="Connector\Events\GigyaMembershipEvents.cs" />
     <Compile Include="Connector\Helpers\FileHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaApiHelper.cs" />
