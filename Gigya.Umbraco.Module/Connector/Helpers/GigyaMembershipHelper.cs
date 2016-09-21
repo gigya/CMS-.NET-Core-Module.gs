@@ -194,6 +194,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             try
             {
                 memberService.Save(user);
+                memberService.SavePassword(user, Guid.NewGuid().ToString());
             }
             catch (Exception e)
             {

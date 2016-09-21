@@ -27,6 +27,10 @@ namespace Gigya.Module.DS.Helpers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Gets the ds settings.
+        /// </summary>
+        /// <returns></returns>
         public GigyaDsSettings Get()
         {
             var settings = MemoryCache.Default[_cacheKey] as GigyaDsSettings;
@@ -40,6 +44,10 @@ namespace Gigya.Module.DS.Helpers
             return settings;
         }
 
+        /// <summary>
+        /// Parses the ds settings json file and adds a file watch to be notified of updates.
+        /// </summary>
+        /// <returns></returns>
         private GigyaDsSettings Load()
         {
             var filePath = _configLocation;
@@ -88,6 +96,10 @@ namespace Gigya.Module.DS.Helpers
             }
         }
 
+        /// <summary>
+        /// Creates a watcher so that updates to the mappings json file clears the cache.
+        /// </summary>
+        /// <param name="path"></param>
         private static void AddFileWatcher(string path)
         {
             if (_watcher != null)

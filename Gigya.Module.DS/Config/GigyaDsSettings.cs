@@ -24,12 +24,12 @@ namespace Gigya.Module.DS.Config
     [Serializable]
     public class GigyaDsMapping
     {
-        public string CmsName { get; set; }
-        public string CmsType { get; set; }
+        //public string CmsName { get; set; }
+        //public string CmsType { get; set; }
         public string GigyaName { get; set; }
         public string GigyaDsType { get; set; }
         public string GigyaFieldName { get; set; }
-        public string GigyaType { get; set; }
+        //public string GigyaType { get; set; }
         public Custom Custom { get; set; }
     }
 

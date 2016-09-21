@@ -8,6 +8,12 @@ namespace Gigya.Module.DS.Helpers
 {
     public class GigyaDsSearchHelper
     {
+        /// <summary>
+        /// Builds a ds search query.
+        /// </summary>
+        /// <param name="uid">The user Id.</param>
+        /// <param name="dsType">The ds type.</param>
+        /// <param name="fields">The fields to retrieve.</param>
         public static string BuildQuery(string uid, string dsType, IEnumerable<string> fields = null)
         {
             var builder = new StringBuilder();

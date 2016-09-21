@@ -28,6 +28,10 @@ namespace Gigya.Module.DS.Helpers
             _dsSettingsHelper = dsSettingsHelper ?? new GigyaDsSettingsHelper(_logger);
         }
         
+        /// <summary>
+        /// Fetches ds data using the configured method (get or search).
+        /// </summary>
+        /// <param name="uid">The user Id.</param>
         public dynamic GetOrSearch(string uid)
         {
             var settings = _dsSettingsHelper.Get();
@@ -46,7 +50,11 @@ namespace Gigya.Module.DS.Helpers
             }
         }
 
-        public dynamic SearchAll(string uid, GigyaDsSettings settings)
+        /// <summary>
+        /// Fetches all ds data using ds.search
+        /// </summary>
+        /// <param name="uid">The user Id.</param>
+        public ExpandoObject SearchAll(string uid, GigyaDsSettings settings)
         {
             if (settings == null)
             {
@@ -69,6 +77,12 @@ namespace Gigya.Module.DS.Helpers
             return model.ToExpando();
         }
 
+        /// <summary>
+        /// Prefixes ds data so it's in a ds.[type].[data] object.
+        /// </summary>
+        /// <param name="mappingType">The type param used in the ds API.</param>
+        /// <param name="data">The ds data returned from Gigya.</param>
+        /// <returns></returns>
         private static Dictionary<string, object> MapDataToDsType(string mappingType, dynamic data)
         {
             var mappingTypeResult = new Dictionary<string, object>();
@@ -79,8 +93,25 @@ namespace Gigya.Module.DS.Helpers
             return result;
         }
 
+        /// <summary>
+        /// Uses the Gigya ds.search API call to retrieve data.
+        /// </summary>
+        /// <param name="uid">The user Id.</param>
+        /// <param name="dsType">The ds type that is passed in the type param.</param>
+        /// <param name="fields">A collection of field names or null to have them created from the settings.</param>
+        /// <returns></returns>
         public dynamic Search(string uid, string dsType, IEnumerable<string> fields = null)
         {
+            if (string.IsNullOrEmpty(uid))
+            {
+                throw new ArgumentException("uid");
+            }
+
+            if (string.IsNullOrEmpty(dsType))
+            {
+                throw new ArgumentException("dsType");
+            }
+
             var query = GigyaDsSearchHelper.BuildQuery(uid, dsType, fields);
             var response = _apiHelper.Search(_settings, query);
             if (response == null)
@@ -109,8 +140,31 @@ namespace Gigya.Module.DS.Helpers
             return mergedResults;
         }
 
+        /// <summary>
+        /// Gets a single result from the ds using ds.get.
+        /// </summary>
+        /// <param name="oid">The ds OID.</param>
+        /// <param name="uid">The user Id.</param>
+        /// <param name="dsType">The ds type that is passed in the type param.</param>
+        /// <param name="fields">A collection of field names or null to have them created from the settings.</param>
+        /// <returns></returns>
         public dynamic Get(string uid, string oid, string dsType, IEnumerable<string> fields = null)
         {
+            if (string.IsNullOrEmpty(uid))
+            {
+                throw new ArgumentException("uid");
+            }
+
+            if (string.IsNullOrEmpty(oid))
+            {
+                throw new ArgumentException("oid");
+            }
+
+            if (string.IsNullOrEmpty(dsType))
+            {
+                throw new ArgumentException("dsType");
+            }
+
             var response = _apiHelper.Get(_settings, uid, oid, dsType, fields);
             if (response == null)
             {
@@ -129,7 +183,13 @@ namespace Gigya.Module.DS.Helpers
             return model.data;
         }
 
-        public dynamic GetAll(string uid, GigyaDsSettings settings)
+        /// <summary>
+        /// Fetches ds data using ds.get
+        /// </summary>
+        /// <param name="uid">The user Id.</param>
+        /// <param name="settings">The mapping settings.</param>
+        /// <returns></returns>
+        public ExpandoObject GetAll(string uid, GigyaDsSettings settings)
         {
             if (settings == null)
             {
@@ -154,9 +214,14 @@ namespace Gigya.Module.DS.Helpers
                 }
             }
 
-            return model;
+            return model.ToExpando();
         }
 
+        /// <summary>
+        /// Merges the getAccountInfo model with the ds data.
+        /// </summary>
+        /// <param name="accountInfo"></param>
+        /// <returns></returns>
         public dynamic Merge(dynamic accountInfo)
         {
             // get ds data
