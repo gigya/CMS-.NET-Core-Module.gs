@@ -32,7 +32,7 @@ namespace Gigya.Module.DS.Helpers
         /// </summary>
         /// <param name="siteId">Id of the current site.</param>
         /// <returns></returns>
-        public GigyaDsSettings Get(string siteId)
+        public virtual GigyaDsSettings Get(string siteId)
         {
             var settingsContainer = MemoryCache.Default[_cacheKey] as GigyaDsSettingsContainer;
             if (settingsContainer == null)

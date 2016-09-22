@@ -1,0 +1,38 @@
+﻿{
+  "sites": [
+    {
+      "method":  "Get",
+      "siteId": -1,
+      "mappings": [
+        {
+          "cmsName": "firstName",
+          "gigyaName": "ds.dsTesting.firstName_s",
+          "custom": {
+            "oid": "test"
+          }
+        },
+        {
+          "cmsName": "age",
+          "gigyaName": "ds.dsTesting.age_i",
+          "custom": {
+            "oid": "test"
+          }
+        },
+		    {
+          "cmsName": "birthDate",
+          "gigyaName": "ds.dsTesting.birthDate_d",
+          "custom": {
+            "oid": "test"
+          }
+        },
+		    {
+          "cmsName": "degree",
+          "gigyaName": "ds.dsTesting.academicDegree.degree_s",
+          "custom": {
+            "oid": "test"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -25,12 +25,16 @@ namespace Gigya.Module.DS.Helpers
         protected virtual GSRequest NewRequest(IGigyaModuleSettings settings, string applicationSecret, string method)
         {
             // real
-            //var request = new GSRequest(settings.ApiKey, applicationSecret, method, null, true, settings.ApplicationKey);
+            var request = new GSRequest(settings.ApiKey, applicationSecret, method, null, true, settings.ApplicationKey);
 
-            // hacked
-            applicationSecret = "bESFXHevdLlCtAMBxMyjnfmTdERrKyQOM919miLuUAw=";
-            string apiKey = "3_rUQPSDMvtjnxvxk5wMrH-rnlNdwdCiwHRms4Ep3-JooNXlS9xYP-zPOm7zhZoeZ0"; //settings.ApiKey;
-            var request = new GSRequest(apiKey, applicationSecret, method, null, true);
+            if (settings.ApiKey == "3_qkAT5OcGyvYpkjc_VF6-OfoeTKGk4T_jVwjFF9f5TQzoAg-mH8SBsjQi1srdsOm6")
+            {
+                // hack
+                applicationSecret = "bESFXHevdLlCtAMBxMyjnfmTdERrKyQOM919miLuUAw=";
+                string apiKey = "3_rUQPSDMvtjnxvxk5wMrH-rnlNdwdCiwHRms4Ep3-JooNXlS9xYP-zPOm7zhZoeZ0";
+                request = new GSRequest(apiKey, applicationSecret, method, null, true);
+            }
+            
             if (!string.IsNullOrEmpty(settings.DataCenter))
             {
                 request.APIDomain = settings.DataCenter + ".gigya.com";
