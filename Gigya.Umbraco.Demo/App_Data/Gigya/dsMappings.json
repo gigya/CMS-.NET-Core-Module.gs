@@ -11,7 +11,7 @@
       "gigyaName": "ds.userinfo.middleName_s",
       "custom": {
         "oid": "a9d000d39dbf4e0e80eccaa982357b2c"
-      }sasas
+      }
     },
     {
       "gigyaName": "ds.userinfo.address.line1",
@@ -35,6 +35,18 @@
       "gigyaName": "ds.addressInfo.addressLine1",
       "custom": {
         "oid": "ad72d16c69f74983a42f0624db7b4f2a"
+      }
+    },
+	{
+      "gigyaName": "ds.addressInfo.yearMoved_d",
+      "custom": {
+        "oid": "af5d48f9058049e09cefcfe947d35d67"
+      }
+    },
+	{
+      "gigyaName": "ds.userinfo.age_i",
+      "custom": {
+        "oid": "ca29895c34d24c4989d778882ae30ddd"
       }
     }
   ]

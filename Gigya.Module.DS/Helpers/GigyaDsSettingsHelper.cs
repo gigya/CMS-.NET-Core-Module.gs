@@ -63,6 +63,8 @@ namespace Gigya.Module.DS.Helpers
 
             try
             {
+                AddFileWatcher(filePath);
+
                 var jsonRaw = File.ReadAllText(filePath);
 
                 var jsonSettings = new JsonSerializerSettings()
@@ -83,9 +85,7 @@ namespace Gigya.Module.DS.Helpers
                 }
 
                 model.MappingsByType = model.Mappings.GroupBy(i => i.GigyaDsType).ToDictionary(i => i.Key, j => j.ToList());
-
-                AddFileWatcher(filePath);
-
+                
                 return model;
             }
             catch (JsonReaderException e)
