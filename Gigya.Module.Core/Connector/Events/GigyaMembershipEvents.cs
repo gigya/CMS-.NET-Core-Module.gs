@@ -1,4 +1,5 @@
 ﻿using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Core.Connector.Models;
 using Gigya.Module.Core.Data;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,7 @@ namespace Gigya.Module.Core.Connector.Events
 
     public class GetAccountInfoCompletedEventArgs : EventArgs
     {
+        public List<MappingField> MappingFields { get; set; }
         public Logger Logger { get; set; }
         public IGigyaModuleSettings Settings { get; set; }
         public dynamic GigyaModel { get; set; }

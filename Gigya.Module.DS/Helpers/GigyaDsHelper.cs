@@ -1,6 +1,7 @@
 ﻿using Gigya.Module.Core.Connector.Common;
 using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Core.Connector.Models;
 using Gigya.Module.Core.Data;
 using Gigya.Module.DS.Config;
 using Newtonsoft.Json;
@@ -27,14 +28,45 @@ namespace Gigya.Module.DS.Helpers
             _apiHelper = apiHelper ?? new GigyaDsApiHelper(_logger);
             _dsSettingsHelper = dsSettingsHelper ?? new GigyaDsSettingsHelper(_logger);
         }
-        
+
+        /// <summary>
+        /// Add the ds mappings to the main module field mappings. 
+        /// This means they will be picked up when doing the normal getAccountInfo field mapping.
+        /// </summary>
+        /// <param name="mappingFields">The current module field mappings.</param>
+        /// <param name="dsSettings"></param>
+        public void AddMappingFields(List<MappingField> mappingFields, GigyaDsSettings dsSettings = null)
+        {
+            if (dsSettings == null)
+            {
+                dsSettings = _dsSettingsHelper.Get(_settings.Id.ToString());
+            }
+
+            if (dsSettings == null)
+            {
+                return;
+            }
+            
+            foreach (var mapping in dsSettings.Mappings)
+            {
+                if (!mappingFields.Any(i => i.CmsFieldName == mapping.CmsName))
+                {
+                    mappingFields.Add(new MappingField
+                    {
+                        CmsFieldName = mapping.CmsName,
+                        GigyaFieldName = mapping.GigyaName
+                    });
+                }
+            }
+        }
+
         /// <summary>
         /// Fetches ds data using the configured method (get or search).
         /// </summary>
         /// <param name="uid">The user Id.</param>
         public dynamic GetOrSearch(string uid)
         {
-            var settings = _dsSettingsHelper.Get();
+            var settings = _dsSettingsHelper.Get(_settings.Id.ToString());
             if (settings == null)
             {
                 return null;
@@ -218,11 +250,11 @@ namespace Gigya.Module.DS.Helpers
         }
 
         /// <summary>
-        /// Merges the getAccountInfo model with the ds data.
+        /// Merges the getAccountInfo model with the ds data and adds the DS mapping fields to <param name="mappingFields"></param>
         /// </summary>
         /// <param name="accountInfo"></param>
         /// <returns></returns>
-        public dynamic Merge(dynamic accountInfo)
+        public dynamic Merge(dynamic accountInfo, List<MappingField> mappingFields)
         {
             // get ds data
             var data = GetOrSearch(accountInfo.UID);
@@ -233,6 +265,7 @@ namespace Gigya.Module.DS.Helpers
 
             // merge with accountInfo
             accountInfo = DynamicUtils.Merge(accountInfo, data);
+            AddMappingFields(mappingFields);
             return accountInfo;
         }
     }

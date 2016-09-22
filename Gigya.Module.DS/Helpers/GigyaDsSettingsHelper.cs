@@ -30,24 +30,32 @@ namespace Gigya.Module.DS.Helpers
         /// <summary>
         /// Gets the ds settings.
         /// </summary>
+        /// <param name="siteId">Id of the current site.</param>
         /// <returns></returns>
-        public GigyaDsSettings Get()
+        public GigyaDsSettings Get(string siteId)
         {
-            var settings = MemoryCache.Default[_cacheKey] as GigyaDsSettings;
-            if (settings == null)
+            var settingsContainer = MemoryCache.Default[_cacheKey] as GigyaDsSettingsContainer;
+            if (settingsContainer == null)
             {
-                settings = Load();
-                MemoryCache.Default[_cacheKey] = settings;
-            }            
+                settingsContainer = Load();
+                MemoryCache.Default[_cacheKey] = settingsContainer;
+            }
 
-            return settings.Mappings != null && settings.Mappings.Any() ? settings : null;
+            if (settingsContainer.Sites == null || !settingsContainer.Sites.Any())
+            {
+                return null;
+            }
+
+            // get settings for site if possible otherwise fallback to default
+            var settings = settingsContainer.Sites.FirstOrDefault(i => i.SiteId == siteId) ?? settingsContainer.Sites.FirstOrDefault(i => i.SiteId == "-1");
+            return settings;
         }
 
         /// <summary>
         /// Parses the ds settings json file and adds a file watch to be notified of updates.
         /// </summary>
         /// <returns></returns>
-        private GigyaDsSettings Load()
+        private GigyaDsSettingsContainer Load()
         {
             var filePath = _configLocation;
             if (!string.IsNullOrEmpty(filePath) && filePath.StartsWith("~/"))
@@ -58,7 +66,7 @@ namespace Gigya.Module.DS.Helpers
             if (!File.Exists(filePath))
             {
                 _logger.Error(string.Concat("Data Storage JSON file wasn't found. Tried to use: ", filePath));
-                return new GigyaDsSettings();
+                return new GigyaDsSettingsContainer();
             }
 
             try
@@ -72,19 +80,22 @@ namespace Gigya.Module.DS.Helpers
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 };
 
-                var model = JsonConvert.DeserializeObject<GigyaDsSettings>(jsonRaw, jsonSettings);
+                var model = JsonConvert.DeserializeObject<GigyaDsSettingsContainer>(jsonRaw, jsonSettings);
 
-                foreach (var mapping in model.Mappings)
+                foreach (var site in model.Sites)
                 {
-                    var split = mapping.GigyaName.Split(new char[] { '.' }, 3);
-                    if (split.Length == 3)
+                    foreach (var mapping in site.Mappings)
                     {
-                        mapping.GigyaDsType = split[1];
-                        mapping.GigyaFieldName = split[2];
+                        var split = mapping.GigyaName.Split(new char[] { '.' }, 3);
+                        if (split.Length == 3)
+                        {
+                            mapping.GigyaDsType = split[1];
+                            mapping.GigyaFieldName = split[2];
+                        }
                     }
-                }
 
-                model.MappingsByType = model.Mappings.GroupBy(i => i.GigyaDsType).ToDictionary(i => i.Key, j => j.ToList());
+                    site.MappingsByType = site.Mappings.GroupBy(i => i.GigyaDsType).ToDictionary(i => i.Key, j => j.ToList());
+                }
                 
                 return model;
             }
@@ -97,7 +108,7 @@ namespace Gigya.Module.DS.Helpers
                 _logger.Error("Failed to parse Gigya DS config file.", e);
             }
 
-            return new GigyaDsSettings();
+            return new GigyaDsSettingsContainer();
         }
 
         /// <summary>

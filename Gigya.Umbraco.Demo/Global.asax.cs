@@ -19,9 +19,32 @@ namespace Gigya.Umbraco.Demo
         {
             base.OnApplicationStarted(sender, e);
 
-            GigyaMembershipHelper.GettingGigyaValue += GigyaMembershipHelper_GettingGigyaValue;
+            //GigyaMembershipHelper.GettingGigyaValue += GigyaMembershipHelper_GettingGigyaValue;
+            GigyaEventHub.Instance.GettingGigyaValue += Instance_GettingGigyaValue;
 
             MemberService.Saved += MemberService_Saved;
+        }
+
+        private void Instance_GettingGigyaValue(object sender, MapGigyaFieldEventArgs e)
+        {
+            var profile = e.GigyaModel.profile;
+            switch (e.CmsFieldName)
+            {
+                case "birthDate":
+                    if (e.GigyaValue != null)
+                    {
+                        try
+                        {
+                            e.GigyaValue = new DateTime(Convert.ToInt32(profile.birthYear), Convert.ToInt32(profile.birthMonth), Convert.ToInt32(profile.birthDay));
+                        }
+                        catch
+                        {
+                            // log
+                        }
+
+                    }
+                    return;
+            }
         }
 
         private void MemberService_Saved(IMemberService sender, global::Umbraco.Core.Events.SaveEventArgs<global::Umbraco.Core.Models.IMember> e)

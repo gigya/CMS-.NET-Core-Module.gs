@@ -24,6 +24,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
 {
     public class GigyaMembershipHelper : IGigyaMembershipHelper
     {
+        [Obsolete("Use GigyaEventHub.Instance.GettingGigyaValue instead.")]
         public static event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
 
         private readonly GigyaApiHelper _gigyaApiHelper;
@@ -104,6 +105,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             };
 
             GettingGigyaValue?.Invoke(this, eventArgs);
+            GigyaEventHub.Instance.RaiseGettingGigyaValue(this, eventArgs);
             return eventArgs.GigyaValue;
         }
 
@@ -267,11 +269,11 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                 _logger.Error("Failed to getAccountInfo");
                 return;
             }
-            
-            var gigyaModel = GetAccountInfo(settings, userInfoResponse);
+
+            List<MappingField> mappingFields = GetMappingFields(settings);
+            var gigyaModel = GetAccountInfo(settings, userInfoResponse, mappingFields);
             
             // find what field has been configured for the Umbraco username
-            List<MappingField> mappingFields = GetMappingFields(settings);
             var username = GetUmbracoUsername(mappingFields, gigyaModel);
             
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
@@ -309,7 +311,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             var currentUserName = HttpContext.Current.User.Identity.Name;
 
             List<MappingField> mappingFields = GetMappingFields(settings);
-            var gigyaModel = GetAccountInfo(settings, userInfoResponse);
+            var gigyaModel = GetAccountInfo(settings, userInfoResponse, mappingFields);
 
             string username = GetUmbracoUsername(mappingFields, gigyaModel);
             var success = MapProfileFieldsAndUpdate(currentUserName, username, settings, gigyaModel, mappingFields);
@@ -326,13 +328,13 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
         }
 
-        private ExpandoObject GetAccountInfo(IGigyaModuleSettings settings, GSResponse userInfoResponse)
+        private ExpandoObject GetAccountInfo(IGigyaModuleSettings settings, GSResponse userInfoResponse, List<MappingField> mappingFields)
         {
             var userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
             ThrowTestingExceptionIfRequired(settings, userInfo);
 
             // fire getAccountInfo completed event
-            var getAccountInfoCompletedArgs = new GetAccountInfoCompletedEventArgs { GigyaModel = userInfo, Settings = settings, Logger = _logger };
+            var getAccountInfoCompletedArgs = new GetAccountInfoCompletedEventArgs { GigyaModel = userInfo, Settings = settings, Logger = _logger, MappingFields = mappingFields };
             GigyaEventHub.Instance.RaiseGetAccountInfoCompleted(this, getAccountInfoCompletedArgs);
 
             // fire merge getAccountInfo completed event

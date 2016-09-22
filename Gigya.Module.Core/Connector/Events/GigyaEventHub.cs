@@ -12,6 +12,12 @@ namespace Gigya.Module.Core.Connector.Events
 
         public event EventHandler<GetAccountInfoCompletedEventArgs> GetAccountInfoCompleted;
         public event EventHandler<AccountInfoMergeCompletedEventArgs> AccountInfoMergeCompleted;
+        public event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
+
+        public void RaiseGettingGigyaValue(object sender, MapGigyaFieldEventArgs e)
+        {
+            GettingGigyaValue?.Invoke(sender, e);
+        }
 
         public void RaiseGetAccountInfoCompleted(object sender, GetAccountInfoCompletedEventArgs e)
         {
