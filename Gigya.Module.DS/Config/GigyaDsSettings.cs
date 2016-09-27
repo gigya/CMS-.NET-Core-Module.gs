@@ -15,7 +15,7 @@ namespace Gigya.Module.DS.Config
     [Serializable]
     public class GigyaDsSettings
     {
-        public string SiteId { get; set; }
+        public string[] SiteId { get; set; }
         public GigyaDsMethod Method { get; set; }
         public List<GigyaDsMapping> Mappings { get; set; }
         public Dictionary<string, List<GigyaDsMapping>> MappingsByType { get; set; }

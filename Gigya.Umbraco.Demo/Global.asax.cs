@@ -1,4 +1,8 @@
 ﻿using Gigya.Module.Core.Connector.Events;
+using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Core.Data;
+using Gigya.Module.DS.Helpers;
+using Gigya.Umbraco.Module.Connector;
 using Gigya.Umbraco.Module.Connector.Helpers;
 using System;
 using System.Collections.Generic;
@@ -18,10 +22,8 @@ namespace Gigya.Umbraco.Demo
         protected override void OnApplicationStarted(object sender, EventArgs e)
         {
             base.OnApplicationStarted(sender, e);
-
-            //GigyaMembershipHelper.GettingGigyaValue += GigyaMembershipHelper_GettingGigyaValue;
+            
             GigyaEventHub.Instance.GettingGigyaValue += Instance_GettingGigyaValue;
-
             MemberService.Saved += MemberService_Saved;
         }
 

@@ -339,6 +339,7 @@
     <Content Include="Views\MacroPartials\GigyaLoginButton.cshtml" />
     <Content Include="Views\MacroPartials\GigyaRegisterButton.cshtml" />
     <Content Include="Views\MacroPartials\GigyaEditProfile.cshtml" />
+    <Content Include="Views\MacroPartials\GigyaSettings.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

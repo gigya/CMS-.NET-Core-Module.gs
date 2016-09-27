@@ -38,6 +38,10 @@ namespace Gigya.Module.DS.Helpers
             if (settingsContainer == null)
             {
                 settingsContainer = Load();
+                if (settingsContainer == null)
+                {
+                    return null;
+                }
                 MemoryCache.Default[_cacheKey] = settingsContainer;
             }
 
@@ -47,7 +51,7 @@ namespace Gigya.Module.DS.Helpers
             }
 
             // get settings for site if possible otherwise fallback to default
-            var settings = settingsContainer.Sites.FirstOrDefault(i => i.SiteId == siteId) ?? settingsContainer.Sites.FirstOrDefault(i => i.SiteId == "-1");
+            var settings = settingsContainer.Sites.FirstOrDefault(i => i.SiteId.Any(j => j == siteId)) ?? settingsContainer.Sites.FirstOrDefault(i => i.SiteId.Any(j => j == "-1"));
             return settings;
         }
 
@@ -66,7 +70,7 @@ namespace Gigya.Module.DS.Helpers
             if (!File.Exists(filePath))
             {
                 _logger.Error(string.Concat("Data Storage JSON file wasn't found. Tried to use: ", filePath));
-                return new GigyaDsSettingsContainer();
+                return null;
             }
 
             try
