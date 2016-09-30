@@ -1,79 +1,85 @@
 ﻿{
-  "sites": [
-    {
-      "method":  "Get",
-      "siteId": [ -1 ],
-      "mappings": [
-        {
-          "cmsName": "firstName",
-          "gigyaName": "ds.userinfo.firstName_s",
-          "custom": {
-            "oid": "8436d64670e3497c93ab7a6c0afec936"
-          }
-        },
-        {
-          "cmsName": "middleName",
-          "gigyaName": "ds.userinfo.middleName_s",
-          "custom": {
-            "oid": "a9d000d39dbf4e0e80eccaa982357b2c"
-          }
-        },
-		    {
-          "cmsName": "birthDate2",
-          "gigyaName": "ds.userinfo.birthDate_d",
-          "custom": {
-            "oid": "8436d64670e3497c93ab7a6c0afec936"
-          }
-        }
-      ]
-    },
-	{
-    "method": "Search",
-    "siteId": [ "1104", "999999", "888888" ],
-	"mappings": [
-	  {
-		"cmsName": "",
-		"gigyaName": "ds.userinfo.firstName_s",
-		"custom": {
-		  "oid": "8436d64670e3497c93ab7a6c0afec936"
-		}
-	  },
-	  {
-	  "cmsName": "middleName",
-		"gigyaName": "ds.userinfo.middleName_s",
-		"custom": {
-		  "oid": "a9d000d39dbf4e0e80eccaa982357b2c"
-		}
-	  },
-	  {
-		"cmsName": "isCool",
-		"gigyaName": "ds.userinfo.isCool",
-		"custom": {
-		  "oid": "d4e04aa6183f48dba260735642aa777a"
-		}
-	  },
-	  {
-		"cmsName": "addressLine1",
-		"gigyaName": "ds.addressInfo.addressLine1",
-		"custom": {
-		  "oid": "ad72d16c69f74983a42f0624db7b4f2a"
-		}
-	  },
-	  {
-		"cmsName": "addressYearMoved",
-		"gigyaName": "ds.addressInfo.yearMoved_d",
-		"custom": {
-		  "oid": "af5d48f9058049e09cefcfe947d35d67"
-		}
-	  },
-	  {
-		"cmsName": "age2",
-		"gigyaName": "ds.userinfo.age_i",
-		"custom": {
-		  "oid": "ca29895c34d24c4989d778882ae30ddd"
-		}
-	  }
-	]
-	}
-  ]
+   "sites":[
+      {
+         "method":"Get",
+         "siteId":[
+            -1
+         ],
+         "mappings":[
+            {
+               "cmsName":"firstName",
+               "gigyaName":"ds.userinfo.firstName_s",
+               "custom":{
+                  "oid":"8436d64670e3497c93ab7a6c0afec936"
+               }
+            },
+            {
+               "cmsName":"middleName",
+               "gigyaName":"ds.userinfo.middleName_s",
+               "custom":{
+                  "oid":"a9d000d39dbf4e0e80eccaa982357b2c"
+               }
+            },
+            {
+               "cmsName":"birthDate2",
+               "gigyaName":"ds.userinfo.birthDate_d",
+               "custom":{
+                  "oid":"8436d64670e3497c93ab7a6c0afec936"
+               }
+            }
+         ]
+      },
+      {
+         "method":"Search",
+         "siteId":[
+            "1104",
+            "999999",
+            "888888"
+         ],
+         "mappings":[
+            {
+               "cmsName":"",
+               "gigyaName":"ds.userinfo.firstName_s",
+               "custom":{
+                  "oid":"8436d64670e3497c93ab7a6c0afec936"
+               }
+            },
+            {
+               "cmsName":"middleName",
+               "gigyaName":"ds.userinfo.middleName_s",
+               "custom":{
+                  "oid":"a9d000d39dbf4e0e80eccaa982357b2c"
+               }
+            },
+            {
+               "cmsName":"isCool",
+               "gigyaName":"ds.userinfo.isCool",
+               "custom":{
+                  "oid":"d4e04aa6183f48dba260735642aa777a"
+               }
+            },
+            {
+               "cmsName":"addressLine1",
+               "gigyaName":"ds.addressInfo.addressLine1",
+               "custom":{
+                  "oid":"ad72d16c69f74983a42f0624db7b4f2a"
+               }
+            },
+            {
+               "cmsName":"addressYearMoved",
+               "gigyaName":"ds.addressInfo.yearMoved_d",
+               "custom":{
+                  "oid":"af5d48f9058049e09cefcfe947d35d67"
+               }
+            },
+            {
+               "cmsName":"age2",
+               "gigyaName":"ds.userinfo.age_i",
+               "custom":{
+                  "oid":"ca29895c34d24c4989d778882ae30ddd"
+               }
+            }
+         ]
+      }
+   ]
 }
