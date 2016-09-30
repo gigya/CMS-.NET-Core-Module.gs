@@ -38,13 +38,6 @@
          ],
          "mappings":[
             {
-               "cmsName":"",
-               "gigyaName":"ds.userinfo.firstName_s",
-               "custom":{
-                  "oid":"8436d64670e3497c93ab7a6c0afec936"
-               }
-            },
-            {
                "cmsName":"middleName",
                "gigyaName":"ds.userinfo.middleName_s",
                "custom":{

@@ -118,6 +118,7 @@ namespace Gigya.UnitTests.DS
             var settings = new GigyaModuleSettings
             {
                 Id = -1,
+                ApiKey = "3_qkAT5OcGyvYpkjc_VF6-OfoeTKGk4T_jVwjFF9f5TQzoAg-mH8SBsjQi1srdsOm6",
                 MappingFields = string.Empty,
                 DataCenter = "eu1"
             };

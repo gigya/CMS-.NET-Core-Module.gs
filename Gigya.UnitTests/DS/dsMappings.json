@@ -2,7 +2,7 @@
   "sites": [
     {
       "method":  "Get",
-      "siteId": -1,
+      "siteId": [ -1 ],
       "mappings": [
         {
           "cmsName": "firstName",
