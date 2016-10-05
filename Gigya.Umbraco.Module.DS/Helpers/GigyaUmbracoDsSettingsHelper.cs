@@ -77,17 +77,7 @@ namespace Gigya.Umbraco.Module.DS.Helpers
 
             foreach (var result in results)
             {
-                var mappedSetting = new GigyaDsSettings
-                {
-                    Method = (GigyaDsMethod)result.Method,
-                    SiteId = new string[] { result.Id.ToString() },
-                    Mappings = mappings.Where(i => i.DsSettingId == result.Id).Select(Map).ToList()
-                };
-
-                mappedSetting.MappingsByType = mappedSetting.Mappings
-                    .Where(i => !string.IsNullOrEmpty(i.GigyaDsType))
-                    .GroupBy(i => i.GigyaDsType)
-                    .ToDictionary(i => i.Key, j => j.ToList());
+                GigyaDsSettings mappedSetting = Map(mappings, result);
 
                 model.Sites.Add(mappedSetting);
             }
@@ -95,7 +85,23 @@ namespace Gigya.Umbraco.Module.DS.Helpers
             return model;
         }
 
-        private GigyaDsMapping Map(GigyaUmbracoDsMapping source)
+        public GigyaDsSettings Map(List<GigyaUmbracoDsMapping> mappings, GigyaUmbracoModuleDsSettings settings)
+        {
+            var mappedSetting = new GigyaDsSettings
+            {
+                Method = (GigyaDsMethod)settings.Method,
+                SiteId = new string[] { settings.Id.ToString() },
+                Mappings = mappings.Where(i => i.DsSettingId == settings.Id).Select(Map).ToList()
+            };
+
+            mappedSetting.MappingsByType = mappedSetting.Mappings
+                .Where(i => !string.IsNullOrEmpty(i.GigyaDsType))
+                .GroupBy(i => i.GigyaDsType)
+                .ToDictionary(i => i.Key, j => j.ToList());
+            return mappedSetting;
+        }
+
+        public GigyaDsMapping Map(GigyaUmbracoDsMapping source)
         {
             var mapping = new GigyaDsMapping
             {

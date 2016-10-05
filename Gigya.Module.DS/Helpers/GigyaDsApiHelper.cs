@@ -43,6 +43,16 @@ namespace Gigya.Module.DS.Helpers
             return request;
         }
 
+        public GSResponse GetSchema(IGigyaModuleSettings settings, string gigyaType)
+        {
+            var method = "ds.getSchema";
+            var request = NewRequest(settings, settings.ApplicationSecret, method);
+            request.SetParam("type", gigyaType);
+            
+            var response = Send(request, method, settings);
+            return response;
+        }
+
         /// <summary>
         /// Calls ds.get to get ds data.
         /// </summary>
@@ -91,28 +101,28 @@ namespace Gigya.Module.DS.Helpers
             }
             catch (Exception e)
             {
-                return LogError(response, e);
+                return LogError(response, apiMethod, e);
             }
 
             GigyaApiHelper.LogResponseIfRequired(_logger, settings, apiMethod, response);
 
             if (response.GetErrorCode() != 0)
             {
-                LogError(response, null);
+                LogError(response, apiMethod, null);
                 return null;
             }
 
             return response;
         }
 
-        private GSResponse LogError(GSResponse response, Exception e)
+        private GSResponse LogError(GSResponse response, string method, Exception e)
         {
             dynamic gigyaModel = response != null ? JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText()) : new ExpandoObject();
             var gigyaError = response != null ? response.GetErrorMessage() : string.Empty;
             var gigyaErrorDetail = DynamicUtils.GetValue<string>(gigyaModel, "errorDetails");
             var gigyaCallId = DynamicUtils.GetValue<string>(gigyaModel, "callId");
 
-            _logger.Error(string.Format("API call: {0}. CallId: {1}. Error: {2}. Error Details: {3}.", "ds.get", gigyaCallId, gigyaError, gigyaErrorDetail), e);
+            _logger.Error(string.Format("API call: {0}. CallId: {1}. Error: {2}. Error Details: {3}.", method, gigyaCallId, gigyaError, gigyaErrorDetail), e);
             return response;
         }
     }

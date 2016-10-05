@@ -2,8 +2,10 @@
 using Gigya.Module.DS.Config;
 using Gigya.Module.DS.Helpers;
 using Gigya.Umbraco.Module.Connector;
+using Gigya.Umbraco.Module.DS.Data;
 using Gigya.Umbraco.Module.DS.Helpers;
 using Gigya.Umbraco.Module.DS.Mvc.Models;
+using Gigya.Umbraco.Module.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,9 +80,9 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
 
             if (model.Inherited && model.Id > 0)
             {
+                // don't delete global settings
                 if (settings.Id > -1)
                 {
-                    // don't delete global settings
                     settingsHelper.Delete(settings);
                 }
 
@@ -97,24 +99,35 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
             if (model.Mappings == null || !model.Mappings.Any())
             {
                 response.Error = "At least one mapping is required.";
+                _logger.Error(response.Error);
                 return response;
             }
 
             if (model.Mappings.Any(i => string.IsNullOrEmpty(i.CmsName)))
             {
                 response.Error = "Umbraco field is required.";
+                _logger.Error(response.Error);
                 return response;
             }
 
             if (model.Mappings.Any(i => string.IsNullOrEmpty(i.GigyaName)))
             {
                 response.Error = "Gigya DS field is required.";
+                _logger.Error(response.Error);
                 return response;
             }
 
             if (model.Mappings.Any(i => string.IsNullOrEmpty(i.Oid)))
             {
                 response.Error = "Gigya DS OID field is required.";
+                _logger.Error(response.Error);
+                return response;
+            }
+
+            if (model.Mappings.Any(i => !i.GigyaName.StartsWith("ds.") || i.GigyaName.Split('.').Length < 3))
+            {
+                response.Error = "Gigya DS fields must be in the format ds.type.fieldName";
+                _logger.Error(response.Error);
                 return response;
             }
 
@@ -128,11 +141,35 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
                 Oid = i.Oid
             }).ToList();
 
+            var mappedSettings = settingsHelper.Map(settings.Mappings, settings);
+            if (!Validate(mappedSettings, ref response))
+            {
+                return response;
+            }            
+
             settingsHelper.Save(settings);
 
             response.Success = true;
             settingsHelper.ClearCache(model.Id);
             return response;
+        }
+
+        private bool Validate(GigyaDsSettings settings, ref GigyaDsSettingsResponseModel responseModel)
+        {
+            var coreSettingsHelper = new GigyaSettingsHelper();
+            var coreSettings = coreSettingsHelper.Get(settings.SiteId);
+
+            var dsHelper = new GigyaDsHelper(coreSettings, _logger, settings);
+
+            var errorMessage = dsHelper.Validate();
+            if (!string.IsNullOrEmpty(errorMessage))
+            {
+                responseModel.Error = errorMessage;
+                _logger.Error(responseModel.Error);
+                return false;
+            }
+
+            return true;
         }
 
         private GigyaDsSettingsViewModel GetModel(int id, GigyaDsSettings data)

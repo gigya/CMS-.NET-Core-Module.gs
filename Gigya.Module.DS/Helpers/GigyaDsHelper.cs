@@ -76,6 +76,42 @@ namespace Gigya.Module.DS.Helpers
             }
         }
 
+        public string Validate()
+        {
+            foreach (var mappingType in _dsSettings.MappingsByType)
+            {
+                var fields = mappingType.Value.Select(i => i.GigyaFieldName).Distinct();
+                dynamic data = GetSchema(mappingType.Key);
+
+                if (data == null)
+                {
+                    return string.Format("ds type [{0}] does not exist.", mappingType.Key);
+                }
+
+                foreach (var field in fields)
+                {
+                    if (DynamicUtils.GetValue<object>(data, string.Concat("schema.fields.", field)) == null)
+                    {
+                        return string.Format("ds.{0}.{1} does not exist.", mappingType.Key, field);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private ExpandoObject GetSchema(string dsType)
+        {
+            var response = _apiHelper.GetSchema(_settings, dsType);
+            if (response == null)
+            {
+                return null;
+            }
+
+            var model = JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText());
+            return model;
+        }
+
         /// <summary>
         /// Fetches all ds data using ds.search
         /// </summary>
