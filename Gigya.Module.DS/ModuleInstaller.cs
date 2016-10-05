@@ -12,13 +12,7 @@ namespace Gigya.Module.DS
     {
         public static void PreApplicationStart()
         {
-            GigyaEventHub.Instance.GetAccountInfoCompleted += GigyaEventHub_GetAccountInfoCompleted;
-        }
-
-        private static void GigyaEventHub_GetAccountInfoCompleted(object sender, GetAccountInfoCompletedEventArgs e)
-        {
-            var helper = new GigyaDsHelper(e.Settings, e.Logger);
-            e.GigyaModel = helper.Merge(e.GigyaModel, e.MappingFields);
+            // not required as event must be attached in by CMS specific module rather than core code
         }
     }
 }

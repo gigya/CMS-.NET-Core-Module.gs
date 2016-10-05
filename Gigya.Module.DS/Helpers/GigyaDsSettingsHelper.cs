@@ -42,7 +42,7 @@ namespace Gigya.Module.DS.Helpers
                 {
                     return null;
                 }
-                MemoryCache.Default[_cacheKey] = settingsContainer;
+                MemoryCache.Default.Set(_cacheKey, settingsContainer, DateTime.Now.AddMinutes(60));
             }
 
             if (settingsContainer.Sites == null || !settingsContainer.Sites.Any())
@@ -98,7 +98,7 @@ namespace Gigya.Module.DS.Helpers
                         }
                     }
 
-                    site.MappingsByType = site.Mappings.GroupBy(i => i.GigyaDsType).ToDictionary(i => i.Key, j => j.ToList());
+                    site.MappingsByType = site.Mappings.Where(i => !string.IsNullOrEmpty(i.GigyaDsType)).GroupBy(i => i.GigyaDsType).ToDictionary(i => i.Key, j => j.ToList());
                 }
                 
                 return model;

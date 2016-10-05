@@ -123,12 +123,12 @@ namespace Gigya.UnitTests.DS
                 DataCenter = "eu1"
             };
 
-            var settingsHelper = new Mock<GigyaDsSettingsHelper>(_logger);
-            settingsHelper.Setup(i => i.Get(It.IsAny<string>())).Returns(dsSettings);
+            //var settingsHelper = new Mock<GigyaDsSettingsHelper>(_logger);
+            //settingsHelper.Setup(i => i.Get(It.IsAny<string>())).Returns(dsSettings);
 
             var mappingFields = new List<MappingField>();
 
-            var helper = new GigyaDsHelper(settings, _logger, null, settingsHelper.Object);
+            var helper = new GigyaDsHelper(settings, _logger, dsSettings);
             var result = helper.Merge(gigyaModel, mappingFields);
 
             Assert.IsNotNull(result);

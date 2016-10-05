@@ -73,5 +73,7 @@
 /Gigya.DemoSite2/App_Data/RadUploadTemp
 /Gigya.DemoSite2/bin
 /Gigya.DemoSite2/GSCSharpSDK.dll
-/Gigya.Umbraco.Module.DS
 /Gigya.Umbraco.Demo/masterpages/Master2.master
+/Gigya.Umbraco.Module.DS/App_Data/NuGetBackup/20160930-155554/bin/Release
+/Gigya.Umbraco.Module.DS/bin/Debug
+/Gigya.Umbraco.Module.DS/obj/Debug
