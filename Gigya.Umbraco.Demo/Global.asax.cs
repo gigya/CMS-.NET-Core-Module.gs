@@ -4,6 +4,8 @@ using Gigya.Module.Core.Data;
 using Gigya.Module.DS.Helpers;
 using Gigya.Umbraco.Module.Connector;
 using Gigya.Umbraco.Module.Connector.Helpers;
+using Gigya.Umbraco.Module.DS.Helpers;
+using Gigya.Umbraco.Module.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,13 +24,53 @@ namespace Gigya.Umbraco.Demo
         protected override void OnApplicationStarted(object sender, EventArgs e)
         {
             base.OnApplicationStarted(sender, e);
+
+            GigyaEventHub.Instance.AccountInfoMergeCompleted += Instance_AccountInfoMergeCompleted;
+        }
+
+        private void Instance_AccountInfoMergeCompleted(object sender, AccountInfoMergeCompletedEventArgs e)
+        {
+            dynamic gigyaAccountInfoWithDsDataMerged = e.GigyaModel;
+            gigyaAccountInfoWithDsDataMerged.ds.dsType.fieldName = "updatedValue";
+        }
+
+
+        /// <summary>
+        /// Sample method to manually retrieve DS data from Gigya.
+        /// </summary>
+        /// <remarks>
+        /// This method retrieves Gigya settings from Umbraco.
+        /// If you want to use your own settings this can be done by passing your own settings models into the GigyaDsHelper constructor.
+        /// </remarks>
+        private void ManuallyRetrieveDsData()
+        {
+            // create a new Umbraco logger
+            var logger = new Logger(new UmbracoLogger());
+
+            // create a new Gigya Umbraco DS Settings helper for retrieving DS settings from the database (these are managed through Umbraco)
+            var settingsHelper = new GigyaUmbracoDsSettingsHelper(logger);
             
-            GigyaEventHub.Instance.GettingGigyaValue += Instance_GettingGigyaValue;
-            MemberService.Saved += MemberService_Saved;
+            // gets the DS settings for the current site (this is done by finding the homepage from the current Umbraco page) 
+            var dsSettings = settingsHelper.GetForCurrentSite();
+
+            // create a new Gigya Settings helper for getting core module settings
+            var coreSettingsHelper = new GigyaSettingsHelper();
+
+            // get core settings for the current site (this is done by finding the homepage from the current Umbraco page) 
+            var coreSettings = coreSettingsHelper.GetForCurrentSite(true);
+
+            // create a new helper Gigya DS Helper to retrieve DS data from Gigya
+            var dsHelper = new GigyaDsHelper(coreSettings, logger, dsSettings);
+
+            // retrieve DS data for a user who's id is userIdValue
+            var dsData = dsHelper.GetOrSearch("userIdValue");
         }
 
         private void Instance_GettingGigyaValue(object sender, MapGigyaFieldEventArgs e)
         {
+            //GigyaEventHub.Instance.GettingGigyaValue += Instance_GettingGigyaValue;
+            //MemberService.Saved += MemberService_Saved;
+
             var profile = e.GigyaModel.profile;
             switch (e.CmsFieldName)
             {

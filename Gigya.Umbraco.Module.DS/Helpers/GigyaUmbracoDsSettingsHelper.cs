@@ -1,5 +1,6 @@
 ﻿using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.DS.Config;
+using Gigya.Umbraco.Module.Connector;
 using Gigya.Umbraco.Module.DS.Data;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,25 @@ namespace Gigya.Umbraco.Module.DS.Helpers
         {
             var cacheKey = string.Concat(_cacheKey, "__" + siteId);
             MemoryCache.Default.Remove(cacheKey);
+        }
+
+        public GigyaDsSettings GetForCurrentSite()
+        {
+            // get current page id
+            var currentPageId = UmbracoContext.Current.PageId;
+            if (!currentPageId.HasValue)
+            {
+                throw new ArgumentException("No current page Id");
+            }
+
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var currentNode = umbracoHelper.TypedContent(currentPageId);
+
+            // find homepage from current node
+            var homepage = Utils.HomepageNode(currentNode);
+
+            var model = Get(homepage.Id.ToString());
+            return model;
         }
 
         public virtual GigyaDsSettings Get(string siteId, bool useCache = true)
