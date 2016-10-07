@@ -28,7 +28,7 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
         public GigyaDsSettingsApiResponseModel Get(int id)
         {
             var settingsHelper = new GigyaUmbracoDsSettingsHelper(_logger);
-            var data = settingsHelper.Get(id.ToString(), false) ?? new GigyaDsSettings { SiteId = new string[] { id.ToString() }, Mappings = new List<GigyaDsMapping>() };
+            var data = settingsHelper.Get(id, false) ?? new GigyaDsSettings { SiteId = new string[] { id.ToString() }, Mappings = new List<GigyaDsMapping>() };
             var model = GetModel(id, data);
 
             var memberType = this.ApplicationContext.Services.MemberTypeService.Get(Constants.MemberTypeAlias);
@@ -90,7 +90,7 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
                 response.Success = true;
 
                 // return global settings to refresh client
-                var globalData = settingsHelper.Get(model.Id.ToString());
+                var globalData = settingsHelper.Get(model.Id);
                 var globalModel = GetModel(model.Id, globalData);
                 response.Settings = globalModel;
                 return response;

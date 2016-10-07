@@ -30,8 +30,8 @@ namespace Gigya.Umbraco.Demo
 
         private void Instance_AccountInfoMergeCompleted(object sender, AccountInfoMergeCompletedEventArgs e)
         {
-            dynamic gigyaAccountInfoWithDsDataMerged = e.GigyaModel;
-            gigyaAccountInfoWithDsDataMerged.ds.dsType.fieldName = "updatedValue";
+            //dynamic gigyaAccountInfoWithDsDataMerged = e.GigyaModel;
+            //gigyaAccountInfoWithDsDataMerged.ds.dsType.fieldName = "updatedValue";
         }
 
 

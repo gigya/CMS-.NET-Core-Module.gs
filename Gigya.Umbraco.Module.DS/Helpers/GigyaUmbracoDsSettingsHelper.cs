@@ -28,6 +28,11 @@ namespace Gigya.Umbraco.Module.DS.Helpers
             MemoryCache.Default.Remove(cacheKey);
         }
 
+        /// <summary>
+        /// Gets the settings based on the homepage for the current Umbraco page. 
+        /// This method will only work if called within the Umbraco pipeline e.g. it will fail for ajax requests.
+        /// </summary>
+        /// <returns></returns>
         public GigyaDsSettings GetForCurrentSite()
         {
             // get current page id
@@ -43,11 +48,11 @@ namespace Gigya.Umbraco.Module.DS.Helpers
             // find homepage from current node
             var homepage = Utils.HomepageNode(currentNode);
 
-            var model = Get(homepage.Id.ToString());
+            var model = Get(homepage.Id);
             return model;
         }
 
-        public virtual GigyaDsSettings Get(string siteId, bool useCache = true)
+        public virtual GigyaDsSettings Get(int siteId, bool useCache = true)
         {
             var cacheKey = string.Concat(_cacheKey, "__" + siteId);
             var settingsContainer = useCache ? MemoryCache.Default[cacheKey] as GigyaDsSettingsContainer : null;
@@ -70,7 +75,8 @@ namespace Gigya.Umbraco.Module.DS.Helpers
             }
 
             // get settings for site if possible otherwise fallback to default
-            var settings = settingsContainer.Sites.FirstOrDefault(i => i.SiteId.Any(j => j == siteId)) ?? settingsContainer.Sites.FirstOrDefault(i => i.SiteId.Any(j => j == "-1"));
+            var siteIdString = siteId.ToString();
+            var settings = settingsContainer.Sites.FirstOrDefault(i => i.SiteId.Any(j => j == siteIdString)) ?? settingsContainer.Sites.FirstOrDefault(i => i.SiteId.Any(j => j == "-1"));
             return settings;
         }
 

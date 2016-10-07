@@ -54,10 +54,10 @@ namespace Gigya.Umbraco.Module.DS
         /// <param name="e"></param>
         private static void GigyaEventHub_GetAccountInfoCompleted(object sender, GetAccountInfoCompletedEventArgs e)
         {
-            var logger = new Logger(new UmbracoLogger());
-            var settingsHelper = new GigyaUmbracoDsSettingsHelper(logger);
+            var settingsHelper = new GigyaUmbracoDsSettingsHelper(e.Logger);
+            var settings = settingsHelper.Get(Convert.ToInt32(e.CurrentSiteId));
 
-            var settings = settingsHelper.Get(e.Settings.Id.ToString());
+            // merge ds data with account info
             var helper = new GigyaDsHelper(e.Settings, e.Logger, settings);
             e.GigyaModel = helper.Merge(e.GigyaModel, e.MappingFields);
         }

@@ -271,7 +271,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
 
             List<MappingField> mappingFields = GetMappingFields(settings);
-            var gigyaModel = GetAccountInfo(settings, userInfoResponse, mappingFields);
+            var gigyaModel = GetAccountInfo(model.Id, settings, userInfoResponse, mappingFields);
             
             // find what field has been configured for the Umbraco username
             var username = GetUmbracoUsername(mappingFields, gigyaModel);
@@ -311,7 +311,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             var currentUserName = HttpContext.Current.User.Identity.Name;
 
             List<MappingField> mappingFields = GetMappingFields(settings);
-            var gigyaModel = GetAccountInfo(settings, userInfoResponse, mappingFields);
+            var gigyaModel = GetAccountInfo(model.Id, settings, userInfoResponse, mappingFields);
 
             string username = GetUmbracoUsername(mappingFields, gigyaModel);
             var success = MapProfileFieldsAndUpdate(currentUserName, username, settings, gigyaModel, mappingFields);
@@ -328,17 +328,46 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
         }
 
-        private ExpandoObject GetAccountInfo(IGigyaModuleSettings settings, GSResponse userInfoResponse, List<MappingField> mappingFields)
+        /// <summary>
+        /// In the Umbraco module the current site id is passed as an array so we need to convert to an int.
+        /// </summary>
+        private int ConvertCurrentSiteId(object currentSiteId)
+        {
+            var idList = currentSiteId as string[];
+            if (idList != null)
+            {
+                currentSiteId = idList[0];
+            }
+
+            return Convert.ToInt32(currentSiteId);
+        }
+
+        private ExpandoObject GetAccountInfo(object currentSiteId, IGigyaModuleSettings settings, GSResponse userInfoResponse, List<MappingField> mappingFields)
         {
             var userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
             ThrowTestingExceptionIfRequired(settings, userInfo);
 
+            var siteId = ConvertCurrentSiteId(currentSiteId);
+
             // fire getAccountInfo completed event
-            var getAccountInfoCompletedArgs = new GetAccountInfoCompletedEventArgs { GigyaModel = userInfo, Settings = settings, Logger = _logger, MappingFields = mappingFields };
+            var getAccountInfoCompletedArgs = new GetAccountInfoCompletedEventArgs
+            {
+                GigyaModel = userInfo,
+                Settings = settings,
+                Logger = _logger,
+                MappingFields = mappingFields,
+                CurrentSiteId = siteId
+            };
             GigyaEventHub.Instance.RaiseGetAccountInfoCompleted(this, getAccountInfoCompletedArgs);
 
             // fire merge getAccountInfo completed event
-            var accountInfoMergeCompletedArgs = new AccountInfoMergeCompletedEventArgs { GigyaModel = getAccountInfoCompletedArgs.GigyaModel, Settings = settings, Logger = _logger };
+            var accountInfoMergeCompletedArgs = new AccountInfoMergeCompletedEventArgs
+            {
+                GigyaModel = getAccountInfoCompletedArgs.GigyaModel,
+                Settings = settings,
+                Logger = _logger,
+                CurrentSiteId = siteId
+            };
             GigyaEventHub.Instance.RaiseAccountInfoMergeCompleted(this, accountInfoMergeCompletedArgs);
             return accountInfoMergeCompletedArgs.GigyaModel;
         }
