@@ -58,7 +58,7 @@ namespace Gigya.Umbraco.Module.DS.Helpers
             var settingsContainer = useCache ? MemoryCache.Default[cacheKey] as GigyaDsSettingsContainer : null;
             if (settingsContainer == null)
             {
-                settingsContainer = Load(Convert.ToInt32(siteId));
+                settingsContainer = Load(siteId);
                 if (useCache)
                 {
                     if (settingsContainer == null)

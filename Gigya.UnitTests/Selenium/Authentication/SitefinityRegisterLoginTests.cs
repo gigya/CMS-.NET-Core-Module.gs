@@ -52,11 +52,11 @@ namespace Gigya.UnitTests.Selenium.Authentication
             base.IsLoggedIntoSecondSiteAsWell();
         }
 
-        [TestMethod]
-        public void Sitefinity_CmsExceptionLogsInUser()
-        {
-            base.CmsExceptionLogsInUser();
-        }
+        //[TestMethod]
+        //public void Sitefinity_CmsExceptionLogsInUser()
+        //{
+        //    base.CmsExceptionLogsInUser();
+        //}
 
         [TestMethod]
         public void Sitefinity_CanLogoutAndIsLoggedOutOfSecondSiteAsWell()
@@ -134,7 +134,7 @@ namespace Gigya.UnitTests.Selenium.Authentication
             Assert.AreEqual(requiredValue, input.GetAttribute("value"), string.Format("Value for {0} didn't match the required value of {1}.", labelName, requiredValue));
         }
 
-        private void LoginToSitefinityAdmin()
+        private void LoginToSitefinityAdmin(int timeout = 0)
         {
             if (_sitefinityAdminDriver != null)
             {
@@ -143,12 +143,12 @@ namespace Gigya.UnitTests.Selenium.Authentication
 
             _sitefinityAdminDriver = new FirefoxDriver();
 
-            SitefinityUtils.LoginToSitefinity(_sitefinityAdminDriver);
+            SitefinityUtils.LoginToSitefinity(_sitefinityAdminDriver, timeout);
         }
 
-        private void UpdateGlobalParams(string json)
+        private void UpdateGlobalParams(string json, int loginTimeout = 0)
         {
-            LoginToSitefinityAdmin();
+            LoginToSitefinityAdmin(loginTimeout);
 
             _sitefinityAdminDriver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
 
@@ -162,7 +162,7 @@ namespace Gigya.UnitTests.Selenium.Authentication
         private void UpdateAllGlobalParams(string json)
         {
             // update all gigya settings to have a session expiration of 10 seconds
-            UpdateGlobalParams(json);
+            UpdateGlobalParams(json, 300);
 
             _sitefinityAdminDriver.FindElement(By.CssSelector(".sfSiteSelectorMenuWrp .clickMenu .main"), 5).Click();
             Thread.Sleep(1000);
@@ -178,6 +178,33 @@ namespace Gigya.UnitTests.Selenium.Authentication
         [TestMethod]
         public void Sitefinity_IsSessionExpiredCorrectly()
         {
+            // ensure caching is turned off
+            XmlDocument sysConfigDoc = new XmlDocument();
+            var path = Path.Combine(Config.SitefinityRootPath, "App_Data", "Sitefinity", "Configuration", "SystemConfig.config");
+            sysConfigDoc.Load(path);
+            
+            // disable caching
+            var outputCacheElem = sysConfigDoc.SelectSingleNode("/systemConfig/outputCacheSettings");
+            if (outputCacheElem == null)
+            {
+                var sysConfig = sysConfigDoc.SelectSingleNode("/systemConfig");
+
+                outputCacheElem = sysConfigDoc.CreateElement("outputCacheSettings");
+                var attribute = sysConfigDoc.CreateAttribute("enableOutputCache");
+                attribute.Value = "False";
+
+                outputCacheElem.Attributes.Append(attribute);
+
+                sysConfig.AppendChild(outputCacheElem);
+
+                sysConfigDoc.Save(path);
+
+                // restart site by updating web.config
+                XmlDocument webConfigDoc = new XmlDocument();
+                webConfigDoc.Load(Path.Combine(Config.SitefinityRootPath, "web.config"));
+                webConfigDoc.Save(Path.Combine(Config.SitefinityRootPath, "web.config"));
+            }
+
             UpdateAllGlobalParams("{ \"sessionExpiration\": 10 }");
 
             var reset = false;
