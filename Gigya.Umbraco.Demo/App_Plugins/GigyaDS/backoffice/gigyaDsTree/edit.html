@@ -1,0 +1,101 @@
+﻿<style>
+    .ng-hide { display: none !important; }
+</style>
+<form ng-controller="Gigya.DS.EditController" ng-submit="publish(model)" autocomplete="off" novalidate>
+    <umb-panel>
+        <umb-header>
+            <div class="span7">
+                <h1 class="umb-headline">Gigya DS Settings</h1>
+            </div>
+        </umb-header>
+        <div class="umb-panel-body umb-scrollable row-fluid">
+            <div class="tab-content form-horizontal" style="padding-bottom: 90px">
+                <div class="umb-pane">
+                    <div class="umb-property" ng-show="nodeId > 0">
+                        <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
+                            <div class="umb-el-wrap">
+                                <label ng-if="hideLabel!=='true'" class="control-label" for="Inherited">
+                                    Inherited from Global Settings
+                                </label>
+                                <div class="controls controls-row">
+                                    <input type="checkbox" id="Inherited" name="Inherited" ng-model="model.Inherited" val-server="value" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="umb-property">
+                        <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
+                            <div class="umb-el-wrap">
+                                <label ng-if="hideLabel!=='true'" class="control-label" for="method">
+                                    Method
+                                </label>
+                                <div class="controls controls-row">
+                                    <select id="method" name="Method" ng-disabled="model.Inherited" ng-model="model.Method" class="umb-editor umb-dropdown" ng-required="true" val-server="value" required="required">
+                                        <option value="0">Search</option>
+                                        <option value="1">Get</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="umb-property">
+                        <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
+                            <div class="umb-el-wrap">
+                                <label ng-if="hideLabel!=='true'" class="control-label">
+                                    Fields Mapping
+                                </label>
+                                <div class="controls controls-row">
+                                    <table class="mapping-fields-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Gigya DS Field</th>
+                                                <th>Gigya DS OID</th>
+                                                <th>Umbraco Field</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="row in model.Mappings">
+                                                <td>
+                                                    <input class="gigya-mapping-field" placeholder="ds.userInfo.age_i" ng-disabled="model.Inherited" type="text" ng-model="row.GigyaName" />
+                                                </td>
+                                                <td>
+                                                    <input class="sf-mapping-field" ng-disabled="model.Inherited || row.Required" type="text" ng-model="row.Oid" />
+                                                </td>
+                                                <td>
+                                                    <select ng-disabled="model.Inherited || row.Required" type="text" ng-model="row.CmsName" ng-options="option.Alias as option.Name for option in data.MemberProperties">
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-small" ng-hide="model.Inherited || row.Required" ng-click="removeMappingField(row)">Remove</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                    <br />
+                                    <button type="button" class="btn btn-small" ng-hide="model.Inherited" ng-click="addMappingField()">Add</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="umb-tab-buttons" detect-fold>
+                        <div class="btn-group">
+                            <button type="submit" data-hotkey="ctrl+s" class="btn btn-success">
+                                <localize key="actions_publish">Publish</localize>
+                            </button>
+                        </div>
+                        <div class="btn-group" ng-show="nodeId > 0">
+                            <a class="btn" ng-href="#/content/content/edit/{{nodeId}}">
+                                <localize key="general_show">Show</localize>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </umb-panel>
+</form>

@@ -281,6 +281,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Plugins\GigyaDS\backoffice\gigyaDsTree\dashboard.controller.js" />
+    <Content Include="App_Plugins\GigyaDS\backoffice\gigyaDsTree\edit.controller.js" />
+    <Content Include="App_Plugins\GigyaDS\backoffice\gigyaDsTree\edit.html" />
+    <Content Include="App_Plugins\GigyaDS\backoffice\gigyaDsTree\gigyaTree.resource.js" />
+    <Content Include="App_Plugins\GigyaDS\lang\en-GB.xml" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\dashboard.controller.js" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\edit.controller.js" />
     <Content Include="App_Plugins\Gigya\backoffice\gigyaTree\edit.html" />
@@ -295,6 +300,7 @@
     <Content Include="scripts\gigya-cms.min.js">
       <DependentUpon>gigya-cms.js</DependentUpon>
     </Content>
+    <Content Include="umbraco\Views\dashboard\gigyaDs\gigyaDsdashboardintro.html" />
     <Content Include="umbraco\Views\dashboard\gigya\gigyadashboardintro.html" />
     <Content Include="umbraco\Views\dashboard\members\membersdashboardintro.html" />
     <Content Include="umbraco\Views\dashboard\members\membersdashboardvideos.html" />
@@ -315,7 +321,9 @@
     <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
     <Content Include="config\UrlRewriting.config" />
     <Content Include="config\umbracoSettings.config" />
-    <Content Include="config\trees.config" />
+    <Content Include="config\trees.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="config\tinyMceConfig.config" />
     <Content Include="config\scripting.config" />
     <Content Include="config\metablogConfig.config" />
@@ -325,12 +333,15 @@
     <Content Include="config\ExamineSettings.config" />
     <Content Include="config\ExamineIndex.config" />
     <Content Include="config\EmbeddedMedia.config" />
-    <Content Include="config\Dashboard.config" />
+    <Content Include="config\Dashboard.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="config\BaseRestExtensions.config" />
     <Content Include="config\applications.config" />
     <Content Include="config\404handlers.config" />
     <Content Include="App_Plugins\Gigya\package.manifest" />
     <Content Include="App_Data\Gigya\dsMappings.json" />
+    <Content Include="App_Plugins\GigyaDS\package.manifest" />
     <None Include="bundleconfig.json" />
     <Content Include="Views\GigyaSettings\Index.cshtml" />
     <Content Include="Views\Master.cshtml" />
@@ -378,6 +389,10 @@
     <ProjectReference Include="..\Gigya.Module.DS\Gigya.Module.DS.csproj">
       <Project>{a35a7bc3-5d80-4030-ba94-0585bf825d00}</Project>
       <Name>Gigya.Module.DS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gigya.Umbraco.Module.DS\Gigya.Umbraco.Module.DS.csproj">
+      <Project>{567779f9-a94f-4503-b417-4b9821ee9491}</Project>
+      <Name>Gigya.Umbraco.Module.DS</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gigya.Umbraco.Module\Gigya.Umbraco.Module.csproj">
       <Project>{a3f56e14-a510-4ba4-89be-9afeda162041}</Project>

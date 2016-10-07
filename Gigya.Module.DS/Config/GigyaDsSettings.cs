@@ -24,8 +24,8 @@ namespace Gigya.Module.DS.Config
     [Serializable]
     public enum GigyaDsMethod
     {
-        Search,
-        Get
+        Search = 0,
+        Get = 1
     }
 
     [Serializable]

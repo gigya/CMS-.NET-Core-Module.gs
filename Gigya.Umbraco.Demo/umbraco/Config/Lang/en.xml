@@ -745,6 +745,7 @@ To manage your website, simply open the Umbraco back office and start adding con
     <key alias="forms">Forms</key>
     <key alias="analytics">Analytics</key>
     <key alias="gigya">Gigya</key>
+    <key alias="gigyaDs">Gigya DS</key>
   </area>
   <area alias="settings">
     <key alias="defaulttemplate">Default template</key>

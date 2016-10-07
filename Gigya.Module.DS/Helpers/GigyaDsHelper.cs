@@ -18,15 +18,15 @@ namespace Gigya.Module.DS.Helpers
     {
         private readonly IGigyaModuleSettings _settings;
         private readonly Logger _logger;
-        private readonly GigyaDsSettingsHelper _dsSettingsHelper;
+        private readonly GigyaDsSettings _dsSettings;
         private readonly GigyaDsApiHelper _apiHelper;
 
-        public GigyaDsHelper(IGigyaModuleSettings settings, Logger logger, GigyaDsApiHelper apiHelper = null, GigyaDsSettingsHelper dsSettingsHelper = null)
+        public GigyaDsHelper(IGigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null)
         {
             _settings = settings;
             _logger = logger;
             _apiHelper = apiHelper ?? new GigyaDsApiHelper(_logger);
-            _dsSettingsHelper = dsSettingsHelper ?? new GigyaDsSettingsHelper(_logger);
+            _dsSettings = dsSettings;
         }
 
         /// <summary>
@@ -35,19 +35,14 @@ namespace Gigya.Module.DS.Helpers
         /// </summary>
         /// <param name="mappingFields">The current module field mappings.</param>
         /// <param name="dsSettings"></param>
-        public void AddMappingFields(List<MappingField> mappingFields, GigyaDsSettings dsSettings = null)
+        public void AddMappingFields(List<MappingField> mappingFields)
         {
-            if (dsSettings == null)
-            {
-                dsSettings = _dsSettingsHelper.Get(_settings.Id.ToString());
-            }
-
-            if (dsSettings == null)
+            if (_dsSettings == null)
             {
                 return;
             }
             
-            foreach (var mapping in dsSettings.Mappings)
+            foreach (var mapping in _dsSettings.Mappings)
             {
                 if (!mappingFields.Any(i => i.CmsFieldName == mapping.CmsName))
                 {
@@ -66,36 +61,71 @@ namespace Gigya.Module.DS.Helpers
         /// <param name="uid">The user Id.</param>
         public dynamic GetOrSearch(string uid)
         {
-            var settings = _dsSettingsHelper.Get(_settings.Id.ToString());
-            if (settings == null)
+            if (_dsSettings == null)
             {
                 return null;
             }
 
-            switch (settings.Method)
+            switch (_dsSettings.Method)
             {
                 case GigyaDsMethod.Get:
-                    return GetAll(uid, settings);
+                    return GetAll(uid);
                 case GigyaDsMethod.Search:
                 default:
-                    return settings.Mappings.Count == 1 ? GetAll(uid, settings) : SearchAll(uid, settings);
+                    return _dsSettings.Mappings.Count == 1 ? GetAll(uid) : SearchAll(uid);
             }
+        }
+
+        public string Validate()
+        {
+            foreach (var mappingType in _dsSettings.MappingsByType)
+            {
+                var fields = mappingType.Value.Select(i => i.GigyaFieldName).Distinct();
+                dynamic data = GetSchema(mappingType.Key);
+
+                if (data == null)
+                {
+                    return string.Format("ds type [{0}] does not exist.", mappingType.Key);
+                }
+
+                foreach (var field in fields)
+                {
+                    if (DynamicUtils.GetValue<object>(data, string.Concat("schema.fields.", field)) == null)
+                    {
+                        return string.Format("ds.{0}.{1} does not exist.", mappingType.Key, field);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private ExpandoObject GetSchema(string dsType)
+        {
+            var response = _apiHelper.GetSchema(_settings, dsType);
+            if (response == null)
+            {
+                return null;
+            }
+
+            var model = JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText());
+            return model;
         }
 
         /// <summary>
         /// Fetches all ds data using ds.search
         /// </summary>
         /// <param name="uid">The user Id.</param>
-        public ExpandoObject SearchAll(string uid, GigyaDsSettings settings)
+        public ExpandoObject SearchAll(string uid)
         {
-            if (settings == null)
+            if (_dsSettings == null)
             {
                 return null;
             }
 
             var model = new Dictionary<string, object>();
 
-            foreach (var mappingType in settings.MappingsByType)
+            foreach (var mappingType in _dsSettings.MappingsByType)
             {
                 var fields = mappingType.Value.Select(i => i.GigyaFieldName).Distinct();
                 var data = Search(uid, mappingType.Key, fields);
@@ -221,16 +251,16 @@ namespace Gigya.Module.DS.Helpers
         /// <param name="uid">The user Id.</param>
         /// <param name="settings">The mapping settings.</param>
         /// <returns></returns>
-        public ExpandoObject GetAll(string uid, GigyaDsSettings settings)
+        public ExpandoObject GetAll(string uid)
         {
-            if (settings == null)
+            if (_dsSettings == null)
             {
                 return null;
             }
 
             var model = new Dictionary<string, object>();
 
-            foreach (var mappingType in settings.MappingsByType)
+            foreach (var mappingType in _dsSettings.MappingsByType)
             {
                 var dsType = mappingType.Key;
                 foreach (var mapping in mappingType.Value.GroupBy(i => i.Custom.Oid))

@@ -43,6 +43,7 @@ namespace Gigya.Module.Core.Connector.Events
         public Logger Logger { get; set; }
         public IGigyaModuleSettings Settings { get; set; }
         public dynamic GigyaModel { get; set; }
+        public object CurrentSiteId { get; set; }
     }
 
     public class AccountInfoMergeCompletedEventArgs : EventArgs
@@ -50,5 +51,6 @@ namespace Gigya.Module.Core.Connector.Events
         public Logger Logger { get; set; }
         public IGigyaModuleSettings Settings { get; set; }
         public dynamic GigyaModel { get; set; }
+        public object CurrentSiteId { get; set; }
     }
 }
