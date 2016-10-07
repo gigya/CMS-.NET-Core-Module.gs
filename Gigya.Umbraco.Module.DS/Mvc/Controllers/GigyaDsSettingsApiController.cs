@@ -8,6 +8,7 @@ using Gigya.Umbraco.Module.DS.Mvc.Models;
 using Gigya.Umbraco.Module.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
     [PluginController("GigyaDs")]
     public class GigyaDsSettingsApiController : UmbracoAuthorizedJsonController
     {
+        private static readonly bool _validateDsSettings = bool.Parse(ConfigurationManager.AppSettings["Gigya.DS.Validate"] ?? bool.TrueString);
         private Logger _logger = new Logger(new UmbracoLogger());
 
         /// <summary>
@@ -142,7 +144,7 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
             }).ToList();
 
             var mappedSettings = settingsHelper.Map(settings.Mappings, settings);
-            if (!Validate(mappedSettings, ref response))
+            if (_validateDsSettings && !Validate(mappedSettings, ref response))
             {
                 return response;
             }            

@@ -76,28 +76,60 @@ namespace Gigya.Module.DS.Helpers
             }
         }
 
+        /// <summary>
+        /// Validates current DS settings.
+        /// </summary>
+        /// <returns>null if valid, an error message otherwise.</returns>
         public string Validate()
-        {
-            foreach (var mappingType in _dsSettings.MappingsByType)
+        {  
+            foreach (var mapping in _dsSettings.Mappings)
             {
-                var fields = mappingType.Value.Select(i => i.GigyaFieldName).Distinct();
-                dynamic data = GetSchema(mappingType.Key);
-
-                if (data == null)
+                // check data exists and OID matches
+                if (!Validate(mapping.GigyaDsType, mapping.GigyaFieldName, mapping.Custom.Oid))
                 {
-                    return string.Format("ds type [{0}] does not exist.", mappingType.Key);
-                }
-
-                foreach (var field in fields)
-                {
-                    if (DynamicUtils.GetValue<object>(data, string.Concat("schema.fields.", field)) == null)
-                    {
-                        return string.Format("ds.{0}.{1} does not exist.", mappingType.Key, field);
-                    }
+                    return string.Format("{0} does not exist or does not have an OID of {1}.", mapping.GigyaName, mapping.Custom.Oid);
                 }
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Validate that an oid exists for a given ds type.
+        /// </summary>
+        private bool Validate(string dsType, string fieldName, string oid)
+        {
+            if (string.IsNullOrEmpty(dsType))
+            {
+                throw new ArgumentException("dsType");
+            }
+
+            if (string.IsNullOrEmpty(oid))
+            {
+                throw new ArgumentException("oid");
+            }
+
+            var query = string.Format("SELECT data.{0} FROM {1} WHERE oid = '{2}'", fieldName, dsType, oid);
+            var response = _apiHelper.Search(_settings, query);
+            if (response == null)
+            {
+                return false;
+            }
+
+            dynamic model = JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText());
+            if (model.results.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (var result in model.results)
+            {
+                if (DynamicUtils.GetValue<object>(result, string.Concat("data.", fieldName)) != null)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private ExpandoObject GetSchema(string dsType)
