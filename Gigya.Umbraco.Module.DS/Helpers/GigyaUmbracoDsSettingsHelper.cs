@@ -4,6 +4,7 @@ using Gigya.Umbraco.Module.Connector;
 using Gigya.Umbraco.Module.DS.Data;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
@@ -16,6 +17,7 @@ namespace Gigya.Umbraco.Module.DS.Helpers
     {
         private readonly Logger _logger;
         private const string _cacheKey = "GigyaUmbracoDsSettingsHelper-7F2E4041-553F-4FF4-9A3A-2BFBB1C05F17";
+        private static readonly int _cacheMins = Convert.ToInt32(ConfigurationManager.AppSettings["Gigya.DS.CacheMins"] ?? "60");
 
         public GigyaUmbracoDsSettingsHelper(Logger logger)
         {
@@ -59,13 +61,13 @@ namespace Gigya.Umbraco.Module.DS.Helpers
             if (settingsContainer == null)
             {
                 settingsContainer = Load(siteId);
-                if (useCache)
+                if (useCache && _cacheMins > 0)
                 {
                     if (settingsContainer == null)
                     {
                         return null;
                     }
-                    MemoryCache.Default.Set(cacheKey, settingsContainer, DateTime.Now.AddMinutes(60));
+                    MemoryCache.Default.Set(cacheKey, settingsContainer, DateTime.Now.AddMinutes(_cacheMins));
                 }
             }
 

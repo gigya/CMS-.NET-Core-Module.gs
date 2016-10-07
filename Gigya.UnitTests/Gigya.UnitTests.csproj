@@ -289,6 +289,10 @@
       <Project>{a35a7bc3-5d80-4030-ba94-0585bf825d00}</Project>
       <Name>Gigya.Module.DS</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gigya.Umbraco.Module.DS\Gigya.Umbraco.Module.DS.csproj">
+      <Project>{567779f9-a94f-4503-b417-4b9821ee9491}</Project>
+      <Name>Gigya.Umbraco.Module.DS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gigya.Umbraco.Module\Gigya.Umbraco.Module.csproj">
       <Project>{a3f56e14-a510-4ba4-89be-9afeda162041}</Project>
       <Name>Gigya.Umbraco.Module</Name>
