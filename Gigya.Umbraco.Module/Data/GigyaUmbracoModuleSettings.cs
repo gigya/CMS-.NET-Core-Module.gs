@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gigya.Module.Core.Connector.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,6 +60,8 @@ namespace Gigya.Umbraco.Module.Data
         public string GlobalParameters { get; set; }
 
         public int SessionTimeout { get; set; }
+        
+        public GigyaSessionProvider SessionProvider { get; set; }
 
         [Ignore]
         public bool IsNew { get; set; }

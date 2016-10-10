@@ -1,4 +1,5 @@
-﻿using Gigya.Module.Core.Connector.Models;
+﻿using Gigya.Module.Core.Connector.Enums;
+using Gigya.Module.Core.Connector.Models;
 using Gigya.Module.Core.Data;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace Gigya.Umbraco.Module.Mvc.Models
         public string LogoutUrl { get; set; }
         public List<MappingField> MappingFields { get; set; }
         public string GlobalParameters { get; set; }
+        public GigyaSessionProvider SessionProvider { get; set; }
         public int SessionTimeout { get; set; }
         public bool Inherited { get; set; }
     }

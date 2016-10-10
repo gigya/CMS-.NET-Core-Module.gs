@@ -33,6 +33,19 @@ namespace Gigya.Umbraco.Module
                 {
                     db.CreateTable<GigyaUmbracoModuleSettings>(false);
                 }
+                else
+                {
+                    // try and create new column
+                    // ideally we would use migrations but these have only been added in later versions of Umbraco
+                    try
+                    {
+                        db.Execute("ALTER TABLE gigya_settings ADD SessionProvider int NULL");
+                    }
+                    catch
+                    {
+                        // ignore as the column probably exists
+                    }
+                }
             }
         }
     }

@@ -16,6 +16,7 @@ namespace Gigya.Module.Core.Mvc.Models
         public string Signature { get; set; }
         [Required]
         public string SignatureTimestamp { get; set; }
+        public LoginSource LoginSource { get; set; }
     }
 
     public class RequestModel
@@ -35,16 +36,34 @@ namespace Gigya.Module.Core.Mvc.Models
         public ResponseStatus Status { get; set; }
     }
 
+    public enum LoginSource
+    {
+        Login,
+        GetAccountInfo
+    }
+
     public enum ResponseStatus
     {
         Error = 0,
         Success = 1,
-        AlreadyLoggedIn = 2
+        AlreadyLoggedIn = 2,
+        LogoutIfNoLoginFired = 3
     }
 
     public class CurrentIdentity
     {
         public string Name { get; set; }
         public bool IsAuthenticated { get; set; }
+    }
+
+    public class NotifyLoginResponse
+    {
+        public SessionInfo sessionInfo { get; set; }
+    }
+
+    public class SessionInfo
+    {
+        public string cookieName { get; set; }
+        public string cookieValue { get; set; }
     }
 }

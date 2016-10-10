@@ -22,6 +22,7 @@ using Gigya.Module.Core.Connector.Logging;
 using Gigya.Umbraco.Module.Connector;
 
 using Core = Gigya.Module.Core;
+using Gigya.Module.Core.Connector.Enums;
 
 namespace Gigya.Umbraco.Module.Mvc.Controllers
 {
@@ -126,6 +127,19 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             settings.RedirectUrl = model.RedirectUrl;
             settings.LogoutUrl = model.LogoutUrl;
             settings.SessionTimeout = model.SessionTimeout;
+            settings.SessionProvider = model.SessionProvider;
+
+            if (model.SessionProvider == GigyaSessionProvider.CMS && model.MappingFields != null && model.MappingFields.Any())
+            {
+                // validate that mapping field for username is UID
+                var usernameMapping = model.MappingFields.FirstOrDefault(i => i.CmsFieldName == Constants.CmsFields.Username);
+                if (usernameMapping.GigyaFieldName != Constants.GigyaFields.UserId)
+                {
+                    response.Error = "Session provider can only be set to Umbraco if the username field is mapped to Gigya's UID field.";
+                    _logger.Error(response.Error);
+                    return response;
+                }
+            }
 
             // application secret that we will use to validate the settings - store this in a separate var as it's unencrypted
             string plainTextApplicationSecret = string.Empty;
@@ -229,7 +243,8 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                 LogoutUrl = settings.LogoutUrl,
                 MappingFields = settings.MappingFields,
                 RedirectUrl = settings.RedirectUrl,
-                SessionTimeout = settings.SessionTimeout
+                SessionTimeout = settings.SessionTimeout,
+                SessionProvider = settings.SessionProvider
             };
 
             return model;
@@ -257,7 +272,8 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                 RedirectUrl = settings.RedirectUrl,
                 LogoutUrl = settings.LogoutUrl,
                 GlobalParameters = settings.GlobalParameters,
-                SessionTimeout = settings.SessionTimeout
+                SessionTimeout = settings.SessionTimeout,
+                SessionProvider = settings.SessionProvider
             };
 
             var mappingFields = !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();

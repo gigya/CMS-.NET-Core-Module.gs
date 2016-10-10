@@ -8,7 +8,12 @@ var gigyaCms = {
     responseCodes: {
         Error: 0,
         Success: 1,
-        AlreadyLoggedIn: 2
+        AlreadyLoggedIn: 2,
+        LogoutIfNoLoginFired: 3
+    },
+    loginSource: {
+        Login: 0,
+        GetAccountInfo: 1
     },
     authenticated: false,
     authenticatedOnServerByCurrentPage: false,
@@ -196,7 +201,7 @@ var gigyaCms = {
     onGetAccountInfo: function (eventObj) {
         gigyaCms.log('onGetAccountInfo', eventObj);
         if (eventObj.errorCode == 0) {
-            gigyaCms.login(eventObj, false);
+            gigyaCms.login(eventObj, false, gigyaCms.loginSource.GetAccountInfo);
         } else {
             gigyaCms.logout(false);
         }
@@ -230,22 +235,19 @@ var gigyaCms = {
     onLogin: function (eventObj) {
         gigyaCms.loginEventFired = true;
         gigyaCms.log('onLogin', eventObj);
-        gigyaCms.login(eventObj, true);
+        gigyaCms.login(eventObj, true, gigyaCms.loginSource.Login);
     },
     loginEventFired: false,
     loggingIn: false,
-    login: function (eventObj, redirectAfterLogin) {
-        if (gigyaCms.loggingIn) {
-            return;
-        }
-
+    login: function (eventObj, redirectAfterLogin, loginSource) {
         gigyaCms.loggingIn = true;
 
         var data = {
             UserId: eventObj.UID,
             Signature: eventObj.UIDSignature,
             SignatureTimestamp: eventObj.signatureTimestamp,
-            Id: gigyaCms.id
+            Id: gigyaCms.id,
+            LoginSource: loginSource
         };
 
         qwest.post(gigyaCms.baseUrl + 'login', data)
@@ -258,6 +260,11 @@ var gigyaCms = {
                          gigyaCms.authenticated = true;
                          if ((redirectAfterLogin === true && gigyaCms.authenticatedOnServerByCurrentPage) || gigyaCms.loginEventFired) {
                              gigyaCms.redirectAfterLogin(response.redirectUrl);
+                         }
+                         return;
+                     case gigyaCms.responseCodes.LogoutIfNoLoginFired:
+                         if (!gigyaCms.loginEventFired) {
+                             gigya.accounts.logout();
                          }
                          return;
                      case gigyaCms.responseCodes.Success:
@@ -300,7 +307,7 @@ var gigyaCms = {
         gigyaCms.logout(false);
     },
     logout: function (redirectAfterLogout) {
-        var data = { Id: gigyaCms.id };
+        var data = { Id: gigyaCms.id, Force: redirectAfterLogout };
 
         qwest.post(gigyaCms.baseUrl + gigyaCms.logoutApiAction, data)
          .then(function (xhr, response) {

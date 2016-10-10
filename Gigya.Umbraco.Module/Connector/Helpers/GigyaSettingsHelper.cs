@@ -152,7 +152,8 @@ namespace Gigya.Umbraco.Module.Helpers
                 LogoutUrl = settings.LogoutUrl,
                 MappingFields = settings.MappingFields,
                 GlobalParameters = settings.GlobalParameters,
-                SessionTimeout = settings.SessionTimeout
+                SessionTimeout = settings.SessionTimeout,
+                SessionProvider = settings.SessionProvider
             };
         }
     }

@@ -90,6 +90,20 @@ namespace Gigya.Module.Core.Connector.Helpers
             return model;
         }
 
+        public int SessionExpiration(IGigyaModuleSettings settings)
+        {
+            var globalSettings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<ExpandoObject>(settings.GlobalParameters) : new ExpandoObject();
+
+            var sessionExpiration = 0;
+            var settingsProperties = (IDictionary<string, object>)globalSettings;
+            if (settingsProperties.ContainsKey("sessionExpiration") && int.TryParse(settingsProperties["sessionExpiration"].ToString(), out sessionExpiration))
+            {
+                return sessionExpiration;
+            }
+
+            return settings.SessionTimeout;
+        }
+
         /// <summary>
         /// Gets Gigya Module settings for <paramref name="id"/>.
         /// </summary>
@@ -109,6 +123,17 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
 
             return settings;
+        }
+
+        /// <summary>
+        /// Decrypts an application secret if required.
+        /// </summary>
+        public virtual void DecryptApplicationSecret(ref IGigyaModuleSettings settings)
+        {
+            if (!string.IsNullOrEmpty(settings.ApplicationSecret))
+            {
+                settings.ApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
+            }
         }
 
         public void Validate(IGigyaModuleSettings settings)

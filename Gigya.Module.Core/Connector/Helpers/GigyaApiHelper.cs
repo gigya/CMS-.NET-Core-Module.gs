@@ -94,6 +94,18 @@ namespace Gigya.Module.Core.Connector.Helpers
             return response;
         }
 
+        public GSResponse NotifyLogin(string userId, int sessionExpiration, IGigyaModuleSettings settings)
+        {
+            var method = "accounts.notifyLogin";
+            var request = NewRequest(settings, method);
+            request.SetParam("siteUID", userId);
+            request.SetParam("sessionExpiration", sessionExpiration);
+            request.SetParam("cid", "cms relogin");
+
+            var response = Send(request, method, settings);
+            return response;
+        }
+
         public bool ValidateSignature(string userId, IGigyaModuleSettings settings, GSResponse response, bool disableSignatureExchange = false)
         {
             if (disableSignatureExchange)

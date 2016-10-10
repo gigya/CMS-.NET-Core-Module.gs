@@ -25,15 +25,25 @@ namespace Gigya.Umbraco.Demo
         {
             base.OnApplicationStarted(sender, e);
 
+            // register event to be called after Gigya DS data has been merged with 
             GigyaEventHub.Instance.AccountInfoMergeCompleted += Instance_AccountInfoMergeCompleted;
         }
 
         private void Instance_AccountInfoMergeCompleted(object sender, AccountInfoMergeCompletedEventArgs e)
         {
-            //dynamic gigyaAccountInfoWithDsDataMerged = e.GigyaModel;
-            //gigyaAccountInfoWithDsDataMerged.ds.dsType.fieldName = "updatedValue";
-        }
+            // model representing Gigya DS data that has been merged with the getAccountInfo model
+            dynamic gigyaAccountInfoWithDsDataMerged = e.GigyaModel;
 
+            try
+            {
+                // assuming I have a ds field called ds.addressInfo.line1_s then I would use this code to change the value
+                gigyaAccountInfoWithDsDataMerged.ds.addressInfo.line1_s = "first line of address";
+            }
+            catch(Exception ex)
+            {
+                e.Logger.Error("Error in Instance_AccountInfoMergeCompleted.", ex);
+            }
+        }
 
         /// <summary>
         /// Sample method to manually retrieve DS data from Gigya.

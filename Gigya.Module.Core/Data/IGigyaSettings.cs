@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gigya.Module.Core.Connector.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -37,5 +38,7 @@ namespace Gigya.Module.Core.Data
         string GlobalParameters { get; set; }
 
         int SessionTimeout { get; set; }
+
+        GigyaSessionProvider SessionProvider { get; set; }
     }
 }
