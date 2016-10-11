@@ -274,39 +274,7 @@ namespace Gigya.UnitTests.Selenium.Authentication
         [TestMethod]
         public void Umbraco_IsUserLoggedInAfterSessionExpired()
         {
-            XmlDocument webConfigDoc = new XmlDocument();
-            webConfigDoc.Load(Path.Combine(Config.UmbracoRootPath, "web.config"));
-
-            // update session timeout in web.config
-            var sessionElem = webConfigDoc.SelectSingleNode("/configuration/system.web/sessionState");
-            if (sessionElem == null)
-            {
-                sessionElem = webConfigDoc.CreateElement("sessionState");
-                webConfigDoc.SelectSingleNode("/configuration/system.web").AppendChild(sessionElem);
-            }
-
-            var timeoutAttribute = sessionElem.Attributes["timeout"];
-            if (timeoutAttribute == null)
-            {
-                timeoutAttribute = webConfigDoc.CreateAttribute("timeout");
-                sessionElem.Attributes.Append(timeoutAttribute);
-            }
-
-            timeoutAttribute.Value = "1";
-
-            // update forms timeout in web.config
-            var formsElem = webConfigDoc.SelectSingleNode("/configuration/system.web/authentication/forms");
-            var formsTimeoutAttribute = formsElem.Attributes["timeout"];
-            if (formsTimeoutAttribute == null)
-            {
-                formsTimeoutAttribute = webConfigDoc.CreateAttribute("timeout");
-                formsElem.Attributes.Append(formsTimeoutAttribute);
-            }
-
-            formsTimeoutAttribute.Value = "1";
-            timeoutAttribute.Value = "1";
-
-            webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
+            SetFormsTimeout(1);
 
             using (var application = new ConsoleApplicationBase())
             {
@@ -357,9 +325,7 @@ namespace Gigya.UnitTests.Selenium.Authentication
                     ResetSettings(db, settings, currentGlobalSettings);
 
                     // reset
-                    formsTimeoutAttribute.Value = "30";
-                    timeoutAttribute.Value = "30";
-                    webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
+                    SetFormsTimeout(30);
 
                     reset = true;
                 }
@@ -370,13 +336,50 @@ namespace Gigya.UnitTests.Selenium.Authentication
                         ResetSettings(db, settings, currentGlobalSettings);
 
                         // reset
-                        formsTimeoutAttribute.Value = "30";
-                        timeoutAttribute.Value = "30";
-                        webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
+                        SetFormsTimeout(30);
                     }
                     throw;
                 }
             }
+        }
+
+        private static void SetFormsTimeout(int timeout)
+        {
+            XmlDocument webConfigDoc;
+            XmlAttribute timeoutAttribute, formsTimeoutAttribute;
+            webConfigDoc = new XmlDocument();
+            webConfigDoc.Load(Path.Combine(Config.UmbracoRootPath, "web.config"));
+
+            // update session timeout in web.config
+            var sessionElem = webConfigDoc.SelectSingleNode("/configuration/system.web/sessionState");
+            if (sessionElem == null)
+            {
+                sessionElem = webConfigDoc.CreateElement("sessionState");
+                webConfigDoc.SelectSingleNode("/configuration/system.web").AppendChild(sessionElem);
+            }
+
+            timeoutAttribute = sessionElem.Attributes["timeout"];
+            if (timeoutAttribute == null)
+            {
+                timeoutAttribute = webConfigDoc.CreateAttribute("timeout");
+                sessionElem.Attributes.Append(timeoutAttribute);
+            }
+
+            timeoutAttribute.Value = timeout.ToString();
+
+            // update forms timeout in web.config
+            var formsElem = webConfigDoc.SelectSingleNode("/configuration/system.web/authentication/forms");
+            formsTimeoutAttribute = formsElem.Attributes["timeout"];
+            if (formsTimeoutAttribute == null)
+            {
+                formsTimeoutAttribute = webConfigDoc.CreateAttribute("timeout");
+                formsElem.Attributes.Append(formsTimeoutAttribute);
+            }
+
+            formsTimeoutAttribute.Value = timeout.ToString();
+            timeoutAttribute.Value = timeout.ToString();
+
+            webConfigDoc.Save(Path.Combine(Config.UmbracoRootPath, "web.config"));
         }
 
         [TestMethod]
@@ -410,6 +413,74 @@ namespace Gigya.UnitTests.Selenium.Authentication
             {
                 settings[i].GlobalParameters = currentGlobalSettings[i];
                 db.Save(settings[i]);
+            }
+        }
+
+        [TestMethod]
+        public void Umbraco_IsLoggedIntoGigyaAfterTimeout_UmbracoSessionProvider()
+        {
+            SetFormsTimeout(1);
+
+            // configure web.config timeout to 
+            using (var application = new ConsoleApplicationBase())
+            {
+                application.Start(application, new EventArgs());
+                var context = ApplicationContext.Current;
+                var db = context.DatabaseContext.Database;
+                
+                var sql = "UPDATE gigya_settings SET SessionProvider = 1, GlobalParameters = '{ \"sessionExpiration\": 10 }'";
+                var settings = db.ExecuteScalar<GigyaUmbracoModuleSettings>(sql);
+                
+                // login to CMS
+                CanRegisterAndLoginToCms();
+
+                // wait 11 secs
+                Thread.Sleep(11000);
+
+                _driver.Navigate().Refresh();
+
+                //Thread.Sleep(5000);
+
+                // check that user is logged into Gigya
+                var cookies = _driver.Manage().Cookies.AllCookies;
+                if (!cookies.Any(i => i.Name.StartsWith("glt")))
+                {
+                    Assert.Fail("Failed to find Gigya cookie starting with glt");
+                }
+            }
+        }
+
+        [TestMethod]
+        public void Umbraco_IsLoggedOutOfGigyaAfterTimeout_UmbracoSessionProvider()
+        {
+            SetFormsTimeout(1);
+
+            // configure web.config timeout to 
+            using (var application = new ConsoleApplicationBase())
+            {
+                application.Start(application, new EventArgs());
+                var context = ApplicationContext.Current;
+                var db = context.DatabaseContext.Database;
+
+                var sql = "UPDATE gigya_settings SET SessionProvider = 1, GlobalParameters = '{ \"sessionExpiration\": 100 }'";
+                var settings = db.ExecuteScalar<GigyaUmbracoModuleSettings>(sql);
+
+                // login to CMS
+                CanRegisterAndLoginToCms();
+
+                // wait 70 secs
+                Thread.Sleep(70000);
+
+                _driver.Navigate().Refresh();
+
+                Thread.Sleep(5000);
+
+                // check that user is logged out of Gigya
+                var cookies = _driver.Manage().Cookies.AllCookies;
+                if (cookies.Any(i => i.Name.StartsWith("glt")))
+                {
+                    Assert.Fail("Found Gigya cookie starting with glt. User should be logged out of Gigya");
+                }
             }
         }
     }

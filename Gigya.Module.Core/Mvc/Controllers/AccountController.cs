@@ -6,8 +6,6 @@ using Gigya.Module.Core.Mvc.Models;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Data;
 using Gigya.Module.Core.Connector.Enums;
-using Newtonsoft.Json;
-using System.Web;
 
 namespace Gigya.Module.Core.Mvc.Controllers
 {
@@ -108,7 +106,7 @@ namespace Gigya.Module.Core.Mvc.Controllers
                 response.Status = ResponseStatus.LogoutIfNoLoginFired;
                 return;
             }
-            
+
             // attempt to login or register the user
             MembershipHelper.LoginOrRegister(model, settings, ref response);
         }
@@ -116,10 +114,9 @@ namespace Gigya.Module.Core.Mvc.Controllers
         /// <summary>
         /// Should be called when a user is logged out of Gigya and therefore needs to be logged out of the CMS.
         /// </summary>
-        public virtual ActionResult Logout(object id = null, bool force = false)
+        public virtual ActionResult Logout(object id = null)
         {
-            var decryptApplicationSecret = false;
-            var settings = SettingsHelper.Get(id, decryptApplicationSecret);
+            var settings = SettingsHelper.Get(id);
 
             var response = new ResponseModel { Status = ResponseStatus.Success };
             var currentIdentity = GetCurrentIdentity();
@@ -127,16 +124,6 @@ namespace Gigya.Module.Core.Mvc.Controllers
             if (!currentIdentity.IsAuthenticated)
             {
                 // not logged in so just return success
-                return JsonNetResult(response);
-            }
-
-            if (!force && settings.SessionProvider == GigyaSessionProvider.CMS)
-            {
-                if (!decryptApplicationSecret)
-                {
-                    SettingsHelper.DecryptApplicationSecret(ref settings);
-                }
-                SignInUserAfterGigyaTimeout(settings, currentIdentity);
                 return JsonNetResult(response);
             }
 
@@ -149,37 +136,6 @@ namespace Gigya.Module.Core.Mvc.Controllers
 
             response.RedirectUrl = settings.LogoutUrl;
             return JsonNetResult(response);
-        }
-
-        private void SignInUserAfterGigyaTimeout(IGigyaModuleSettings settings, CurrentIdentity currentIdentity)
-        {
-            var uid = currentIdentity.Name;
-            var helper = new GigyaApiHelper(SettingsHelper, Logger);
-            var sessionExpiration = SettingsHelper.SessionExpiration(settings);
-            var apiResponse = helper.NotifyLogin(uid, sessionExpiration, settings);
-
-            if (apiResponse == null)
-            {
-                Logger.Error("Failed to call gigya.accounts.notifyLogin for user " + currentIdentity.Name);
-                return;
-            }
-            
-            var notifyLoginResponse = JsonConvert.DeserializeObject<NotifyLoginResponse>(apiResponse.GetResponseText());
-            if (notifyLoginResponse.sessionInfo != null)
-            {
-                var cookie = new HttpCookie(notifyLoginResponse.sessionInfo.cookieName, notifyLoginResponse.sessionInfo.cookieValue);
-                if (sessionExpiration > 0)
-                {
-                    cookie.Expires = DateTime.UtcNow.AddSeconds(sessionExpiration);
-                }
-
-                Response.Cookies.Add(cookie);
-                Logger.DebugFormat("Successfully logged in user {0} using gigya.accounts.notifyLogin", currentIdentity.Name);
-            }
-            else
-            {
-                Logger.Error("No sessionInfo returned from gigya.accounts.notifyLogin for user " + currentIdentity.Name);
-            }
         }
 
         /// <summary>

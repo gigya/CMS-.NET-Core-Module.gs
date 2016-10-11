@@ -311,9 +311,13 @@ var gigyaCms = {
 
         qwest.post(gigyaCms.baseUrl + gigyaCms.logoutApiAction, data)
          .then(function (xhr, response) {
-             if (response != null && response.status == gigyaCms.responseCodes.Success) {
-                 if (redirectAfterLogout) {
-                     gigyaCms.redirectAfterLogout(response.redirectUrl);
+             if (response != null) {
+                 switch (response.status) {
+                     case gigyaCms.responseCodes.Success:
+                         if (redirectAfterLogout) {
+                             gigyaCms.redirectAfterLogout(response.redirectUrl);
+                         }
+                         break;
                  }
              } else {
                  gigyaCms.handleError(response.errorMessage);
