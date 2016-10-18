@@ -61,7 +61,7 @@ namespace Gigya.Umbraco.Module.Data
 
         public int SessionTimeout { get; set; }
         
-        public GigyaSessionProvider SessionProvider { get; set; }
+        public int SessionProvider { get; set; }
 
         [Ignore]
         public bool IsNew { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Gigya.Module.Core.Connector.Enums;
+using Gigya.Module.Core.Connector.Models;
 using Gigya.Module.Core.Data;
 using System;
 using System.Collections.Generic;
@@ -39,5 +40,7 @@ namespace Gigya.Module.Core.Data
         public int SessionTimeout { get; set; }
 
         public GigyaSessionProvider SessionProvider { get; set; }
+
+        public List<MappingField> MappedMappingFields { get; set; }
     }
 }

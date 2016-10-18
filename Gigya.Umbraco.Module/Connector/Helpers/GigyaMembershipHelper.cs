@@ -407,6 +407,10 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
 
         private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
         {
+            if (settings.MappedMappingFields != null)
+            {
+                return settings.MappedMappingFields;
+            }
             return !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
         }
 

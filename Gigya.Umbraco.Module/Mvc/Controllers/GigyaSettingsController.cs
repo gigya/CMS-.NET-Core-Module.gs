@@ -14,6 +14,7 @@ using Gigya.Module.Core.Data;
 using Gigya.Module.Core.Connector.Helpers;
 using Newtonsoft.Json;
 using System.Web;
+using Umbraco.Core;
 
 namespace Gigya.Umbraco.Module.Mvc.Controllers
 {
@@ -82,6 +83,20 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
         private void SignInUserAfterGigyaTimeout(IGigyaModuleSettings settings, CurrentIdentity currentIdentity)
         {
             var uid = currentIdentity.Name;
+            var uidMapping = settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId && !string.IsNullOrEmpty(i.CmsFieldName));
+            if (uidMapping != null && uidMapping.CmsFieldName != Constants.CmsFields.Username)
+            {
+                // get member to find UID field
+                var member = ApplicationContext.Current.Services.MemberService.GetByUsername(currentIdentity.Name);
+                if (member == null)
+                {
+                    _logger.Error(string.Format("Couldn't find member with username of {0} so couldn't sign them in.", currentIdentity.Name));
+                    return;
+                }
+
+                uid = member.GetValue<string>(uidMapping.CmsFieldName);
+            }
+
             var helper = new GigyaApiHelper(_settingsHelper, _logger);
             var sessionExpiration = _settingsHelper.SessionExpiration(settings);
             var apiResponse = helper.NotifyLogin(uid, sessionExpiration, settings);

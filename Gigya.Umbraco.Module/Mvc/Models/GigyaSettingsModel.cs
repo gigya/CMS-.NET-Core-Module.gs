@@ -13,6 +13,7 @@ namespace Gigya.Umbraco.Module.Mvc.Models
     public class GigyaSettingsModel
     {
         public int Id { get; set; }
+        public string SiteName { get; set; }
         [Required]
         public string ApiKey { get; set; }
         [Required]

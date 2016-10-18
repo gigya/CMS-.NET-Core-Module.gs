@@ -1,11 +1,12 @@
 ﻿<style>
     .ng-hide { display: none !important; }
+    .field-error { border: 1px solid red !important; }
 </style>
 <form ng-controller="Gigya.GigyaSettingsEditController" ng-submit="publish(model)" autocomplete="off" novalidate>
     <umb-panel>
         <umb-header>
             <div class="span7">
-                <h1 class="umb-headline">Gigya Settings</h1>
+                <h1 class="umb-headline">Gigya {{ model.SiteName }} Settings</h1>
             </div>
         </umb-header>
         <div class="umb-panel-body umb-scrollable row-fluid">
@@ -169,7 +170,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label">
-                                    Session Provider
+                                    Session Management
                                 </label>
                                 <div class="controls controls-row">
                                     <input type="radio" id="session-provider-gigya" name="SessionProvider" value="0" ng-disabled="model.Inherited" ng-model="model.SessionProvider" class="input-large" required="required" />
@@ -213,10 +214,15 @@
                                         <tbody>
                                             <tr ng-repeat="row in model.MappingFields">
                                                 <td>
-                                                    <input class="gigya-mapping-field" ng-disabled="model.Inherited" type="text" ng-model="row.GigyaFieldName" />
+                                                    <input class="gigya-mapping-field" ng-disabled="model.Inherited || row.GigyaRequired" type="text" ng-model="row.GigyaFieldName" />
                                                 </td>
                                                 <td>
-                                                    <input class="sf-mapping-field" ng-disabled="model.Inherited || row.Required" type="text" ng-model="row.CmsFieldName" />
+                                                    <select ng-if="!row.Required" ng-class="{'field-error': model.submitted && row.GigyaRequired && !row.CmsFieldName}" ng-disabled="model.Inherited || row.Required" ng-model="row.CmsFieldName" ng-options="option.Alias as option.Name for option in data.MemberProperties"></select>
+                                                    <select ng-if="row.Required" ng-disabled="model.Inherited || row.Required" ng-model="row.CmsFieldName">
+                                                        <option>email</option>
+                                                        <option>name</option>
+                                                        <option>username</option>
+                                                    </select>
                                                 </td>
                                                 <td>
                                                     <button type="button" class="btn btn-small" ng-hide="model.Inherited || row.Required" ng-click="removeMappingField(row)">Remove</button>

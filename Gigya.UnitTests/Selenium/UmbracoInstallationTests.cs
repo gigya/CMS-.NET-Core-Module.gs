@@ -59,7 +59,7 @@ namespace Gigya.UnitTests.Selenium
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
 
-            //LoginToUmbraco(Config.AdminEmail, Config.AdminPassword);
+            LoginToUmbraco(Config.AdminEmail, Config.AdminPassword);
 
             if (!CreateUser())
             {
@@ -290,7 +290,7 @@ namespace Gigya.UnitTests.Selenium
             _driver.FindElement(By.Id("right"), 30);
             _driver.SwitchTo().Frame("right");
 
-            var gigyaSection = _driver.FindElementFromLabel("[gigya]", 10);
+            var gigyaSection = _driver.FindElementFromLabel("Gigya", 10);
             if (string.IsNullOrEmpty(gigyaSection.GetAttribute("checked")))
             {
                 gigyaSection.Click();

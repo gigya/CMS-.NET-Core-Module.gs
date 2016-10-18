@@ -99,8 +99,8 @@ namespace Gigya.UnitTests.Selenium.Authentication
                 application.Start(application, new EventArgs());
                 var context = ApplicationContext.Current;
 
-                CreateMemberTypesIfRequired(context);
-                CreateFieldMappings(context.DatabaseContext.Database);
+                //CreateMemberTypesIfRequired(context);
+                //CreateFieldMappings(context.DatabaseContext.Database);
 
                 CanRegisterAndLoginToCms();
 
@@ -341,6 +341,8 @@ namespace Gigya.UnitTests.Selenium.Authentication
                     throw;
                 }
             }
+
+            Thread.Sleep(5000);
         }
 
         private static void SetFormsTimeout(int timeout)
@@ -443,10 +445,12 @@ namespace Gigya.UnitTests.Selenium.Authentication
 
                 // check that user is logged into Gigya
                 var cookies = _driver.Manage().Cookies.AllCookies;
-                if (!cookies.Any(i => i.Name.StartsWith("glt")))
+                if (!cookies.Any(i => i.Name.StartsWith("glt_3_qkAT5OcGyvYpkjc_VF6-OfoeTKGk4T_jVwjFF9f5TQzoAg-mH8SBsjQi1srdsOm6")))
                 {
                     Assert.Fail("Failed to find Gigya cookie starting with glt");
                 }
+
+                Thread.Sleep(5000);
             }
         }
 
@@ -481,6 +485,8 @@ namespace Gigya.UnitTests.Selenium.Authentication
                 {
                     Assert.Fail("Found Gigya cookie starting with glt. User should be logged out of Gigya");
                 }
+
+                Thread.Sleep(5000);
             }
         }
     }

@@ -20,6 +20,7 @@ using Gigya.Umbraco.Module.Data;
 using Umbraco.Web;
 using Gigya.Umbraco.Module.Connector;
 using Gigya.Module.Core.Connector.Helpers;
+using Gigya.Module.Core.Connector.Enums;
 
 namespace Gigya.Umbraco.Module.Helpers
 {
@@ -153,7 +154,7 @@ namespace Gigya.Umbraco.Module.Helpers
                 MappingFields = settings.MappingFields,
                 GlobalParameters = settings.GlobalParameters,
                 SessionTimeout = settings.SessionTimeout,
-                SessionProvider = settings.SessionProvider
+                SessionProvider = (GigyaSessionProvider)settings.SessionProvider
             };
         }
     }

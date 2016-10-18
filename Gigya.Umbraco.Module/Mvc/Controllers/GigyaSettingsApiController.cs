@@ -23,6 +23,7 @@ using Gigya.Umbraco.Module.Connector;
 
 using Core = Gigya.Module.Core;
 using Gigya.Module.Core.Connector.Enums;
+using umbraco.MacroEngines;
 
 namespace Gigya.Umbraco.Module.Mvc.Controllers
 {
@@ -41,12 +42,19 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             var data = settingsHelper.Get(id);
             var model = GetModel(id, data);
 
+            var memberType = this.ApplicationContext.Services.MemberTypeService.Get(Constants.MemberTypeAlias);
+
             var wrappedModel = new GigyaSettingsApiResponseModel
             {
                 Settings = model,
                 Data = new GigyaConfigModel
                 {
-                    Languages = GigyaLanguageHelper.Languages.Select(i => new GigyaLanguageModel { Code = i.Key, Name = i.Value }).ToList()
+                    Languages = GigyaLanguageHelper.Languages.Select(i => new GigyaLanguageModel { Code = i.Key, Name = i.Value }).ToList(),
+                    MemberProperties = memberType.PropertyTypes.Select(i => new GigyaMemberPropertyViewModel
+                    {
+                        Alias = i.Alias,
+                        Name = i.Name
+                    }).ToList()
                 }
             };
 
@@ -71,6 +79,16 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
 
             model.Inherited = model.Id != id;
             model.Id = id;
+
+            if (id > 0)
+            {
+                var node = new DynamicNode(id);
+                model.SiteName = node.Name;
+            }
+            else
+            {
+                model.SiteName = "Global";
+            }
 
             ApplyDefaults(ref model, data);
             return model;
@@ -127,18 +145,36 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             settings.RedirectUrl = model.RedirectUrl;
             settings.LogoutUrl = model.LogoutUrl;
             settings.SessionTimeout = model.SessionTimeout;
-            settings.SessionProvider = model.SessionProvider;
+            settings.SessionProvider = (int)model.SessionProvider;
 
-            if (model.SessionProvider == GigyaSessionProvider.CMS && model.MappingFields != null && model.MappingFields.Any())
+            if (model.MappingFields == null || !model.MappingFields.Any())
             {
-                // validate that mapping field for username is UID
-                var usernameMapping = model.MappingFields.FirstOrDefault(i => i.CmsFieldName == Constants.CmsFields.Username);
-                if (usernameMapping.GigyaFieldName != Constants.GigyaFields.UserId)
-                {
-                    response.Error = "Session provider can only be set to Umbraco if the username field is mapped to Gigya's UID field.";
-                    _logger.Error(response.Error);
-                    return response;
-                }
+                response.Error = Constants.Errors.UIDFieldRequired;
+                _logger.Error(response.Error);
+                return response;
+            }
+            
+            // validate that there is a mapping field for UID
+            var usernameMappingExists = model.MappingFields.Any(i => i.GigyaFieldName == Constants.GigyaFields.UserId);
+            if (!usernameMappingExists)
+            {
+                response.Error = Constants.Errors.UIDFieldRequired;
+                _logger.Error(response.Error);
+                return response;
+            }
+
+            if (model.MappingFields.Any(i => string.IsNullOrEmpty(i.GigyaFieldName)))
+            {
+                response.Error = Constants.Errors.GigyaFieldNameRequired;
+                _logger.Error(response.Error);
+                return response;
+            }
+
+            if (model.MappingFields.Any(i => string.IsNullOrEmpty(i.CmsFieldName)))
+            {
+                response.Error = Constants.Errors.CmsFieldNameRequired;
+                _logger.Error(response.Error);
+                return response;
             }
 
             // application secret that we will use to validate the settings - store this in a separate var as it's unencrypted
@@ -244,7 +280,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                 MappingFields = settings.MappingFields,
                 RedirectUrl = settings.RedirectUrl,
                 SessionTimeout = settings.SessionTimeout,
-                SessionProvider = settings.SessionProvider
+                SessionProvider = (GigyaSessionProvider)settings.SessionProvider
             };
 
             return model;

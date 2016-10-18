@@ -17,6 +17,7 @@ using Gigya.Module.Core.Connector.Common;
 using System.Web.Mvc;
 using Gigya.Module.Core.Connector.Logging;
 using System.Web;
+using Gigya.Module.Core.Connector.Models;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
@@ -121,6 +122,9 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 settings.ApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
             }
+
+            settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields) 
+                ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
 
             return settings;
         }

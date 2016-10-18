@@ -12,6 +12,13 @@ namespace Gigya.Umbraco.Module
         public static readonly string HomepageAlias = ConfigurationManager.AppSettings["umbracoHomepageAlias"] ?? "Home";
         public static readonly string MemberTypeAlias = ConfigurationManager.AppSettings["umbracoMemberTypeAlias"] ?? "Member";
 
+        public class Errors
+        {
+            public const string UIDFieldRequired = "UID is required field mapping on Gigya field list.";
+            public const string GigyaFieldNameRequired = "Gigya Field must not be blank.";
+            public const string CmsFieldNameRequired = "Umbraco Field Alias must not be blank.";
+        }
+
         public class GigyaFields
         {
             public const string FirstName = "profile.firstName";

@@ -10,5 +10,12 @@ namespace Gigya.Umbraco.Module.Mvc.Models
     {
         public List<GigyaLanguageModel> LanguageOptions { get; set; }
         public List<GigyaLanguageModel> Languages { get; set; }
+        public List<GigyaMemberPropertyViewModel> MemberProperties { get; set; }
+    }
+
+    public class GigyaMemberPropertyViewModel
+    {
+        public string Alias { get; set; }
+        public string Name { get; set; }
     }
 }
