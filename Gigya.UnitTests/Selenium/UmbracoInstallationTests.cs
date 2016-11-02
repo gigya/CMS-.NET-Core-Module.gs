@@ -84,6 +84,21 @@ namespace Gigya.UnitTests.Selenium
         }
 
         [TestMethod]
+        public void Umbraco_ValidateSettings()
+        {
+            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "umbraco");
+
+            // close upgrade notification if visible
+            var alert = _driver.FindElement(By.CssSelector(".alert-info .close"), 5);
+            if (alert != null)
+            {
+                alert.Click();
+            }
+
+            EnterAllGigyaSettings();
+        }
+
+        [TestMethod]
         public void Umbraco_IsApplicationSecretHiddenForNonAdmin()
         {
             // create non admin user if required
@@ -332,7 +347,11 @@ namespace Gigya.UnitTests.Selenium
             var tree = _driver.FindElement(By.CssSelector("#tree"), 5);
             tree.FindElement(By.PartialLinkText("Home (1)")).Click();
 
-            _driver.FindElement(By.Id("Inherited"), 10).Click();
+            var inherited = _driver.FindElement(By.Id("Inherited"), 10);
+            if (!string.IsNullOrEmpty(inherited.GetAttribute("checked")))
+            {
+                inherited.Click();
+            }
             
             EnterGigyaSettings(model);
         }
