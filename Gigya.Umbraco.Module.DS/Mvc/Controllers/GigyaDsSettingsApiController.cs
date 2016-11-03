@@ -159,7 +159,7 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
         private bool Validate(GigyaDsSettings settings, ref GigyaDsSettingsResponseModel responseModel)
         {
             var coreSettingsHelper = new GigyaSettingsHelper();
-            var coreSettings = coreSettingsHelper.Get(settings.SiteId);
+            var coreSettings = coreSettingsHelper.Get(settings.SiteId, true);
 
             var dsHelper = new GigyaDsHelper(coreSettings, _logger, settings);
 
