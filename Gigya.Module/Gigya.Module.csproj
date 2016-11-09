@@ -208,15 +208,9 @@
     <EmbeddedResource Include="Mvc\Views\GigyaLogout\DesignerView.Simple.json" />
     <EmbeddedResource Include="Mvc\Views\GigyaLogout\Index.cshtml" />
     <Content Include="OpenAccessNuGet.targets" />
+    <Content Include="Gigya.Module.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
-    </None>
-    <Content Include="Web.config" />
-    <None Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
-    <None Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>

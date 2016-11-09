@@ -15,6 +15,10 @@ using Telerik.Microsoft.Practices.Unity;
 using Telerik.Sitefinity.Security.Claims;
 using Telerik.Sitefinity.Services;
 using Telerik.Sitefinity.Web.Events;
+using Telerik.Sitefinity;
+using Telerik.Sitefinity.Security;
+using Telerik.Sitefinity.Modules.Pages.Configuration;
+using Telerik.Sitefinity.Data.Configuration;
 
 namespace Gigya.Module
 {
@@ -61,6 +65,14 @@ namespace Gigya.Module
         {
             var restart = false;
             var configManager = ConfigManager.GetManager();
+
+            // check if Sitefinity has been installed
+            var dataconfig = configManager.GetSection<DataConfig>();
+            if (dataconfig == null || !dataconfig.Initialized || dataconfig.ConnectionStrings.Count == 0)
+            {
+                return;
+            }
+
             var modulesConfig = configManager.GetSection<SystemConfig>().ApplicationModules;
             if (!modulesConfig.Elements.Any(el => el.GetKey().Equals(ModuleClass.ModuleName)))
             {
@@ -104,7 +116,6 @@ namespace Gigya.Module
                 },
                 new string[] { "Gigya.Module.Mvc.Controllers" }
             );
-
 
             ObjectFactory.Container.RegisterType<GigyaMembershipHelper, GigyaMembershipHelper>("GigyaMembershipHelper",
                         new ContainerControlledLifetimeManager());
