@@ -18,6 +18,7 @@
     <AssemblyName>Gigya.Module</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <!--<EnhancerAssembly>$(SolutionDir)\packages\Telerik.DataAccess.Fluent.2016.1.224.1\tools\enhancer\enhancer.exe</EnhancerAssembly>-->
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -208,7 +209,6 @@
     <EmbeddedResource Include="Mvc\Views\GigyaLogout\DesignerView.Simple.json" />
     <EmbeddedResource Include="Mvc\Views\GigyaLogout\Index.cshtml" />
     <Content Include="OpenAccessNuGet.targets" />
-    <Content Include="Gigya.Module.nuspec" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Gigya.Sitefinity.Core</id>
+    <id>Gigya.Sitefinity.Core.9.2.6200</id>
     <version>1.0.0.1</version>
     <title>$title$</title>
-    <authors>Jason King</authors>
+    <authors>Gigya Inc</authors>
     <owners>Gigya Inc</owners>
     <projectUrl>http://developers.gigya.com/display/GD/Gigya+Connector+for+Sitefinity+9</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
