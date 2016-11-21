@@ -18,6 +18,7 @@ using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Models;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Connector.Logging;
+using Gigya.Module.Core.Connector.Enums;
 
 namespace Gigya.Module.BasicSettings
 {
@@ -106,6 +107,9 @@ namespace Gigya.Module.BasicSettings
         [DataMember]
         public int SessionTimeout { get; set; }
 
+        [DataMember]
+        public GigyaSessionProvider SessionProvider { get; set; }
+
         /// <summary>
         /// This field is required so we can poll on the client and detect if the service has responded.
         /// </summary>
@@ -160,6 +164,7 @@ namespace Gigya.Module.BasicSettings
                 this.LanguageOther = settings.Language;
                 this.LanguageFallback = settings.LanguageFallback;
                 this.SessionTimeout = settings.SessionTimeout;
+                this.SessionProvider = settings.SessionProvider;
 
                 var mappingFields = !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
                 AddMappingField(Constants.GigyaFields.UserId, Constants.SitefinityFields.UserId, ref mappingFields, true);
@@ -228,6 +233,30 @@ namespace Gigya.Module.BasicSettings
                 settings.RedirectUrl = this.RedirectUrl;
                 settings.LogoutUrl = this.LogoutUrl;
                 settings.SessionTimeout = this.SessionTimeout;
+                settings.SessionProvider = this.SessionProvider;
+
+                var mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(MappingFields);
+                if (mappingFields == null || !mappingFields.Any())
+                {
+                    throw new ArgumentException(Constants.Errors.UIDFieldRequired);
+                }
+
+                // validate that there is a mapping field for UID
+                var usernameMappingExists = mappingFields.Any(i => i.GigyaFieldName == Constants.GigyaFields.UserId);
+                if (!usernameMappingExists)
+                {
+                    throw new ArgumentException(Constants.Errors.UIDFieldRequired);
+                }
+
+                if (mappingFields.Any(i => string.IsNullOrEmpty(i.GigyaFieldName)))
+                {
+                    throw new ArgumentException(Constants.Errors.GigyaFieldNameRequired);
+                }
+
+                if (mappingFields.Any(i => string.IsNullOrEmpty(i.CmsFieldName)))
+                {
+                    throw new ArgumentException(Constants.Errors.CmsFieldNameRequired);
+                }
 
                 // application secret that we will use to validate the settings - store this in a separate var as it's unencrypted
                 string plainTextApplicationSecret = string.Empty;
@@ -313,7 +342,8 @@ namespace Gigya.Module.BasicSettings
                 LogoutUrl = settings.LogoutUrl,
                 MappingFields = settings.MappingFields,
                 RedirectUrl = settings.RedirectUrl,
-                SessionTimeout = settings.SessionTimeout
+                SessionTimeout = settings.SessionTimeout,
+                SessionProvider = settings.SessionProvider
             };
 
             return model;

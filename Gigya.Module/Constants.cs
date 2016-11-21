@@ -17,6 +17,13 @@ namespace Gigya.Module
             public const string SignatureTimestamp = "signatureTimestamp";
         }
 
+        public class Errors
+        {
+            public const string UIDFieldRequired = "UID is required field mapping on Gigya field list.";
+            public const string GigyaFieldNameRequired = "Gigya Field must not be blank.";
+            public const string CmsFieldNameRequired = "Sitefinity Field Alias must not be blank.";
+        }
+
         public class SitefinityFields
         {
             public const string FirstName = "FirstName";

@@ -19,6 +19,10 @@ using Telerik.Sitefinity;
 using Telerik.Sitefinity.Security;
 using Telerik.Sitefinity.Modules.Pages.Configuration;
 using Telerik.Sitefinity.Data.Configuration;
+using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Connector.Logging;
+using Gigya.Module.Core.Connector.Enums;
+using Gigya.Module.Core.Mvc.Models;
 
 namespace Gigya.Module
 {
@@ -119,6 +123,22 @@ namespace Gigya.Module
 
             ObjectFactory.Container.RegisterType<GigyaMembershipHelper, GigyaMembershipHelper>("GigyaMembershipHelper",
                         new ContainerControlledLifetimeManager());
+
+            EventHub.Subscribe<IPagePreRenderCompleteEvent>(OnPagePreRenderCompleteEventHandler);
+        }
+
+        private static void OnPagePreRenderCompleteEventHandler(IPagePreRenderCompleteEvent e)
+        {
+            if (e.PageSiteNode.IsBackend)
+            {
+                return;
+            }
+
+            // check if Sitefinity is the session leader and sign in if required
+            var settingsHelper = new GigyaSettingsHelper();
+            var logger = new Logger(new SitefinityLogger());
+            var accountHelper = new GigyaAccountHelper(settingsHelper, logger);
+            accountHelper.LoginToGigyaIfRequired();
         }
 
         #endregion

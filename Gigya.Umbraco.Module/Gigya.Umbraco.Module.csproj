@@ -222,6 +222,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connector\Helpers\GigyaAccountHelper.cs" />
     <Compile Include="GigyaApplicationEventHandler.cs" />
     <Compile Include="Connector\Helpers\GigyaMembershipHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaSettingsHelper.cs" />

@@ -318,10 +318,7 @@ namespace Gigya.UnitTests.Selenium.Authentication
         public void Sitefinity_RemoveCookieAndUserIsLoggedInAfterRefresh()
         {
             CanRegisterAndLoginToCms();
-
-            // simulate the user being logged out of Sitefinity
-            _driver.Manage().Cookies.DeleteCookieNamed("SF-TokenId");
-            _driver.Manage().Cookies.DeleteCookieNamed("FedAuth");
+            LogUserOutOfSitefinity();
 
             _driver.Navigate().Refresh();
 
@@ -338,6 +335,62 @@ namespace Gigya.UnitTests.Selenium.Authentication
             _driver.Navigate().Refresh();
             var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
             Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
+        }
+
+        private void LogUserOutOfSitefinity()
+        {
+            // simulate the user being logged out of Sitefinity
+            _driver.Manage().Cookies.DeleteCookieNamed("SF-TokenId");
+            _driver.Manage().Cookies.DeleteCookieNamed("FedAuth");
+        }
+
+        [TestMethod]
+        public void Sitefinity_IsLoggedIntoGigyaAfterTimeout_SitefinitySessionProvider()
+        {
+            // update all gigya settings to have a session expiration of 60 seconds
+            UpdateAllGlobalParams("{ \"sessionExpiration\": 30 }");
+
+            // login to CMS
+            CanRegisterAndLoginToCms();
+
+            // wait 40 secs - longer than gigya timeout
+            Thread.Sleep(40000);
+
+            _driver.Navigate().Refresh();
+
+            // check that user is logged into Gigya
+            var cookies = _driver.Manage().Cookies.AllCookies;
+            if (!cookies.Any(i => i.Name == ("glt_" + Config.Site1ApiKey.Trim())))
+            {
+                Assert.Fail("Failed to find Gigya cookie starting with glt");
+            }
+
+            Thread.Sleep(5000);
+        }
+
+        [TestMethod]
+        public void Sitefinity_IsLoggedOutOfGigyaAfterTimeout_SitefinitySessionProvider()
+        {
+            UpdateAllGlobalParams("{ \"sessionExpiration\": 300 }");
+
+            // login to CMS
+            CanRegisterAndLoginToCms();
+
+            // remove sitefinity cookie - effectively log the user out
+            LogUserOutOfSitefinity();
+
+            _driver.Navigate().Refresh();
+
+            Thread.Sleep(5000);
+
+            // check that user is logged out of Gigya
+            var cookies = _driver.Manage().Cookies.AllCookies;
+            if (cookies.Any(i => i.Name.StartsWith("glt")))
+            {
+                Assert.Fail("Found Gigya cookie starting with glt. User should be logged out of Gigya");
+            }
+
+            Thread.Sleep(5000);
         }
     }
 }

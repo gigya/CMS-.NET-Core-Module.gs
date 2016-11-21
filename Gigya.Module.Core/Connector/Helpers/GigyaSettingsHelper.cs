@@ -29,6 +29,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             set { _pathUtilities = value; }
         }
 
+        private const string _cacheKeyBase = "GigyaSettingsHelper-6A0A6E65-F65B-4197-8D4E-2BDCD5680EAF";
         protected abstract string Language(IGigyaModuleSettings settings);
         public abstract string CmsName { get; }
         public abstract string CmsVersion { get; }
@@ -112,7 +113,18 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <param name="decrypt">Whether to decrypt the application secret.</param>
         public virtual IGigyaModuleSettings Get(object id, bool decrypt = false)
         {
+            var cacheKey = string.Concat(_cacheKeyBase, id, decrypt);
             IGigyaModuleSettings settings = null;
+
+            var context = HttpContext.Current;
+            if (context != null)
+            {
+                settings = context.Items[cacheKey] as IGigyaModuleSettings;
+                if (settings != null)
+                {
+                    return settings;
+                }
+            }
             
             var siteSettingsAndGlobal = GetForSiteAndDefault(id);
             settings = siteSettingsAndGlobal.OrderByDescending(i => i.Id).FirstOrDefault() ?? EmptySettings(id);
@@ -125,6 +137,12 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields) 
                 ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
+
+            if (context != null)
+            {
+                // cache for the rest of this request
+                context.Items[cacheKey] = settings;
+            }
 
             return settings;
         }

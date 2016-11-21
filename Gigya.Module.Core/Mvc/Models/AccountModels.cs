@@ -52,6 +52,7 @@ namespace Gigya.Module.Core.Mvc.Models
 
     public class CurrentIdentity
     {
+        public string UID { get; set; }
         public string Name { get; set; }
         public bool IsAuthenticated { get; set; }
     }

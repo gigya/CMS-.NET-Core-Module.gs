@@ -86,6 +86,7 @@
     <Compile Include="Connector\Events\GigyaEventHub.cs" />
     <Compile Include="Connector\Events\GigyaMembershipEvents.cs" />
     <Compile Include="Connector\Helpers\FileHelper.cs" />
+    <Compile Include="Connector\Helpers\GigyaAccountHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaApiHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaLanguageHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaSettingsHelper.cs" />

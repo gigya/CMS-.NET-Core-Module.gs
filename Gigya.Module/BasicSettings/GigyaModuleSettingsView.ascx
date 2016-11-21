@@ -187,6 +187,16 @@
     </div>
 
     <div class="sfTxtLbl sfInlineBlock">
+        Session Management
+    </div>
+    <sfFields:ChoiceField ID="SessionManagement" Title="" runat="server" DataFieldName="SessionProvider" DisplayMode="Write" RenderChoicesAs="RadioButtons">
+        <Choices>
+            <sfFields:ChoiceItem Text="Gigya" Value="0" />
+            <sfFields:ChoiceItem Text="Sitefinity" Value="1" />
+        </Choices>
+    </sfFields:ChoiceField>
+
+    <div class="sfTxtLbl sfInlineBlock">
         Data Center
     </div>
     <div id="data-center-wrapper">

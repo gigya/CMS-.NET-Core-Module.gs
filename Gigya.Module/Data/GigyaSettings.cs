@@ -1,4 +1,5 @@
-﻿using Gigya.Module.Core.Data;
+﻿using Gigya.Module.Core.Connector.Enums;
+using Gigya.Module.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,8 @@ namespace Gigya.Module.Data
         public string GlobalParameters { get; set; }
 
         public int SessionTimeout { get; set; }
+
+        public GigyaSessionProvider SessionProvider { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GigyaModuleSettings"/> class.
