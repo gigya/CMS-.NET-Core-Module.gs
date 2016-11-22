@@ -6,7 +6,6 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <EnhancerAssembly>$(SolutionDir)\packages\Telerik.DataAccess.Fluent.2016.1.224.1\tools\enhancer\enhancer.exe</EnhancerAssembly>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -154,6 +153,7 @@
     <Compile Include="Connector\Helpers\GigyaAccountHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaMembershipHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaSettingsHelper.cs" />
+    <Compile Include="Connector\Logging\LoggerFactory.cs" />
     <Compile Include="Connector\Logging\SitefinityLogger.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaLanguage.cs" />

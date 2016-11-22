@@ -22,18 +22,13 @@ using Gigya.Socialize.SDK;
 
 namespace Gigya.Umbraco.Module.Connector.Helpers
 {
-    public class GigyaMembershipHelper : IGigyaMembershipHelper
+    public class GigyaMembershipHelper : GigyaMembershipHelperBase, IGigyaMembershipHelper
     {
         [Obsolete("Use GigyaEventHub.Instance.GettingGigyaValue instead.")]
         public static event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
 
-        private readonly GigyaApiHelper _gigyaApiHelper;
-        private readonly Logger _logger;
-
-        public GigyaMembershipHelper(GigyaApiHelper apiHelper, Logger logger)
+        public GigyaMembershipHelper(GigyaApiHelper apiHelper, Logger logger) : base(apiHelper, logger)
         {
-            _gigyaApiHelper = apiHelper;
-            _logger = logger;
         }
 
         /// <summary>
@@ -73,18 +68,6 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="gigyaModel"></param>
-        /// <param name="key"></param>
-        /// <param name="defaultValue"></param>
-        /// <returns></returns>
-        protected virtual string GetGigyaValueWithDefault(dynamic gigyaModel, string key, string defaultValue = null)
-        {
-            return DynamicUtils.GetValue<string>(gigyaModel, key) ?? defaultValue;
         }
 
         /// <summary>
@@ -206,34 +189,6 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             return user;
         }
 
-        private string GetMappedFieldWithFallback(dynamic gigyaModel, string cmsFieldName, string gigyaFallbackFieldName, List<MappingField> mappingFields)
-        {
-            var value = GetGigyaFieldFromCmsAlias(gigyaModel, cmsFieldName, null, mappingFields);
-            if (string.IsNullOrEmpty(value))
-            {
-                // no mapping provided for field so use the default
-                value = GetGigyaValueWithDefault(gigyaModel, gigyaFallbackFieldName, null);
-            }
-
-            return value;
-        }
-
-        private string GetGigyaFieldFromCmsAlias(dynamic gigyaModel, string cmsFieldName, string fallback, List<MappingField> mappingFields)
-        {
-            if (mappingFields == null)
-            {
-                return fallback;
-            }
-
-            var field = mappingFields.FirstOrDefault(i => i.CmsFieldName == cmsFieldName);
-            if (field != null && !string.IsNullOrEmpty(field.GigyaFieldName))
-            {
-                return GetGigyaValueWithDefault(gigyaModel, field.GigyaFieldName, fallback);
-            }
-
-            return fallback;
-        }
-
         /// <summary>
         /// Login or register a user.
         /// </summary>
@@ -331,7 +286,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <summary>
         /// In the Umbraco module the current site id is passed as an array so we need to convert to an int.
         /// </summary>
-        private int ConvertCurrentSiteId(object currentSiteId)
+        protected override object ConvertCurrentSiteId(object currentSiteId)
         {
             var idList = currentSiteId as string[];
             if (idList != null)
@@ -342,78 +297,6 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             return Convert.ToInt32(currentSiteId);
         }
 
-        private ExpandoObject GetAccountInfo(object currentSiteId, IGigyaModuleSettings settings, GSResponse userInfoResponse, List<MappingField> mappingFields)
-        {
-            var userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
-            ThrowTestingExceptionIfRequired(settings, userInfo);
-
-            var siteId = ConvertCurrentSiteId(currentSiteId);
-
-            // fire getAccountInfo completed event
-            var getAccountInfoCompletedArgs = new GetAccountInfoCompletedEventArgs
-            {
-                GigyaModel = userInfo,
-                Settings = settings,
-                Logger = _logger,
-                MappingFields = mappingFields,
-                CurrentSiteId = siteId
-            };
-            GigyaEventHub.Instance.RaiseGetAccountInfoCompleted(this, getAccountInfoCompletedArgs);
-
-            // fire merge getAccountInfo completed event
-            var accountInfoMergeCompletedArgs = new AccountInfoMergeCompletedEventArgs
-            {
-                GigyaModel = getAccountInfoCompletedArgs.GigyaModel,
-                Settings = settings,
-                Logger = _logger,
-                CurrentSiteId = siteId
-            };
-            GigyaEventHub.Instance.RaiseAccountInfoMergeCompleted(this, accountInfoMergeCompletedArgs);
-            return accountInfoMergeCompletedArgs.GigyaModel;
-        }
-
-        protected GSResponse ValidateRequest(LoginModel model, IGigyaModuleSettings settings)
-        {
-            if (!settings.EnableRaas)
-            {
-                if (settings.DebugMode)
-                {
-                    _logger.Debug("RaaS not enabled so login aborted.");
-                }
-                return null;
-            }
-
-            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
-            {
-                if (settings.DebugMode)
-                {
-                    _logger.Debug("Invalid user signature for login request.");
-                }
-                return null;
-            }
-
-            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
-            if (userInfoResponse == null || userInfoResponse.GetErrorCode() != 0)
-            {
-                if (settings.DebugMode)
-                {
-                    _logger.Error("Failed to getAccountInfo");
-                }
-                return null;
-            }
-
-            return userInfoResponse;
-        }
-
-        private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
-        {
-            if (settings.MappedMappingFields != null)
-            {
-                return settings.MappedMappingFields;
-            }
-            return !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
-        }
-
         private string GetUmbracoUsername(List<MappingField> mappingFields, dynamic userInfo)
         {
             if (!mappingFields.Any())
@@ -422,14 +305,6 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
 
             return GetGigyaFieldFromCmsAlias(userInfo, Constants.CmsFields.Username, userInfo.UID, mappingFields);
-        }
-
-        private void ThrowTestingExceptionIfRequired(IGigyaModuleSettings settings, dynamic userInfo)
-        {
-            if (settings.DebugMode && DynamicUtils.GetValue<string>(userInfo, "profile.email") == Constants.Testing.EmailWhichThrowsException)
-            {
-                throw new ArgumentException("profile.email matches testing email which causes exception");
-            }
         }
 
         /// <summary>

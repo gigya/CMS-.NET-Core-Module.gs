@@ -83,8 +83,10 @@ namespace Gigya.Module.Connector.Helpers
             }
 
             var siteId = Guid.Parse(id.ToString());
-            var context = GigyaContext.Get();
-            return context.Settings.Where(i => i.SiteId == siteId || i.SiteId == Guid.Empty).Select(Map).ToList();
+            using (var context = GigyaContext.Get())
+            {
+                return context.Settings.Where(i => i.SiteId == siteId || i.SiteId == Guid.Empty).Select(Map).ToList();
+            }
         }
 
         private IGigyaModuleSettings Map(GigyaSitefinityModuleSettings settings)
