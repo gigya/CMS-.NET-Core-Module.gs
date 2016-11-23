@@ -17,9 +17,9 @@ namespace Gigya.Module.Core.Connector.Helpers
         protected IGigyaModuleSettings _settings;
         protected Logger _logger;
 
-        public GigyaAccountHelperBase(GigyaSettingsHelper settingsHelper, Logger logger)
+        public GigyaAccountHelperBase(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null)
         {
-            _settings = settingsHelper.GetForCurrentSite(true);
+            _settings = settings ?? settingsHelper.GetForCurrentSite(true);
             _logger = logger;
             _settingsHelper = settingsHelper;
         }

@@ -1,4 +1,5 @@
-﻿using Gigya.Module.Core.Connector.Enums;
+﻿using Gigya.Module.Connector.Logging;
+using Gigya.Module.Core.Connector.Enums;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Data;
 using Gigya.Module.Core.Mvc.Models;
@@ -15,10 +16,34 @@ namespace Gigya.Module.Connector.Helpers
 {
     public class GigyaAccountHelper : Gigya.Module.Core.Connector.Helpers.GigyaAccountHelperBase
     {
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger) : base(settingsHelper, logger)
+        private const string _checkedIfLoginRequiredKey = "GigyaAccountHelper.CheckedIfLoginRequiredKey";
+
+        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null) : base(settingsHelper, logger, settings)
         {
         }
 
+        /// <summary>
+        /// Creates a new GigyaAccountHelper instance and calls LoginToGigyaIfRequired. This will only be run once per request no matter how many times it's called.
+        /// </summary>
+        public static void ValidateAndLoginToGigyaIfRequired(HttpContext context, IGigyaModuleSettings settings = null)
+        {
+            if (context.Items.Contains(_checkedIfLoginRequiredKey))
+            {
+                return;
+            }
+
+            context.Items[_checkedIfLoginRequiredKey] = true;
+
+            var settingsHelper = new GigyaSettingsHelper();
+            var logger = LoggerFactory.Instance();
+            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, settings);
+            accountHelper.LoginToGigyaIfRequired();
+        }
+
+        /// <summary>
+        /// Logs a user into Gigya by calling NotifyLogin.
+        /// </summary>
+        /// <param name="currentIdentity"></param>
         public override void LoginToGigyaIfRequired()
         {
             if (!_settings.EnableRaas)

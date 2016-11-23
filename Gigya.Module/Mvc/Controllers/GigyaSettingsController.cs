@@ -1,4 +1,5 @@
-﻿using Gigya.Module.Connector.Logging;
+﻿using Gigya.Module.Connector.Helpers;
+using Gigya.Module.Connector.Logging;
 using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Mvc.Controllers;
@@ -55,6 +56,9 @@ namespace Gigya.Module.Mvc.Controllers
                 _logger.Error("Gigya API key not specified. Check settings on Administration -> Settings -> Gigya");
                 return new EmptyResult();
             }
+
+            // check if Sitefinity is the session leader and sign in if required
+            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(System.Web.HttpContext.Current, settings);
 
             var identity = ClaimsManager.GetCurrentIdentity();
             var currentIdentity = new CurrentIdentity

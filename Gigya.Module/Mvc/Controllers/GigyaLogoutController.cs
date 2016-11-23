@@ -29,6 +29,9 @@ namespace Gigya.Module.Mvc.Controllers
                 return new EmptyResult();
             }
 
+            // check if Sitefinity is the session leader and sign in if required
+            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(System.Web.HttpContext.Current);
+
             var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaLogout/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaLogout.Index.cshtml");
 
             var model = new GigyaLogoutViewModel

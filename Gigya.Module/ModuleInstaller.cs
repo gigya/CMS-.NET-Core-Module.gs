@@ -23,6 +23,7 @@ using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Connector.Logging;
 using Gigya.Module.Core.Connector.Enums;
 using Gigya.Module.Core.Mvc.Models;
+using System.Web;
 
 namespace Gigya.Module
 {
@@ -133,12 +134,9 @@ namespace Gigya.Module
             {
                 return;
             }
-
+            
             // check if Sitefinity is the session leader and sign in if required
-            var settingsHelper = new GigyaSettingsHelper();
-            var logger = new Logger(new SitefinityLogger());
-            var accountHelper = new GigyaAccountHelper(settingsHelper, logger);
-            accountHelper.LoginToGigyaIfRequired();
+            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(HttpContext.Current);
         }
 
         #endregion

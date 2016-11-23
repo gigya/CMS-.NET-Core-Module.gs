@@ -41,6 +41,9 @@ namespace Gigya.Module.Mvc.Controllers
 
             if (model.IsLoggedIn)
             {
+                // check if Sitefinity is the session leader and sign in if required
+                GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(System.Web.HttpContext.Current);
+
                 var userManager = UserManager.GetManager();
                 var currentUser = userManager.GetUser(currentIdentity.UserId);
                 if (currentUser != null)
