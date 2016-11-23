@@ -267,6 +267,7 @@ var gigyaSitefinity = {
         Login: 0,
         GetAccountInfo: 1
     },
+    loggingInClassName: 'gigya-logging-in',
     authenticated: false,
     authenticatedOnServerByCurrentPage: false,
     baseUrl: '/api/gigya/account/',
@@ -514,6 +515,11 @@ var gigyaSitefinity = {
             LoginSource: loginSource
         };
 
+        var bodyElem = document.getElementsByTagName('body')[0];
+        if (loginSource == gigyaSitefinity.loginSource.Login && !bodyElem.classList.contains(gigyaSitefinity.loggingInClassName)) {
+            bodyElem.classList.add(gigyaSitefinity.loggingInClassName);
+        }
+
         qwest.post(gigyaSitefinity.baseUrl + 'login', data).then(function (xhr, response) {
             gigyaSitefinity.loggingIn = false;
 
@@ -523,11 +529,14 @@ var gigyaSitefinity = {
                         gigyaSitefinity.authenticated = true;
                         if (redirectAfterLogin === true && gigyaSitefinity.authenticatedOnServerByCurrentPage || gigyaSitefinity.loginEventFired) {
                             gigyaSitefinity.redirectAfterLogin(response.redirectUrl);
+                        } else {
+                            bodyElem.classList.remove(gigyaSitefinity.loggingInClassName);
                         }
                         return;
                     case gigyaSitefinity.responseCodes.LogoutIfNoLoginFired:
                         if (!gigyaSitefinity.loginEventFired) {
                             gigya.accounts.logout();
+                            bodyElem.classList.remove(gigyaSitefinity.loggingInClassName);
                         }
                         return;
                     case gigyaSitefinity.responseCodes.Success:
@@ -535,12 +544,15 @@ var gigyaSitefinity = {
                         gigyaSitefinity.authenticatedOnServerByCurrentPage = true;
                         if (redirectAfterLogin === true || gigyaSitefinity.loginEventFired) {
                             gigyaSitefinity.redirectAfterLogin(response.redirectUrl);
+                        } else {
+                            bodyElem.classList.remove(gigyaSitefinity.loggingInClassName);
                         }
                         return;
                     case gigyaSitefinity.responseCodes.Error:
                         gigyaSitefinity.log('logout');
                         gigya.accounts.logout();
                         gigyaSitefinity.handleError(response.errorMessage);
+                        bodyElem.classList.remove(gigyaSitefinity.loggingInClassName);
                         return;
                 }
             } else {
@@ -548,6 +560,7 @@ var gigyaSitefinity = {
                 gigyaSitefinity.log('logout');
                 gigya.accounts.logout();
                 gigyaSitefinity.handleError(response.errorMessage);
+                bodyElem.classList.remove(gigyaSitefinity.loggingInClassName);
             }
         })["catch"](function (e, xhr, response) {
             // Process the error
@@ -565,6 +578,8 @@ var gigyaSitefinity = {
             if (xhr.status === 500) {
                 gigyaSitefinity.handleError();
             }
+
+            bodyElem.classList.remove(gigyaSitefinity.loggingInClassName);
         });
     },
     onLogoutTriggeredByUser: function onLogoutTriggeredByUser(response) {
