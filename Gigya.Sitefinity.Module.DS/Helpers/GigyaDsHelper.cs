@@ -6,11 +6,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telerik.Sitefinity.Services;
 
 namespace Gigya.Sitefinity.Module.DS.Helpers
 {
     public static class GigyaDsHelperFactory
     {
+        /// <summary>
+        /// Creates a new Gigya DS helper with the settings for the current site.
+        /// </summary>
+        /// <returns></returns>
+        public static GigyaDsHelper Instance()
+        {
+            var siteId = Guid.Empty;
+            if (SystemManager.CurrentContext.IsMultisiteMode)
+            {
+                siteId = SystemManager.CurrentContext.CurrentSite.Id;
+            }
+            return Instance(siteId);
+        }
+
         /// <summary>
         /// Creates a new Gigya DS helper with the settings for <paramref name="siteId"/>.
         /// </summary>

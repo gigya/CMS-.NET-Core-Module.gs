@@ -168,6 +168,12 @@ namespace Gigya.Module.DS.Helpers
                     model = DynamicUtils.MergeToDictionary(model, mappedDsResult);
                 }
             }
+
+            if (!model.Any())
+            {
+                return null;
+            }
+
             return model.ToExpando();
         }
 
@@ -216,7 +222,7 @@ namespace Gigya.Module.DS.Helpers
             dynamic model = JsonConvert.DeserializeObject<ExpandoObject>(response.GetResponseText());
             
             var modelDictionary = model as IDictionary<string, object>;
-            if (!modelDictionary.ContainsKey("results"))
+            if (!modelDictionary.ContainsKey("results") || model.results.Count == 0)
             {
                 return null;
             }
@@ -306,6 +312,11 @@ namespace Gigya.Module.DS.Helpers
                         model = DynamicUtils.MergeToDictionary(model, mappedDsResult);
                     }
                 }
+            }
+
+            if (!model.Any())
+            {
+                return null;
             }
 
             return model.ToExpando();

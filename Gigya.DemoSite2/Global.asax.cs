@@ -1,5 +1,7 @@
 ﻿using Gigya.Module.Connector.Events;
 using Gigya.Module.Connector.Helpers;
+using Gigya.Module.Connector.Logging;
+using Gigya.Sitefinity.Module.DS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,25 @@ namespace SitefinityWebApp
         protected void Application_Start(object sender, EventArgs e)
         {
             Bootstrapper.Initialized += Bootstrapper_Initialized;
+            
         }
+
+        /// <summary>
+        /// Sample method to manually retrieve DS data from Gigya.
+        /// </summary>
+        /// <remarks>
+        /// This method retrieves Gigya settings from Sitefinity.
+        /// If you want to use your own settings this can be done by passing your own settings models into the GigyaDsHelper constructor.
+        /// </remarks>
+        private void ManuallyRetrieveDsData()
+        {
+            // create a new helper Gigya DS Helper to retrieve DS data from Gigya
+            var dsHelper = GigyaDsHelperFactory.Instance();
+
+            // retrieve DS data for a user who's id is userIdValue
+            var dsData = dsHelper.GetOrSearch("userIdValue");
+        }
+
 
         private void Bootstrapper_Initialized(object sender, Telerik.Sitefinity.Data.ExecutedEventArgs e)
         {
@@ -25,6 +45,9 @@ namespace SitefinityWebApp
             {
                 //EventHub.Subscribe<IMapGigyaFieldEvent>(GigyaMembershipHelper_MapGigyaField);
             }
+
+
+
         }
 
         private void GigyaMembershipHelper_MapGigyaField(IMapGigyaFieldEvent @event)

@@ -1077,9 +1077,21 @@
     <None Include="Properties\PublishProfiles\Dev.pubxml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gigya.Module.Core\Gigya.Module.Core.csproj">
+      <Project>{7610af03-891b-4ab2-a619-549bc9657cce}</Project>
+      <Name>Gigya.Module.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gigya.Module.DS\Gigya.Module.DS.csproj">
+      <Project>{a35a7bc3-5d80-4030-ba94-0585bf825d00}</Project>
+      <Name>Gigya.Module.DS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gigya.Module\Gigya.Module.csproj">
       <Project>{74357295-27b0-4757-a7f0-3a878525bff1}</Project>
       <Name>Gigya.Module</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Gigya.Sitefinity.Module.DS\Gigya.Sitefinity.Module.DS.csproj">
+      <Project>{738c1677-13ae-44c8-8c35-f8f017f05866}</Project>
+      <Name>Gigya.Sitefinity.Module.DS</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
