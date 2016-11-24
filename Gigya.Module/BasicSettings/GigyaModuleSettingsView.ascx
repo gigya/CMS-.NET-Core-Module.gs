@@ -12,6 +12,7 @@
     .mapping-fields-table .sfTxt { width: auto; margin: 0; }
     .sfDropdownList { display: inline-block; margin-bottom: 10px; }
     .required { color: red; }
+    select { padding: 2px 2px 3px 2px; }
 </style>
 
 <div class="sfSettingsSection">
@@ -38,6 +39,14 @@
         MaxCharactersCount="255"
         WrapperTag="div">
     </sfFields:TextField>
+    <div id="profile-properties-wrapper" style="display: none;">
+        <sfFields:TextField runat="server"
+            DataFieldName="ProfileProperties"
+            Title="Profile Properties"
+            DisplayMode="Write"
+            WrapperTag="div">
+        </sfFields:TextField>
+    </div>
     <sfFields:TextField ID="ApplicationKeyField" runat="server"
         DataFieldName="ApplicationKey"
         Title="Application Key<span class='required'>*</span>"
@@ -280,6 +289,7 @@
                 </td>
                 <td>
                     <input class="sf-mapping-field sfTxt" type="text" />
+                    <select class="sf-mapping-field"></select>
                 </td>
                 <td>
                     <a href="#" class="remove">Remove</a>
@@ -345,6 +355,10 @@
                 return false;
             });
 
+            gigyaSettings.mappingTable.on('change', 'select', function () {
+                gigyaSettings.updateFieldMappings();
+            });
+
             gigyaSettings.mappingTable.on('blur', 'input', function () {
                 gigyaSettings.updateFieldMappings();
             }).on('click', '.remove', function () {
@@ -355,6 +369,7 @@
                 return false;
             });
 
+            gigyaSettings.addProfileProperties();
             gigyaSettings.deserializeFieldMappings();
 
             gigyaSettings.addOtherWrapperChangeEvent('#data-center-wrapper select', '#data-center-other-wrapper', '');
@@ -426,15 +441,32 @@
 
             var gigyaField = newRow.find('.gigya-mapping-field').val(gigyaValue);
             if (readOnly) {
-                newRow.find('input.sf-mapping-field').prop('disabled', true);
+                newRow.find('.sf-mapping-field').prop('disabled', true);
                 newRow.find('.remove').hide();
             } else {
-                newRow.find('input.sf-mapping-field').prop('disabled', false);
+                newRow.find('.sf-mapping-field').prop('disabled', false);
                 newRow.find('.remove').show();
             }
 
             newRow.find('.sf-mapping-field').val(sitefinityValue);
             gigyaSettings.mappingTable.find('tbody').append(newRow);
+        },
+        addProfileProperties: function () {
+            var profileSelect = $('.mapping-fields-table select.sf-mapping-field');
+            var profileProperties = $('#profile-properties-wrapper :text').val();
+            if (profileProperties.length == 0) {
+                profileSelect.remove();
+            } else {
+                var profilePropertiesMapped = $.parseJSON(profileProperties);
+                for (var i = 0; i < profilePropertiesMapped.length; i++) {
+                    profileSelect.append(
+                        $('<option />')
+                        .text(profilePropertiesMapped[i].Value)
+                        .val(profilePropertiesMapped[i].Key)
+                    );
+                }
+                $('.mapping-fields-table input.sf-mapping-field').remove();
+            }
         },
         deserializeFieldMappings: function() {
             var mappingsRaw = gigyaSettings.hiddenMappingField.val();

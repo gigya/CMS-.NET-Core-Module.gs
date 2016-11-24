@@ -24,6 +24,9 @@ using System.Configuration;
 using Gigya.Module.DS.Config;
 using Gigya.Sitefinity.Module.DS.Helpers;
 using Gigya.Module.DS.Helpers;
+using Telerik.Sitefinity.Security;
+using System.ComponentModel;
+using Gigya.Module;
 
 namespace Gigya.Sitefinity.Module.DS.BasicSettings
 {
@@ -69,6 +72,9 @@ namespace Gigya.Sitefinity.Module.DS.BasicSettings
         [DataMember]
         public string MappingFields { get; set; }
 
+        [DataMember]
+        public string ProfileProperties { get; set; }
+
         /// <summary>
         /// This field is required so we can poll on the client and detect if the service has responded.
         /// </summary>
@@ -107,6 +113,9 @@ namespace Gigya.Sitefinity.Module.DS.BasicSettings
                 
                 this.SiteId = settings.SiteId;
                 this.Method = settings.Method;
+
+                // get a list of available profile properties
+                this.ProfileProperties = JsonConvert.SerializeObject(SitefinityUtils.GetProfileProperties().OrderBy(i => i.Value));
             }
         }
 

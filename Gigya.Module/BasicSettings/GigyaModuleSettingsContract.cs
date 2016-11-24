@@ -19,6 +19,8 @@ using Gigya.Module.Core.Connector.Models;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Connector.Logging;
 using Gigya.Module.Core.Connector.Enums;
+using Telerik.Sitefinity.Security;
+using System.ComponentModel;
 
 namespace Gigya.Module.BasicSettings
 {
@@ -110,6 +112,9 @@ namespace Gigya.Module.BasicSettings
         [DataMember]
         public GigyaSessionProvider SessionProvider { get; set; }
 
+        [DataMember]
+        public string ProfileProperties { get; set; }
+
         /// <summary>
         /// This field is required so we can poll on the client and detect if the service has responded.
         /// </summary>
@@ -183,6 +188,12 @@ namespace Gigya.Module.BasicSettings
                 this.LogoutUrl = settings.LogoutUrl;
                 this.RedirectUrl = settings.RedirectUrl;
                 this.SiteId = settings.SiteId;
+
+                // get a list of available profile properties
+                var profileProperties = SitefinityUtils.GetProfileProperties();
+                profileProperties.Add(new KeyValuePair<string, string>(Constants.SitefinityFields.UserId, Constants.SitefinityFields.UserId));
+                profileProperties.Add(new KeyValuePair<string, string>(Constants.SitefinityFields.Email, Constants.SitefinityFields.Email));
+                this.ProfileProperties = JsonConvert.SerializeObject(profileProperties.OrderBy(i => i.Value));
             }
         }
 

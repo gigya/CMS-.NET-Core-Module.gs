@@ -32,6 +32,30 @@ namespace Gigya.Module
             public const string UserId = "UserId";
         }
 
+        public class Profiles
+        {
+            public static readonly Dictionary<string, bool> BuiltInProfileProperties = new Dictionary<string, bool>
+            {
+                { "Nickname", true },
+                { "Id", true },
+                { "Avatar", true },
+                { "Visible", true },
+                { "ApplicationName", true },
+                { "User", true },
+                { "UserLinks", true },
+                { "Owner", true },
+                { "LastModified", true },
+                { "UrlName", true },
+                { "Urls", true },
+                { "AutoGenerateUniqueUrl", true },
+                { "DateCreated", true },
+                { "ExpirationDate", true },
+                { "PublicationDate", true },
+                { "SourceKey", true },
+                { "ContentLinks", true },
+            };
+        }
+
         public class Testing
         {
             public const string EmailWhichThrowsException = "loginexception@purestone.co.uk";
