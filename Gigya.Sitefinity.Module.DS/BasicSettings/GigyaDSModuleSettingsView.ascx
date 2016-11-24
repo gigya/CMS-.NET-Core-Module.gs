@@ -35,8 +35,8 @@
     </div>
     <sfFields:ChoiceField ID="Method" Title="" runat="server" DataFieldName="Method" DisplayMode="Write" RenderChoicesAs="RadioButtons">
         <Choices>
-            <sfFields:ChoiceItem Text="Search" Value="0" />
-            <sfFields:ChoiceItem Text="Get" Value="1" />
+            <sfFields:ChoiceItem Text="Search (Recommended when using more than one DS type or OID)" Value="0" />
+            <sfFields:ChoiceItem Text="Get (Recommended when using one DS type and one OID)" Value="1" />
         </Choices>
     </sfFields:ChoiceField>
     <div id="mapping-field-wrapper" style="display: none;">

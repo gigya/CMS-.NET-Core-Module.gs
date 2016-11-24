@@ -41,7 +41,7 @@ namespace Gigya.Module.Mvc.Controllers
                 return new EmptyResult();
             }
 
-            var settings = _settingsHelper.GetForCurrentSite();
+            var settings = _settingsHelper.GetForCurrentSite(true);
             if (!settings.EnableRaas)
             {
                 if (settings.DebugMode)
@@ -82,6 +82,11 @@ namespace Gigya.Module.Mvc.Controllers
             
             var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaSettings/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaSettings.Index.cshtml");
             return View(viewPath, viewModel);
+        }
+
+        protected override void HandleUnknownAction(string actionName)
+        {
+            Index().ExecuteResult(this.ControllerContext);
         }
 
         private string GetScript(GigyaSettingsViewModel model)

@@ -62,5 +62,10 @@ namespace Gigya.Module.Mvc.Controllers
 
             return View(viewPath, model);
         }
+
+        protected override void HandleUnknownAction(string actionName)
+        {
+            Index().ExecuteResult(this.ControllerContext);
+        }
     }
 }

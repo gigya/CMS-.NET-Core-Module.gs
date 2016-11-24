@@ -11,6 +11,7 @@
     .add-mapping-field { display: inline-block; margin-bottom: 10px; }
     .mapping-fields-table .sfTxt { width: auto; margin: 0; }
     .sfDropdownList { display: inline-block; margin-bottom: 10px; }
+    .required { color: red; }
 </style>
 
 <div class="sfSettingsSection">
@@ -32,14 +33,14 @@
 <div id="gigya-settings-section" style="display: none;" class="sfSettingsSection">
     <sfFields:TextField ID="ApiKeyField" runat="server"
         DataFieldName="ApiKey"
-        Title="API Key"
+        Title="API Key<span class='required'>*</span>"
         DisplayMode="Write"
         MaxCharactersCount="255"
         WrapperTag="div">
     </sfFields:TextField>
     <sfFields:TextField ID="ApplicationKeyField" runat="server"
         DataFieldName="ApplicationKey"
-        Title="Application Key"
+        Title="Application Key<span class='required'>*</span>"
         DisplayMode="Write"
         MaxCharactersCount="255"
         WrapperTag="div">
@@ -47,7 +48,7 @@
     <div class="application-secret-wrapper" style="display: none;">
         <div class="application-secret-masked">
             <div class="sfTxtLbl sfInlineBlock">
-                Application Secret
+                Application Secret<span class='required'>*</span>
             </div>
             <sfFields:TextField ID="ApplicationSecretMaskedField" runat="server"
                 DataFieldName="ApplicationSecretMasked"
@@ -60,7 +61,7 @@
         <div style="display: none;" class="application-secret">
             <sfFields:TextField ID="ApplicationSecretField" runat="server"
                 DataFieldName="ApplicationSecret"
-                Title="Application Secret"
+                Title="Application Secret<span class='required'>*</span>"
                 DisplayMode="Write"
                 MaxCharactersCount="255"
                 WrapperTag="div">
@@ -70,7 +71,7 @@
     </div>
 
     <div class="sfTxtLbl sfInlineBlock">
-        Language
+        Language<span class='required'>*</span>
     </div>
     <div id="language-wrapper">
         <sfFields:ChoiceField ID="LanguageField" runat="server" DataFieldName="Language" DisplayMode="Write" RenderChoicesAs="DropDown">
@@ -126,7 +127,7 @@
     </div>
     <div id="language-other-wrapper" style="display: none;">
         <div class="sfTxtLbl sfInlineBlock">
-            Enter a new Gigya Language code
+            Enter a new Gigya Language code<span class='required'>*</span>
         </div>
         <sfFields:TextField ID="LanguageOther" runat="server"
             DataFieldName="LanguageOther"
@@ -136,7 +137,7 @@
         </sfFields:TextField>
     </div>
     <div id="language-fallback-wrapper">
-        <sfFields:ChoiceField ID="LanguageFallback" runat="server" Title="Language Fallback (used if the Sitefinity language isn't available in Gigya)" DataFieldName="LanguageFallback" DisplayMode="Write" RenderChoicesAs="DropDown">
+        <sfFields:ChoiceField ID="LanguageFallback" runat="server" Title="Language Fallback (used if the Sitefinity language isn't available in Gigya)<span class='required'>*</span>" DataFieldName="LanguageFallback" DisplayMode="Write" RenderChoicesAs="DropDown">
             <Choices>
                 <sfFields:ChoiceItem Text="English (default)" Value="en" />
                 <sfFields:ChoiceItem Text="Arabic" Value="ar" />
@@ -187,17 +188,17 @@
     </div>
 
     <div class="sfTxtLbl sfInlineBlock">
-        Session Management
+        Session Management (Choose which platform determines session expiration.)<span class='required'>*</span>
     </div>
     <sfFields:ChoiceField ID="SessionManagement" Title="" runat="server" DataFieldName="SessionProvider" DisplayMode="Write" RenderChoicesAs="RadioButtons">
         <Choices>
-            <sfFields:ChoiceItem Text="Gigya" Value="0" />
-            <sfFields:ChoiceItem Text="Sitefinity" Value="1" />
+            <sfFields:ChoiceItem Text="Gigya (When the Gigya session expires, the user is also logged out of Sitefinity.)" Value="0" />
+            <sfFields:ChoiceItem Text="Sitefinity (When the Sitefinity session expires, the user is also logged out of Gigya.)" Value="1" />
         </Choices>
     </sfFields:ChoiceField>
 
-    <div class="sfTxtLbl sfInlineBlock">
-        Data Center
+    <div class="sfTxtLbl sfInlineBlock" style="margin-top: 5px;">
+        Data Center<span class='required'>*</span>
     </div>
     <div id="data-center-wrapper">
         <sfFields:ChoiceField ID="DataCenterField" Title="" runat="server" DataFieldName="DataCenter" DisplayMode="Write" RenderChoicesAs="DropDown">
@@ -212,7 +213,7 @@
     </div>
     <div id="data-center-other-wrapper" style="display: none;">
         <div class="sfTxtLbl sfInlineBlock">
-            Enter a new Data Center
+            Enter a new Data Center<span class='required'>*</span>
         </div>
         <sfFields:TextField ID="DataCenterOther" runat="server"
             DataFieldName="DataCenterOther"
@@ -262,7 +263,7 @@
     </sfFields:TextField>
 
     <div class="sfTxtLbl sfInlineBlock">
-        Fields Mapping (UserId must be mapped to a unique field e.g. UID)
+        Fields Mapping (UserId must be mapped to a unique field e.g. UID)<span class='required'>*</span>
     </div>
     <table class="mapping-fields-table">
         <thead>

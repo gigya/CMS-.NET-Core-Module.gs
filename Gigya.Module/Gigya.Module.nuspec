@@ -1,16 +1,16 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>Gigya.Sitefinity.Core.9.2.6200</id>
-    <version>1.0.0.1</version>
-    <title>$title$</title>
+    <id>Gigya.Sitefinity.Core.9.0.6010</id>
+    <version>$version$</version>
+    <title>Gigya.Sitefinity.Core.9.0.6010</title>
     <authors>Gigya Inc</authors>
     <owners>Gigya Inc</owners>
     <projectUrl>http://developers.gigya.com/display/GD/Gigya+Connector+for+Sitefinity+9</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The Gigya Connector for Sitefinity is designed to help you implement Gigya Registration-as-a-Service (RaaS) in your Sitefinity websites as quickly and easily as possible. With the Gigya extension, you can easily build and maintain secure and scalable registration, authentication, profile management, data analytics and third-party integrations. Increase registrations and identify customers across devices, consolidate data into rich customer profiles, and provide better service, products and experiences by integrating data into marketing and service applications. Built for Sitefinity 9.2.6200.</description>
-    <summary>The Gigya Connector for Sitefinity is designed to help you implement Gigya Registration-as-a-Service (RaaS) in your Sitefinity websites as quickly and easily as possible. Built for Sitefinity 9.2.6200.</summary>
-    <releaseNotes>Built for Sitefinity 9.2.6200</releaseNotes>
+    <description>The Gigya Connector for Sitefinity is designed to help you implement Gigya Registration-as-a-Service (RaaS) in your Sitefinity websites as quickly and easily as possible. With the Gigya extension, you can easily build and maintain secure and scalable registration, authentication, profile management, data analytics and third-party integrations. Increase registrations and identify customers across devices, consolidate data into rich customer profiles, and provide better service, products and experiences by integrating data into marketing and service applications. Built for Sitefinity 9.0.6010.</description>
+    <summary>The Gigya Connector for Sitefinity is designed to help you implement Gigya Registration-as-a-Service (RaaS) in your Sitefinity websites as quickly and easily as possible. Built for Sitefinity 9.0.6010.</summary>
+    <releaseNotes>Updated to support DS sync.</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>IDM identity management social registration Sitefinity</tags>
   </metadata>

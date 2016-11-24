@@ -8,11 +8,14 @@
     <owners>Gigya Inc</owners>
     <projectUrl>http://developers.gigya.com/display/GD/Gigya+Connector+for+Sitefinity+9</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>The Gigya DS Connector for Sitefinity is designed to help you implement Gigya Registration-as-a-Service (RaaS) in your Sitefinity websites as quickly and easily as possible. With the Gigya extension, you can easily build and maintain secure and scalable registration, authentication, profile management, data analytics and third-party integrations. Increase registrations and identify customers across devices, consolidate data into rich customer profiles, and provide better service, products and experiences by integrating data into marketing and service applications. Built for Sitefinity 9.0.6010.</description>
-    <summary>The Gigya DS Connector for Sitefinity is designed to help you implement Gigya Registration-as-a-Service (RaaS) in your Sitefinity websites as quickly and easily as possible. Built for Sitefinity 9.0.6010.</summary>
+    <description>Synchronization between Sitefinity and Gigya's Data Store (DS) is provided through an optional, separate package that can be installed on top of the main Gigya core package for Sitefinity. The DS Sync module adds the ability to pull data from Gigya's Data Store and map it into the user account database in Sitefinity. Customers who only use Gigya's account storage, and do not use the Gigya Data Store service, do not have to install this additional module. Built for Sitefinity 9.0.6010.</description>
+    <summary>Synchronization between Sitefinity and Gigya's Data Store (DS) is provided through an optional, separate package that can be installed on top of the main Gigya core package for Sitefinity. Built for Sitefinity 9.0.6010.</summary>
     <releaseNotes>Built for Sitefinity 9.0.6010</releaseNotes>
     <copyright>Copyright 2016</copyright>
-    <tags>IDM identity management social registration Sitefinity</tags>
+    <tags>IDM identity management social registration Sitefinity DS</tags>
+    <dependencies>
+      <dependency id="Gigya.Sitefinity.Core.9.0.6010" version="1.0.0.2" />
+    </dependencies>
   </metadata>
   <files>
     <file src="bin\Release\Gigya.Module.DS.dll" target="lib\net45" />

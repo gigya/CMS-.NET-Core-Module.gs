@@ -1,5 +1,6 @@
 ﻿using Gigya.Module.Connector.Logging;
 using Gigya.Module.Core.Connector.Enums;
+using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Data;
 using Gigya.Module.Core.Mvc.Models;

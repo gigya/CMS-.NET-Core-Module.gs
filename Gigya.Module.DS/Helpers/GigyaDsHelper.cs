@@ -1,4 +1,5 @@
 ﻿using Gigya.Module.Core.Connector.Common;
+using Gigya.Module.Core.Connector.Events;
 using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Connector.Models;
@@ -16,10 +17,10 @@ namespace Gigya.Module.DS.Helpers
 {
     public class GigyaDsHelper
     {
-        private readonly IGigyaModuleSettings _settings;
-        private readonly Logger _logger;
-        private readonly GigyaDsSettings _dsSettings;
-        private readonly GigyaDsApiHelper _apiHelper;
+        protected readonly IGigyaModuleSettings _settings;
+        protected readonly Logger _logger;
+        protected readonly GigyaDsSettings _dsSettings;
+        protected readonly GigyaDsApiHelper _apiHelper;
 
         public GigyaDsHelper(IGigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null)
         {
@@ -57,23 +58,38 @@ namespace Gigya.Module.DS.Helpers
 
         /// <summary>
         /// Fetches ds data using the configured method (get or search).
+        /// After completing, the FetchDSCompleted event will be fired.
         /// </summary>
         /// <param name="uid">The user Id.</param>
         public dynamic GetOrSearch(string uid)
         {
-            if (_dsSettings == null)
+            var fetchDsCompletedArgs = new FetchDSCompletedEventArgs
             {
+                Settings = _settings,
+                Logger = _logger
+            };
+
+            if (_dsSettings == null || string.IsNullOrEmpty(uid))
+            {
+                GigyaEventHub.Instance.RaiseFetchDSCompleted(this, fetchDsCompletedArgs);
                 return null;
             }
 
+            ExpandoObject result;
             switch (_dsSettings.Method)
             {
                 case GigyaDsMethod.Get:
-                    return GetAll(uid);
+                    result = GetAll(uid);
+                    break;
                 case GigyaDsMethod.Search:
                 default:
-                    return _dsSettings.Mappings.Count == 1 ? GetAll(uid) : SearchAll(uid);
+                    result = _dsSettings.Mappings.Count == 1 ? GetAll(uid) : SearchAll(uid);
+                    break;
             }
+
+            fetchDsCompletedArgs.GigyaModel = result;
+            GigyaEventHub.Instance.RaiseFetchDSCompleted(this, fetchDsCompletedArgs);
+            return result;
         }
 
         /// <summary>
@@ -145,7 +161,8 @@ namespace Gigya.Module.DS.Helpers
         }
 
         /// <summary>
-        /// Fetches all ds data using ds.search
+        /// Fetches all ds data using ds.search.
+        /// FetchDSCompleted event will not be fired.
         /// </summary>
         /// <param name="uid">The user Id.</param>
         public ExpandoObject SearchAll(string uid)
@@ -195,6 +212,7 @@ namespace Gigya.Module.DS.Helpers
 
         /// <summary>
         /// Uses the Gigya ds.search API call to retrieve data.
+        /// FetchDSCompleted event will not be fired.
         /// </summary>
         /// <param name="uid">The user Id.</param>
         /// <param name="dsType">The ds type that is passed in the type param.</param>
@@ -242,6 +260,7 @@ namespace Gigya.Module.DS.Helpers
 
         /// <summary>
         /// Gets a single result from the ds using ds.get.
+        /// FetchDSCompleted event will not be fired.
         /// </summary>
         /// <param name="oid">The ds OID.</param>
         /// <param name="uid">The user Id.</param>
@@ -285,6 +304,7 @@ namespace Gigya.Module.DS.Helpers
 
         /// <summary>
         /// Fetches ds data using ds.get
+        /// FetchDSCompleted event will not be fired.
         /// </summary>
         /// <param name="uid">The user Id.</param>
         /// <param name="settings">The mapping settings.</param>

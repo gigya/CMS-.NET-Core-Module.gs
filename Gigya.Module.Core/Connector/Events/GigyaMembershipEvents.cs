@@ -53,4 +53,11 @@ namespace Gigya.Module.Core.Connector.Events
         public dynamic GigyaModel { get; set; }
         public object CurrentSiteId { get; set; }
     }
+
+    public class FetchDSCompletedEventArgs : EventArgs
+    {
+        public Logger Logger { get; set; }
+        public IGigyaModuleSettings Settings { get; set; }
+        public dynamic GigyaModel { get; set; }
+    }
 }

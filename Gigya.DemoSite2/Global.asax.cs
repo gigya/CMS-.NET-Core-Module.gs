@@ -19,7 +19,49 @@ namespace SitefinityWebApp
         protected void Application_Start(object sender, EventArgs e)
         {
             Bootstrapper.Initialized += Bootstrapper_Initialized;
-            
+        }
+
+        private void Bootstrapper_Initialized(object sender, Telerik.Sitefinity.Data.ExecutedEventArgs e)
+        {
+            if (e.CommandName == "RegisterRoutes")
+            {
+                EventHub.Subscribe<IMapGigyaFieldEvent>(GigyaMembershipHelper_MapGigyaField);
+            }
+
+            // register event to be called after Gigya DS data has been merged with 
+            Gigya.Module.Core.Connector.Events.GigyaEventHub.Instance.AccountInfoMergeCompleted += Instance_AccountInfoMergeCompleted;
+
+            Gigya.Module.Core.Connector.Events.GigyaEventHub.Instance.FetchDSCompleted += Instance_FetchDSCompleted;
+        }
+
+        private static void Instance_FetchDSCompleted(object sender, Gigya.Module.Core.Connector.Events.FetchDSCompletedEventArgs e)
+        {
+            // manipulate DS data if required e.g.:
+
+            try
+            {
+                e.GigyaModel.ds.dsType.field = "updated";
+            }
+            catch (Exception ex)
+            {
+                e.Logger.Error("Failed to update DS data after fetch.", ex);
+            }
+        }
+
+        private void Instance_AccountInfoMergeCompleted(object sender, Gigya.Module.Core.Connector.Events.AccountInfoMergeCompletedEventArgs e)
+        {
+            // model representing Gigya DS data that has been merged with the getAccountInfo model
+            dynamic gigyaAccountInfoWithDsDataMerged = e.GigyaModel;
+
+            try
+            {
+                // assuming I have a ds field called ds.addressInfo.line1_s then I would use this code to change the value
+                gigyaAccountInfoWithDsDataMerged.ds.addressInfo.line1_s = "first line of address";
+            }
+            catch (Exception ex)
+            {
+                e.Logger.Error("Error in Instance_AccountInfoMergeCompleted.", ex);
+            }
         }
 
         /// <summary>
@@ -29,26 +71,23 @@ namespace SitefinityWebApp
         /// This method retrieves Gigya settings from Sitefinity.
         /// If you want to use your own settings this can be done by passing your own settings models into the GigyaDsHelper constructor.
         /// </remarks>
-        private void ManuallyRetrieveDsData()
+        private dynamic ManuallyRetrieveDsData()
         {
             // create a new helper Gigya DS Helper to retrieve DS data from Gigya
             var dsHelper = GigyaDsHelperFactory.Instance();
 
-            // retrieve DS data for a user who's id is userIdValue
-            var dsData = dsHelper.GetOrSearch("userIdValue");
+            // retrieve DS data for a user who is logged in
+            var dsData = dsHelper.GetOrSearchForCurrentUser();
+
+            // get DS data for a user who's UID is UID
+            var anotherSample = dsHelper.GetOrSearch("UID");
+            
+            // do further processing here
+            return dsData;
         }
 
 
-        private void Bootstrapper_Initialized(object sender, Telerik.Sitefinity.Data.ExecutedEventArgs e)
-        {
-            if (e.CommandName == "RegisterRoutes")
-            {
-                //EventHub.Subscribe<IMapGigyaFieldEvent>(GigyaMembershipHelper_MapGigyaField);
-            }
-
-
-
-        }
+        
 
         private void GigyaMembershipHelper_MapGigyaField(IMapGigyaFieldEvent @event)
         {

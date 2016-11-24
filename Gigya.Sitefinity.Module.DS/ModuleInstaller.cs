@@ -90,7 +90,7 @@ namespace Gigya.Sitefinity.Module.DS
             var settings = settingsHelper.Get((Guid)e.CurrentSiteId);
 
             // merge ds data with account info
-            var helper = new GigyaDsHelper(e.Settings, e.Logger, settings);
+            var helper = new GigyaSitefinityDsHelper(e.Settings, e.Logger, settings);
             e.GigyaModel = helper.Merge(e.GigyaModel, e.MappingFields);
         }
     }

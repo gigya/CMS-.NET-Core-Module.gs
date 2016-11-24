@@ -1,6 +1,5 @@
 ﻿using Gigya.Module.Connector.Helpers;
 using Gigya.Module.Connector.Logging;
-using Gigya.Module.DS.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace Gigya.Sitefinity.Module.DS.Helpers
         /// Creates a new Gigya DS helper with the settings for the current site.
         /// </summary>
         /// <returns></returns>
-        public static GigyaDsHelper Instance()
+        public static GigyaSitefinityDsHelper Instance()
         {
             var siteId = Guid.Empty;
             if (SystemManager.CurrentContext.IsMultisiteMode)
@@ -29,7 +28,7 @@ namespace Gigya.Sitefinity.Module.DS.Helpers
         /// <summary>
         /// Creates a new Gigya DS helper with the settings for <paramref name="siteId"/>.
         /// </summary>
-        public static GigyaDsHelper Instance(Guid siteId)
+        public static GigyaSitefinityDsHelper Instance(Guid siteId)
         {
             var logger = LoggerFactory.Instance();
             var settingsHelper = new GigyaSitefinityDsSettingsHelper(logger);
@@ -39,7 +38,7 @@ namespace Gigya.Sitefinity.Module.DS.Helpers
             var coreSettings = coreSettingsHelper.Get(siteId, true);
 
             // merge ds data with account info
-            var helper = new GigyaDsHelper(coreSettings, logger, dsSettings);
+            var helper = new GigyaSitefinityDsHelper(coreSettings, logger, dsSettings);
             return helper;
         }
     }

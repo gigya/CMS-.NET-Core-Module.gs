@@ -386,6 +386,46 @@ namespace Gigya.Module.Connector.Helpers
         }
 
         /// <summary>
+        /// Gets the Gigya UID for the current logged in user. If the user isn't logged in, null is returned.
+        /// </summary>
+        /// <param name="settings">Current site settings.</param>
+        /// <returns>The UID value.</returns>
+        public string GetUidForCurrentUser(IGigyaModuleSettings settings)
+        {
+            // check user is logged in
+            var currentIdentity = ClaimsManager.GetCurrentIdentity();
+            if (!currentIdentity.IsAuthenticated)
+            {
+                return null;
+            }
+
+            // get mapping field - hopefully the Sitefinity username field maps to Gigya's UID
+            var field = settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId);
+            if (field == null || field.CmsFieldName == Constants.SitefinityFields.UserId)
+            {
+                return currentIdentity.Name;
+            }
+
+            // get UID field from profile
+            UserProfileManager profileManager = UserProfileManager.GetManager();
+            UserManager userManager = UserManager.GetManager();
+
+            var user = userManager.GetUser(currentIdentity.Name);
+            if (user == null)
+            {
+                return currentIdentity.Name;
+            }
+            
+            var profile = profileManager.GetUserProfile<SitefinityProfile>(user);
+            if (profile == null)
+            {
+                return currentIdentity.Name;
+            }
+
+            return profile.GetValue<string>(field.CmsFieldName);
+        }
+
+        /// <summary>
         /// Authenticates a user in Sitefinity.
         /// </summary>
         protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)

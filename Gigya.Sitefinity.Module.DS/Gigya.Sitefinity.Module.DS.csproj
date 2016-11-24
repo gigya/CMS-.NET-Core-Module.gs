@@ -96,7 +96,8 @@
     <Compile Include="Data\GigyaFluentMetaDataSource.cs" />
     <Compile Include="Data\GigyaMetaDataProvider.cs" />
     <Compile Include="Data\GigyaSitefinityModuleDsSettings.cs" />
-    <Compile Include="Helpers\GigyaDsHelper.cs" />
+    <Compile Include="Helpers\GigyaSitefinityDsHelper.cs" />
+    <Compile Include="Helpers\GigyaDsHelperFactory.cs" />
     <Compile Include="Helpers\GigyaSitefinityDsSettingsHelper.cs" />
     <Compile Include="ModuleClass.cs" />
     <Compile Include="ModuleInstaller.cs" />

@@ -10,8 +10,21 @@ namespace Gigya.Module.Core.Connector.Events
     {
         private static readonly Lazy<GigyaEventHub> _instance = new Lazy<GigyaEventHub>(() => new GigyaEventHub());
 
+        /// <summary>
+        /// Called after getAccountInfo data has been retrieved.
+        /// </summary>
         public event EventHandler<GetAccountInfoCompletedEventArgs> GetAccountInfoCompleted;
+        /// <summary>
+        /// Called after DS data has been merged with getAccountInfo.
+        /// </summary>
         public event EventHandler<AccountInfoMergeCompletedEventArgs> AccountInfoMergeCompleted;
+        /// <summary>
+        /// Called after DS data is retrieved.
+        /// </summary>
+        public event EventHandler<FetchDSCompletedEventArgs> FetchDSCompleted;
+        /// <summary>
+        /// Called when retrieving an individual field for mapping to the CMS.
+        /// </summary>
         public event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
 
         public void RaiseGettingGigyaValue(object sender, MapGigyaFieldEventArgs e)
@@ -27,6 +40,11 @@ namespace Gigya.Module.Core.Connector.Events
         public void RaiseAccountInfoMergeCompleted(object sender, AccountInfoMergeCompletedEventArgs e)
         {
             AccountInfoMergeCompleted?.Invoke(sender, e);
+        }
+
+        public void RaiseFetchDSCompleted(object sender, FetchDSCompletedEventArgs e)
+        {
+            FetchDSCompleted?.Invoke(sender, e);
         }
 
         private GigyaEventHub()
