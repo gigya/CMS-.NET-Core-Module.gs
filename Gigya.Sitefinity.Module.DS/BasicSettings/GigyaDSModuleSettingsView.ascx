@@ -11,6 +11,7 @@
     .add-mapping-field { display: inline-block; margin-bottom: 10px; }
     .mapping-fields-table .sfTxt { width: auto; margin: 0; }
     .sfDropdownList { display: inline-block; margin-bottom: 10px; }
+    .required { color: red; }
 </style>
 
 <div class="sfSettingsSection">
@@ -31,7 +32,7 @@
 
 <div id="gigya-settings-section" style="display: none;" class="sfSettingsSection">
     <div class="sfTxtLbl sfInlineBlock">
-        Method
+        Method<span class='required'>*</span>
     </div>
     <sfFields:ChoiceField ID="Method" Title="" runat="server" DataFieldName="Method" DisplayMode="Write" RenderChoicesAs="RadioButtons">
         <Choices>
