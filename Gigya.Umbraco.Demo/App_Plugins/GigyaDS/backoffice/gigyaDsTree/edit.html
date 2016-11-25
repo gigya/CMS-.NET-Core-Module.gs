@@ -1,5 +1,6 @@
 ﻿<style>
     .ng-hide { display: none !important; }
+    .required { color: red; }
 </style>
 <form ng-controller="Gigya.DS.EditController" ng-submit="publish(model)" autocomplete="off" novalidate>
     <umb-panel>
@@ -28,7 +29,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="method">
-                                    Method
+                                    Method<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <select id="method" name="Method" ng-disabled="model.Inherited" ng-model="model.Method" class="umb-editor umb-dropdown" ng-required="true" val-server="value" required="required">

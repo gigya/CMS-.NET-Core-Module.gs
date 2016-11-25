@@ -98,9 +98,9 @@ namespace Gigya.Umbraco.Module.DS.Mvc.Controllers
                 return response;
             }
 
-            if (model.Mappings == null || !model.Mappings.Any())
+            if (model.Mappings == null)
             {
-                response.Error = "At least one mapping is required.";
+                response.Error = "Invalid mapping param supplied. Please check your mappings.";
                 _logger.Error(response.Error);
                 return response;
             }

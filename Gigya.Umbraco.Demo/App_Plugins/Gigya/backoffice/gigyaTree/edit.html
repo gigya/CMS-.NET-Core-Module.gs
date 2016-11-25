@@ -1,6 +1,7 @@
 ﻿<style>
     .ng-hide { display: none !important; }
     .field-error { border: 1px solid red !important; }
+    .required { color: red; }
 </style>
 <form ng-controller="Gigya.GigyaSettingsEditController" ng-submit="publish(model)" autocomplete="off" novalidate>
     <umb-panel>
@@ -29,7 +30,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="api-key">
-                                    API Key
+                                    API Key<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <input type="text" id="api-key" name="ApiKey" ng-disabled="model.Inherited" ng-model="model.ApiKey" class="input-large umb-textstring textstring" ng-required="true" val-server="value" required="required" />
@@ -42,7 +43,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="application-key">
-                                    Application Key
+                                    Application Key<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <input type="text" id="application-key" name="ApplicationKey" ng-disabled="model.Inherited" ng-model="model.ApplicationKey" class="input-large umb-textstring textstring" ng-required="true" val-server="value" required="required" />
@@ -55,7 +56,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="application-secret">
-                                    Application Secret
+                                    Application Secret<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <span ng-show="model.Inherited || !editApplicationSecret" ng-bind="model.ApplicationSecretMasked"></span>
@@ -71,7 +72,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="language">
-                                    Language
+                                    Language<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <select name="language" id="language" class="umb-editor umb-dropdown" ng-disabled="model.Inherited" ng-model="model.Language" ng-options="option.Name for option in data.LanguageOptions track by option.Code">
@@ -85,7 +86,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="language-other">
-                                    Language Other
+                                    Language Other<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <input type="text" id="language-other" name="LanguageOther" ng-disabled="model.Inherited" ng-model="model.LanguageOther" class="input-large umb-textstring textstring" val-server="value" />
@@ -98,7 +99,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="language-fallback">
-                                    Language Fallback
+                                    Language Fallback<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <select name="language-fallback" id="language-fallback" ng-disabled="model.Inherited" class="umb-editor umb-dropdown" ng-options="option.Name for option in data.Languages track by option.Code" ng-model="model.LanguageFallback">
@@ -112,7 +113,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="data-center">
-                                    Data Center
+                                    Data Center<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <select id="data-center" name="data-center" ng-disabled="model.Inherited" ng-model="model.DataCenter" class="umb-editor umb-dropdown" required>
@@ -131,7 +132,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="data-center-other">
-                                    Data Center Other
+                                    Data Center Other<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <input type="text" id="data-center-other" name="DataCenterOther" ng-disabled="model.Inherited" ng-model="model.DataCenterOther" class="input-large umb-textstring textstring" val-server="value" />
@@ -170,14 +171,14 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label">
-                                    Session Management
+                                    Session Management<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <input type="radio" id="session-provider-gigya" name="SessionProvider" value="0" ng-disabled="model.Inherited" ng-model="model.SessionProvider" class="input-large" required="required" />
-                                    <label for="session-provider-gigya">Gigya</label>
+                                    <label for="session-provider-gigya">Gigya (When the Gigya session expires, the user is also logged out of Umbraco)</label>
                                     <br />
                                     <input type="radio" id="session-provider-umbraco" name="SessionProvider" value="1" ng-disabled="model.Inherited" ng-model="model.SessionProvider" class="input-large" required="required" />
-                                    <label style="margin-bottom: 0;" for="session-provider-umbraco">Umbraco</label>
+                                    <label style="margin-bottom: 0;" for="session-provider-umbraco">Umbraco (When the Umbraco session expires, the user is also logged out of Gigya)</label>
                                 </div>
                             </div>
                         </div>
@@ -200,7 +201,7 @@
                         <div class="control-group umb-control-group" ng-class="{error: !formValid(), hidelabel:hideLabel=='true'}">
                             <div class="umb-el-wrap">
                                 <label ng-if="hideLabel!=='true'" class="control-label" for="session-timeout">
-                                    Fields Mapping (username must be mapped to a unique field e.g. UID)
+                                    Fields Mapping (username must be mapped to a unique field e.g. UID)<span class='required'>*</span>
                                 </label>
                                 <div class="controls controls-row">
                                     <table class="mapping-fields-table">
