@@ -197,12 +197,12 @@
     </div>
 
     <div class="sfTxtLbl sfInlineBlock">
-        Session Management (Choose which platform determines session expiration.)<span class='required'>*</span>
+        Session Management (Choose which platform determines session expiration)<span class='required'>*</span>
     </div>
     <sfFields:ChoiceField ID="SessionManagement" Title="" runat="server" DataFieldName="SessionProvider" DisplayMode="Write" RenderChoicesAs="RadioButtons">
         <Choices>
-            <sfFields:ChoiceItem Text="Gigya (When the Gigya session expires, the user is also logged out of Sitefinity.)" Value="0" />
-            <sfFields:ChoiceItem Text="Sitefinity (When the Sitefinity session expires, the user is also logged out of Gigya.)" Value="1" />
+            <sfFields:ChoiceItem Text="Gigya (When the Gigya session expires, the user is also logged out of Sitefinity)" Value="0" />
+            <sfFields:ChoiceItem Text="Sitefinity (When the Sitefinity session expires, the user is also logged out of Gigya)" Value="1" />
         </Choices>
     </sfFields:ChoiceField>
 
