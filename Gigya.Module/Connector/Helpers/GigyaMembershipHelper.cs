@@ -167,14 +167,8 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">Gigya module settings for the site.</param>
         /// <returns></returns>
-        protected virtual MembershipCreateStatus CreateUser(string username, dynamic gigyaModel, IGigyaModuleSettings settings)
+        protected virtual MembershipCreateStatus CreateUser(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
         {
-            List<MappingField> mappingFields = null;
-            if (!string.IsNullOrEmpty(settings.MappingFields))
-            {
-                mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
-            }
-
             UserManager userManager = UserManager.GetManager();
             UserProfileManager profileManager = UserProfileManager.GetManager();
 
@@ -311,7 +305,7 @@ namespace Gigya.Module.Connector.Helpers
                 // user doesn't exist so create a new one
                 using (new ElevatedModeRegion(manager))
                 {
-                    var createUserStatus = CreateUser(username, gigyaModel, settings);
+                    var createUserStatus = CreateUser(username, gigyaModel, settings, mappingFields);
                     if (createUserStatus != MembershipCreateStatus.Success)
                     {
                         return;
