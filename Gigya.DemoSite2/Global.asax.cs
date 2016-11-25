@@ -26,12 +26,12 @@ namespace SitefinityWebApp
             if (e.CommandName == "RegisterRoutes")
             {
                 EventHub.Subscribe<IMapGigyaFieldEvent>(GigyaMembershipHelper_MapGigyaField);
-            }
 
-            // register event to be called after Gigya DS data has been merged with 
-            Gigya.Module.Core.Connector.Events.GigyaEventHub.Instance.AccountInfoMergeCompleted += Instance_AccountInfoMergeCompleted;
+                // register event to be called after Gigya DS data has been merged with 
+                Gigya.Module.Core.Connector.Events.GigyaEventHub.Instance.AccountInfoMergeCompleted += Instance_AccountInfoMergeCompleted;
 
-            Gigya.Module.Core.Connector.Events.GigyaEventHub.Instance.FetchDSCompleted += Instance_FetchDSCompleted;
+                Gigya.Module.Core.Connector.Events.GigyaEventHub.Instance.FetchDSCompleted += Instance_FetchDSCompleted;
+            }            
         }
 
         private static void Instance_FetchDSCompleted(object sender, Gigya.Module.Core.Connector.Events.FetchDSCompletedEventArgs e)
