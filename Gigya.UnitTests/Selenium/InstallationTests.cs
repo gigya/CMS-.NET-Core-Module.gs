@@ -132,14 +132,14 @@ namespace Gigya.UnitTests.Selenium
         {
             _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
 
-            var loginUsername = _driver.FindElement(By.Id("wrap_name"), 30); ;
+            var loginUsername = _driver.FindElement(By.Id("wrap_name"), 10);
             if (loginUsername != null)
             {
                 SitefinityUtils.LoginToSitefinity(_driver, 300);
                 _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity/Administration/Settings/Basic/GigyaModule/");
             }
 
-            var saveButton = _driver.FindElement(By.ClassName("sfSave"), 5);
+            //_driver.SwitchTo().DefaultContent();
             
             // enter valid settings
             _driver.FindElementFromLabel("API Key", 5).ClearWithBackspaceAndSendKeys(Config.Site1ApiKey);
@@ -148,9 +148,11 @@ namespace Gigya.UnitTests.Selenium
             _driver.FindElementFromLabel("Application Secret", 2).ClearWithBackspaceAndSendKeys(Config.Site1ApplicationSecret);
             
             _driver.FindElement(By.CssSelector("#data-center-wrapper select"), 2).SendKeys(Config.Site1DataCenter);
+
+            var saveButton = _driver.FindElement(By.ClassName("sfSave"), 10);
             saveButton.Click();
 
-            var positiveMessage = _driver.FindElement(By.ClassName("sfMsgPositive"), 2);
+            var positiveMessage = _driver.FindElement(By.ClassName("sfMsgPositive"), 5);
             Assert.IsNotNull(positiveMessage, "Settings not saved. Check they are correct.");
 
             // test invalid settings

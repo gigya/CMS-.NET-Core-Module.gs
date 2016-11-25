@@ -45,7 +45,7 @@ namespace Gigya.UnitTests.Selenium
             var labels = driver.FindElements(By.XPath(string.Format("//*[contains(text(), '{0}')]", labelText)));
             foreach (var l in labels)
             {
-                if (l.Text.Trim() == labelText)
+                if (l.Text.Trim().StartsWith(labelText))
                 {
                     return l;
                 }
