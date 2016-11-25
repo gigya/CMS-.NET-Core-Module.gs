@@ -156,15 +156,8 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">Gigya module settings for the site.</param>
         /// <returns></returns>
-        protected virtual IMember CreateUser(string userId, dynamic gigyaModel, IGigyaModuleSettings settings)
+        protected virtual IMember CreateUser(string userId, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
         {
-            // check if there is a name field for the member name otherwise fallback to email
-            List<MappingField> mappingFields = null;
-            if (!string.IsNullOrEmpty(settings.MappingFields))
-            {
-                mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields);
-            }
-
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var email = GetMappedFieldWithFallback(gigyaModel, Constants.CmsFields.Email, Constants.GigyaFields.Email, mappingFields);
             var name = GetGigyaFieldFromCmsAlias(gigyaModel, Constants.CmsFields.Name, email, mappingFields);
@@ -236,7 +229,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             if (!userExists)
             {
                 // user doesn't exist so create a new one
-                var user = CreateUser(username, gigyaModel, settings);
+                var user = CreateUser(username, gigyaModel, settings, mappingFields);
                 if (user == null)
                 {
                     return;
