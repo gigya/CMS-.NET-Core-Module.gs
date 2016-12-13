@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 
 namespace Gigya.Module.Core.Connector.Encryption
 {
@@ -18,10 +19,18 @@ namespace Gigya.Module.Core.Connector.Encryption
 
         static Encryptor()
         {
-            if (!string.IsNullOrEmpty(_keyLocation) && File.Exists(_keyLocation))
+            if (!string.IsNullOrEmpty(_keyLocation))
             {
-                // don't need a try catch as if we can't read the key we can't continue so it's better to throw the error
-                _key = File.ReadAllText(_keyLocation);
+                if (_keyLocation.StartsWith("~/"))
+                {
+                    _keyLocation = HostingEnvironment.MapPath(_keyLocation);
+                }
+
+                if (File.Exists(_keyLocation))
+                {
+                    // don't need a try catch as if we can't read the key we can't continue so it's better to throw the error
+                    _key = File.ReadAllText(_keyLocation);
+                }
             }
         }
 

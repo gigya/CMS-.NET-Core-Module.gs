@@ -299,6 +299,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\encryption.txt" />
     <Content Include="App_Data\placeholder.txt" />
     <Content Include="config\grid.editors.config.js" />
     <None Include="App.config">

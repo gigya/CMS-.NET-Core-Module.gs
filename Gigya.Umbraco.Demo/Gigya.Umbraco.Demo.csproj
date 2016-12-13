@@ -281,6 +281,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\Gigya\encryption.txt" />
     <Content Include="App_Plugins\GigyaDS\backoffice\gigyaDsTree\dashboard.controller.js" />
     <Content Include="App_Plugins\GigyaDS\backoffice\gigyaDsTree\edit.controller.js" />
     <Content Include="App_Plugins\GigyaDS\backoffice\gigyaDsTree\edit.html" />

@@ -1,6 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Gigya.Module.Core.Connector.Encryption;
+using System.Configuration;
+using System.Web.Hosting;
+using Moq;
 
 namespace Gigya.UnitTests.Encryption
 {
