@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gigya.Sitefinity.Module.DS.Helpers
+namespace Gigya.Umbraco.Module.DS.Helpers
 {
     public static class GigyaDsHelperFactory
     {

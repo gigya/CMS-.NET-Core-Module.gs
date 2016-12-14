@@ -2,7 +2,6 @@
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Data;
 using Gigya.Module.DS.Helpers;
-using Gigya.Sitefinity.Module.DS.Helpers;
 using Gigya.Umbraco.Module.Connector;
 using Gigya.Umbraco.Module.Connector.Helpers;
 using Gigya.Umbraco.Module.DS.Helpers;
@@ -45,7 +44,7 @@ namespace Gigya.Umbraco.Demo
                 e.Logger.Error("Error in Instance_AccountInfoMergeCompleted.", ex);
             }
 
-            ManuallyRetrieveDsData((int)e.CurrentSiteId);
+            //ManuallyRetrieveDsData((int)e.CurrentSiteId);
         }
 
         /// <summary>
@@ -57,7 +56,11 @@ namespace Gigya.Umbraco.Demo
         /// </remarks>
         private void ManuallyRetrieveDsData(int siteId)
         {
+            // get a new ds helper with the specified homepage id
             var dsHelper = GigyaDsHelperFactory.Instance(siteId);
+
+            // if this method is being called within the Umbraco pipeline - i.e. when serving an Umbraco page rather than an AJAX request then you don't need to pass in the siteId:
+            var dsHelperForCurrentSite = GigyaDsHelperFactory.Instance();
 
             // retrieve DS data for a user who's id is userIdValue
             var dsData = dsHelper.GetOrSearch("userIdValue");
