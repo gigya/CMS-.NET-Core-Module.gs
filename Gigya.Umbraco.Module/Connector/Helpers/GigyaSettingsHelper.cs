@@ -52,13 +52,13 @@ namespace Gigya.Umbraco.Module.Helpers
             }
         }
 
-        public override IGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
+        public static int CurrentHomepageId()
         {
             // get current page id
             var currentPageId = UmbracoContext.Current.PageId;
             if (!currentPageId.HasValue)
             {
-                throw new ArgumentException("No current page Id");
+                throw new ArgumentException("No current page Id. Make sure this is being called within the Umbraco pipeline - not during an AJAX request.");
             }
 
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
@@ -66,11 +66,18 @@ namespace Gigya.Umbraco.Module.Helpers
 
             // find homepage from current node
             var homepage = Utils.HomepageNode(currentNode);
+            return homepage.Id;
+        }
+
+        public override IGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
+        {
+            // get current page id
+            var homepageId = CurrentHomepageId();
             
-            var model = Get(homepage.Id, decrypt);
+            var model = Get(homepageId, decrypt);
 
             // if we are using global settings we still want to tell the client to use the current homepage id
-            model.Id = homepage.Id;
+            model.Id = homepageId;
             return model;
         }
 

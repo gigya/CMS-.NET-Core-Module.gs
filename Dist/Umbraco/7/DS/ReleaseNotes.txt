@@ -1,6 +1,9 @@
-Version: 1.0.0.2:
+1.0.0.4:
+Extra helper functions for manually retrieving DS data.
+
+1.0.0.3:
 Minor required field label updates.
 Add FetchDSComplete event.
 
-Version: 1.0.0.0:
+1.0.0.0:
 Initial version.

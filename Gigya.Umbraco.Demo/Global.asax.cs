@@ -2,6 +2,7 @@
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Data;
 using Gigya.Module.DS.Helpers;
+using Gigya.Sitefinity.Module.DS.Helpers;
 using Gigya.Umbraco.Module.Connector;
 using Gigya.Umbraco.Module.Connector.Helpers;
 using Gigya.Umbraco.Module.DS.Helpers;
@@ -43,6 +44,8 @@ namespace Gigya.Umbraco.Demo
             {
                 e.Logger.Error("Error in Instance_AccountInfoMergeCompleted.", ex);
             }
+
+            ManuallyRetrieveDsData((int)e.CurrentSiteId);
         }
 
         /// <summary>
@@ -52,28 +55,15 @@ namespace Gigya.Umbraco.Demo
         /// This method retrieves Gigya settings from Umbraco.
         /// If you want to use your own settings this can be done by passing your own settings models into the GigyaDsHelper constructor.
         /// </remarks>
-        private void ManuallyRetrieveDsData()
+        private void ManuallyRetrieveDsData(int siteId)
         {
-            // create a new Umbraco logger
-            var logger = new Logger(new UmbracoLogger());
-
-            // create a new Gigya Umbraco DS Settings helper for retrieving DS settings from the database (these are managed through Umbraco)
-            var settingsHelper = new GigyaUmbracoDsSettingsHelper(logger);
-            
-            // gets the DS settings for the current site (this is done by finding the homepage from the current Umbraco page) 
-            var dsSettings = settingsHelper.GetForCurrentSite();
-
-            // create a new Gigya Settings helper for getting core module settings
-            var coreSettingsHelper = new GigyaSettingsHelper();
-
-            // get core settings for the current site (this is done by finding the homepage from the current Umbraco page) 
-            var coreSettings = coreSettingsHelper.GetForCurrentSite(true);
-
-            // create a new helper Gigya DS Helper to retrieve DS data from Gigya
-            var dsHelper = new GigyaDsHelper(coreSettings, logger, dsSettings);
+            var dsHelper = GigyaDsHelperFactory.Instance(siteId);
 
             // retrieve DS data for a user who's id is userIdValue
             var dsData = dsHelper.GetOrSearch("userIdValue");
+
+            // another example but this time you don't need to pass in the UID as it's taken from the current user
+            var dsData2 = dsHelper.GetOrSearchForCurrentUser();
         }
 
         private void Instance_GettingGigyaValue(object sender, MapGigyaFieldEventArgs e)

@@ -223,6 +223,8 @@
   <ItemGroup>
     <Compile Include="Data\GigyaUmbracoModuleDsSettings.cs" />
     <Compile Include="GigyaApplicationEventHandler.cs" />
+    <Compile Include="Helpers\GigyaDsHelperFactory.cs" />
+    <Compile Include="Helpers\GigyaUmbracoDsHelper.cs" />
     <Compile Include="Helpers\GigyaUmbracoDsSettingsHelper.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="Mvc\Controllers\GigyaDsSettingsApiController.cs" />

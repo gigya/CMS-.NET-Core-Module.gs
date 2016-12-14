@@ -301,6 +301,38 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         }
 
         /// <summary>
+        /// Gets the Gigya UID for the current logged in user. If the user isn't logged in, null is returned.
+        /// </summary>
+        /// <param name="settings">Current site settings.</param>
+        /// <returns>The UID value.</returns>
+        public string GetUidForCurrentUser(IGigyaModuleSettings settings)
+        {
+            // check user is logged in
+            var currentIdentity = HttpContext.Current.User.Identity;
+            if (!currentIdentity.IsAuthenticated)
+            {
+                return null;
+            }
+
+            // get mapping field - hopefully the Umbraco username field maps to Gigya's UID
+            var field = settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId);
+            if (field == null || field.CmsFieldName == Constants.CmsFields.Username)
+            {
+                return currentIdentity.Name;
+            }
+
+            // get UID field from profile
+            var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
+            var user = memberService.GetByUsername(currentIdentity.Name);
+            if (user == null)
+            {
+                return currentIdentity.Name;
+            }
+
+            return user.GetValue<string>(field.CmsFieldName);
+        }
+
+        /// <summary>
         /// Authenticates a user in Umbraco.
         /// </summary>
         protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)

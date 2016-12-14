@@ -2,6 +2,7 @@
 using Gigya.Module.DS.Config;
 using Gigya.Umbraco.Module.Connector;
 using Gigya.Umbraco.Module.DS.Data;
+using Gigya.Umbraco.Module.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -37,20 +38,8 @@ namespace Gigya.Umbraco.Module.DS.Helpers
         /// <returns></returns>
         public GigyaDsSettings GetForCurrentSite()
         {
-            // get current page id
-            var currentPageId = UmbracoContext.Current.PageId;
-            if (!currentPageId.HasValue)
-            {
-                throw new ArgumentException("No current page Id");
-            }
-
-            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-            var currentNode = umbracoHelper.TypedContent(currentPageId);
-
-            // find homepage from current node
-            var homepage = Utils.HomepageNode(currentNode);
-
-            var model = Get(homepage.Id);
+            var homepageId = GigyaSettingsHelper.CurrentHomepageId();
+            var model = Get(homepageId);
             return model;
         }
 
