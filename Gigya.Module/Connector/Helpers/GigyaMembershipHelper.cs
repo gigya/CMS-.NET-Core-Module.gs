@@ -20,6 +20,10 @@ using Gigya.Module.Core.Connector.Common;
 using Gigya.Module.Core.Connector.Models;
 using Gigya.Socialize.SDK;
 using Telerik.Sitefinity.Security.Claims;
+using Telerik.Sitefinity.Configuration;
+using Telerik.Sitefinity.Security.Configuration;
+using Microsoft.Owin;
+using Microsoft.Owin.Security;
 
 namespace Gigya.Module.Connector.Helpers
 {
@@ -457,6 +461,7 @@ namespace Gigya.Module.Connector.Helpers
         protected virtual UserLoggingReason AuthenticateWithRetry(string userId, int attempts, int retries, out User user)
         {
             attempts++;
+
             var loginStatus = SecurityManager.AuthenticateUser(null, userId, false, out user);
             switch (loginStatus)
             {

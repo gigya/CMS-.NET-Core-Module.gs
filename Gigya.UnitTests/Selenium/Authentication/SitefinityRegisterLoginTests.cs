@@ -205,7 +205,7 @@ namespace Gigya.UnitTests.Selenium.Authentication
                 webConfigDoc.Save(Path.Combine(Config.SitefinityRootPath, "web.config"));
             }
 
-            UpdateAllGlobalParams("{ \"sessionExpiration\": 10 }");
+            //UpdateAllGlobalParams("{ \"sessionExpiration\": 20 }");
 
             var reset = false;
 
@@ -214,12 +214,14 @@ namespace Gigya.UnitTests.Selenium.Authentication
                 // test session expiration works now that we know all sites are using 10 second timeout
                 CanRegisterAndLoginToCms();
 
+                Thread.Sleep(2000);
                 IsLoggedIntoSecondSiteAsWell();
 
+                Thread.Sleep(2000);
                 _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
                 // wait for session to expire
-                Thread.Sleep(11000);
+                Thread.Sleep(35000);
                 HasSessionExpired();
 
                 // check logged out of site 2 as well
@@ -229,14 +231,14 @@ namespace Gigya.UnitTests.Selenium.Authentication
                 // login again
                 CanLoginToFrontEnd();
 
-                UpdateAllGlobalParams(string.Empty);
+                //UpdateAllGlobalParams(string.Empty);
                 reset = true;
             }
             catch
             {
                 if (!reset)
                 {
-                    UpdateAllGlobalParams(string.Empty);
+                    //UpdateAllGlobalParams(string.Empty);
                 }
                 throw;
             }
@@ -342,6 +344,7 @@ namespace Gigya.UnitTests.Selenium.Authentication
             // simulate the user being logged out of Sitefinity
             _driver.Manage().Cookies.DeleteCookieNamed("SF-TokenId");
             _driver.Manage().Cookies.DeleteCookieNamed("FedAuth");
+            _driver.Manage().Cookies.DeleteCookieNamed(".AspNet.Cookies");
         }
 
         [TestMethod]

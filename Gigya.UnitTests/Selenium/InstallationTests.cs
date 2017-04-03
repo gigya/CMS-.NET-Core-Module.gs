@@ -36,26 +36,26 @@ namespace Gigya.UnitTests.Selenium
         [TestMethod]
         public void Sitefinity_CanSetupNewSitefinitySite()
         {
-            Utils.AddEncryptionKey(Config.SitefinityRootPath);
+            //Utils.AddEncryptionKey(Config.SitefinityRootPath);
 
-            _driver.Navigate().GoToUrl(Config.Site1BaseURL);
+            //_driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
-            UploadLicense();
-            SelectDb();
-            EnterAdminDetails();
+            //UploadLicense();
+            //SelectDb();
+            //EnterAdminDetails();
 
-            SitefinityUtils.LoginToSitefinity(_driver, 300);
+            //SitefinityUtils.LoginToSitefinity(_driver, 300);
 
-            _driver.SwitchTo().DefaultContent();
-            CreateHomepage();
+            //_driver.SwitchTo().DefaultContent();
+            //CreateHomepage();
 
-            AddGigyaSettings();
-            CreateSecondSite();
+            //AddGigyaSettings();
+            //CreateSecondSite();
 
-            _driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity");
-            Thread.Sleep(5000);
-            _driver.FindElement(By.PartialLinkText("Logout"), 5).Click();
-            Thread.Sleep(10000);
+            //_driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity");
+            //Thread.Sleep(5000);
+            //_driver.FindElement(By.PartialLinkText("Logout"), 5).Click();
+            //Thread.Sleep(10000);
 
             SitefinityUtils.LoginToSitefinity(_driver, 20);
 

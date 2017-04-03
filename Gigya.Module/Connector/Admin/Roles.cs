@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Telerik.Sitefinity.Data;
@@ -53,7 +54,7 @@ namespace Gigya.Module.Connector.Admin
         /// </summary>
         /// <param name="userId">The id of the user to check.</param>
         /// <returns>True if the user has the required Gigya-Admin role.</returns>
-        public static bool HasRole(ClaimsIdentityProxy identity)
+        public static bool HasRole(SitefinityIdentity identity)
         {
             if (identity.IsUnrestricted)
             {

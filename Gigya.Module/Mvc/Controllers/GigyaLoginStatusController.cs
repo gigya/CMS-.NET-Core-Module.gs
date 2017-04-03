@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Claims;
 using System.Web;
 using System.Web.Mvc;
 using Telerik.Sitefinity.Localization;
@@ -30,7 +31,7 @@ namespace Gigya.Module.Mvc.Controllers
             return View(viewPath, model);
         }
 
-        protected virtual GigyaLoginStatusViewModel GetViewModel(ClaimsIdentityProxy currentIdentity)
+        protected virtual GigyaLoginStatusViewModel GetViewModel(SitefinityIdentity currentIdentity)
         {
             var model = new GigyaLoginStatusViewModel
             {

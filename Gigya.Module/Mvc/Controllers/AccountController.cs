@@ -9,6 +9,11 @@ using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Connector.Logging;
 using Gigya.Module.Core.Connector.Helpers;
 using Telerik.Sitefinity.Services;
+using Telerik.Sitefinity.Configuration;
+using Telerik.Sitefinity.Security.Configuration;
+using Microsoft.Owin;
+using Microsoft.Owin.Security;
+using System.Web;
 
 namespace Gigya.Module.Mvc.Controllers
 {
@@ -45,7 +50,16 @@ namespace Gigya.Module.Mvc.Controllers
 
         protected override void Signout()
         {
-            SecurityManager.Logout();
+            if (Config.Get<SecurityConfig>().AuthenticationMode != AuthenticationMode.Claims)
+            {
+                SecurityManager.Logout();
+            }
+            else
+            {
+                IOwinContext owinContext = SystemManager.CurrentHttpContext.Request.GetOwinContext();
+                string[] array = ClaimsManager.CurrentAuthenticationModule.GetSignOutAuthenticationTypes().ToArray();
+                owinContext.Authentication.SignOut();
+            }
         }
     }
 }

@@ -109,8 +109,8 @@ namespace Gigya.Module
 
             // custom WCF service installation
             SystemManager.RegisterWebService(typeof(GigyaSettingsService), GigyaSettingsService.WebServiceUrl);
-            
-            RouteCollectionExtensions.MapRoute(RouteTable.Routes,
+
+            System.Web.Mvc.RouteCollectionExtensions.MapRoute(RouteTable.Routes,
                 "GigyaRoutes",
                 "api/gigya/{controller}/{action}/{id}",
                 new

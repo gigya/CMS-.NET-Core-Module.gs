@@ -23,7 +23,7 @@ namespace Gigya.UnitTests.DS
     public class DsTests
     {
         private static readonly string _dsBaseUrl = "https://ds.eu1.gigya.com/";
-        private static readonly string _dsUid = "a835132e733f4a38b9f828551f8d8805";
+        private static readonly string _dsUid = "271945af9f6b47119e883dc17167aead";
         private static readonly string _dsSecret = "rH7ZVYbTaodksq6u/JPI6OBe/rT/IZmN";
         private static readonly string _dsUserKey = "ABPcVRLxt+1u";
         private static readonly string _dsApiKey = "3_qkAT5OcGyvYpkjc_VF6-OfoeTKGk4T_jVwjFF9f5TQzoAg-mH8SBsjQi1srdsOm6";
@@ -91,7 +91,7 @@ namespace Gigya.UnitTests.DS
             var response = httpClient.PostAsync("ds.search", content).Result;
             var responseData = response.Content.ReadAsStringAsync().Result;
             var responseModel = JsonConvert.DeserializeObject<dynamic>(responseData);
-            if (responseModel.statusCode.Value != 200)
+            if (responseModel.statusCode.Value != 200 || responseModel.results.Count == 0)
             {
                 return false;
             }
