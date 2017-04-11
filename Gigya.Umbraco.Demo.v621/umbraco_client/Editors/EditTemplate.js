@@ -7,11 +7,19 @@
         _opts: null,
 
         _openMacroModal: function(alias) {
-            var t = "";
-            if (alias != null && alias != "") {
-                t = "&alias=" + alias;
-            }
-            UmbClientMgr.openModalWindow(this._opts.umbracoPath + '/dialogs/editMacro.aspx?renderingEngine=Webforms&objectId=' + this._opts.editorClientId + t, 'Insert Macro', true, 470, 530, 0, 0, '', '');
+
+            var self = this;
+
+            UmbClientMgr.openAngularModalWindow({
+                template: "views/common/dialogs/insertmacro.html",
+                dialogData: {
+                    renderingEngine: "WebForms",
+                    macroData: { macroAlias: alias }
+                },
+                callback: function(data) {
+                    UmbEditor.Insert(data.syntax, '', self._opts.editorClientId);
+                }
+            });
         },
 
         _insertMacro: function(alias) {
@@ -58,7 +66,7 @@
         constructor: function(opts) {
             // Merge options with default
             this._opts = $.extend({
-                
+
 
                 // Default options go here
             }, opts);
@@ -68,6 +76,12 @@
             //<summary>Sets up the UI and binds events</summary>
 
             var self = this;
+
+            //bind to the save event
+            this._opts.saveButton.click(function (event) {
+                event.preventDefault();
+                self.doSubmit();
+            });
 
             $("#sb").click(function() {
                 self._insertCodeBlock();
@@ -98,6 +112,10 @@
             });
         },
 
+        doSubmit: function() {
+            this.save(jQuery('#' + this._opts.templateNameClientId).val(), jQuery('#' + this._opts.templateAliasClientId).val(), UmbEditor.GetCode());
+        },
+
         save: function(templateName, templateAlias, codeVal) {
             var self = this;
 
@@ -116,7 +134,7 @@
                             self.submitFailure(e.message, e.header);
                         }
                     });
-            
+
         },
 
         submitSuccess: function (args) {
@@ -130,7 +148,13 @@
                 }
                 path = args.path;
             }
-            
+            if (args.contents) {
+                UmbEditor.SetCode(args.contents);
+            }
+
+            var alias = args.alias;
+            this._opts.aliasTxtBox.val(alias);
+
             top.UmbSpeechBubble.ShowMessage('save', header, msg);
             UmbClientMgr.mainTree().setActiveTreeType('templates');
             if (pathChanged) {
@@ -146,7 +170,7 @@
             top.UmbSpeechBubble.ShowMessage('error', header, err);
         }
     });
-    
+
     //Set defaults for jQuery ajax calls.
     $.ajaxSetup({
         dataType: 'json',

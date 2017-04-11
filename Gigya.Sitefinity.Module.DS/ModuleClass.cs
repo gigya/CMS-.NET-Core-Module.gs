@@ -299,7 +299,7 @@ namespace Gigya.Sitefinity.Module.DS
         #endregion
 
         #region Private members & constants
-        public const string Version = "1.0.0.0";
+        public const string Version = "1.0.0.4";
         public const string AssemblyName = "Gigya.Sitefinity.Module.DS";
         public const string ModuleName = "Gigya DS Module";
         internal const string ModuleTitle = "Gigya DS Module";

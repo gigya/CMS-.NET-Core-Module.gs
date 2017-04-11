@@ -160,13 +160,12 @@ Umbraco.Sys.registerNamespace("Umbraco.Controls");
             var self = this;
 
             // Inject the upload button into the toolbar
-            var button = $("<input id='fbUploadToolbarButton' type='image' src='images/editor/upload.png' title='Upload...' onmouseover=\"this.className='editorIconOver'\" onmouseout=\"this.className='editorIcon'\" onmouseup=\"this.className='editorIconOver'\" onmousedown=\"this.className='editorIconDown'\" />");
+            var button = $("<a href='#' class='btn' title='upload'><i class='icon-upload'></i></a>");
             button.click(function (e) {
                 e.preventDefault();
                 $(".upload-overlay").show();
             });
-
-            $(".tabpage:first-child .menubar td[id$='tableContainerButtons'] .sl nobr").after(button);
+            $(".umb-panel-header .umb-btn-toolbar").append(button);
         },
 
         _initOverlay: function () {
@@ -288,11 +287,11 @@ Umbraco.Sys.registerNamespace("Umbraco.Controls");
             });
 
             // Listen for drag events
-            $(".umbFolderBrowser").live('dragenter dragover', function (e) {
+            $(".umbFolderBrowser").on('dragenter dragover', function (e) {
                 $(".upload-overlay").show();
             });
 
-            $(".upload-overlay").live('dragleave dragexit', function (e) {
+            $(".upload-overlay").on('dragleave dragexit', function (e) {
                 $(this).hide();
             }).click(function () {
                 $(this).hide();

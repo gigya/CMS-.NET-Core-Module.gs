@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Gigya.Sitefinity.DS.9.0.6010</id>
-    <version>1.0.0.0</version>
+    <version>$version$</version>
     <title>$title$</title>
     <authors>Gigya Inc</authors>
     <owners>Gigya Inc</owners>

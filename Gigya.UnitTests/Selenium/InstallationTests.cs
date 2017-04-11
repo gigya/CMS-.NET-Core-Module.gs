@@ -44,13 +44,13 @@ namespace Gigya.UnitTests.Selenium
             //SelectDb();
             //EnterAdminDetails();
 
-            //SitefinityUtils.LoginToSitefinity(_driver, 300);
+            SitefinityUtils.LoginToSitefinity(_driver, 30);
 
-            //_driver.SwitchTo().DefaultContent();
-            //CreateHomepage();
+            _driver.SwitchTo().DefaultContent();
+            CreateHomepage();
 
-            //AddGigyaSettings();
-            //CreateSecondSite();
+            AddGigyaSettings();
+            CreateSecondSite();
 
             //_driver.Navigate().GoToUrl(Config.Site1BaseURL + "Sitefinity");
             //Thread.Sleep(5000);

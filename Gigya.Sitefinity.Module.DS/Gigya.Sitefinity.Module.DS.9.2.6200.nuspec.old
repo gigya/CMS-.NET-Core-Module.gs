@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Gigya.Sitefinity.DS.9.2.6200</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Gigya Inc</authors>
+    <owners>Gigya Inc</owners>
+    <projectUrl>http://developers.gigya.com/display/GD/Sitefinity+9+Sync+with+Gigya+Data+Store+-+DS</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Synchronization between Sitefinity and Gigya's Data Store (DS) is provided through an optional, separate package that can be installed on top of the main Gigya core package for Sitefinity. The DS Sync module adds the ability to pull data from Gigya's Data Store and map it into the user account database in Sitefinity. Customers who only use Gigya's account storage, and do not use the Gigya Data Store service, do not have to install this additional module. Built for Sitefinity 9.2.6200.</description>
+    <summary>Synchronization between Sitefinity and Gigya's Data Store (DS) is provided through an optional, separate package that can be installed on top of the main Gigya core package for Sitefinity. Built for Sitefinity 9.2.6200.</summary>
+    <releaseNotes>Built for Sitefinity 9.2.6200</releaseNotes>
+    <copyright>Copyright 2016</copyright>
+    <tags>IDM identity management social registration Sitefinity DS</tags>
+    <dependencies>
+      <dependency id="Gigya.Sitefinity.Core.9.2.6200" version="1.0.0.2" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\Gigya.Module.DS.dll" target="lib\net45" />
+  </files>
+</package>

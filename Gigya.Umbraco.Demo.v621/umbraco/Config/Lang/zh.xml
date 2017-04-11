@@ -2,7 +2,7 @@
 <language alias="zh" intName="Chinese (Simple)" localName="中文（简体，中国）" lcid="0804" culture="zh-CN">
   <creator>
     <name>孙柱梁</name>
-    <link></link>
+    <link>http://our.umbraco.org/documentation/Extending-Umbraco/Language-Files</link>
   </creator>
   <area alias="actions">
     <key alias="assignDomain">管理主机名</key>
@@ -160,11 +160,45 @@
   <area alias="dashboard">
     <key alias="browser">浏览您的网站</key>
     <key alias="dontShowAgain">- 隐藏</key>
-    <key alias="nothinghappens">如果umbraco没有打开，您可能需要允许弹出式窗口。</key>
+    <key alias="nothinghappens">如果Umbraco没有打开，您可能需要允许弹出式窗口。</key>
     <key alias="openinnew">已经在新窗口中打开</key>
     <key alias="restart">重启</key>
     <key alias="visit">访问</key>
     <key alias="welcome">欢迎</key>
+  </area>
+  <area alias="prompt">
+    <key alias="stay">Stay</key>
+    <key alias="discardChanges">Discard changes</key>
+    <key alias="unsavedChanges">You have unsaved changes</key>
+    <key alias="unsavedChangesWarning">Are you sure you want to navigate away from this page? - you have unsaved changes</key>
+  </area>
+    <area alias="bulk">
+    <key alias="done">Done</key>
+    
+    <key alias="deletedItem">Deleted %0% item</key>
+    <key alias="deletedItems">Deleted %0% items</key>
+    <key alias="deletedItemOfItem">Deleted %0% out of %1% item</key>
+    <key alias="deletedItemOfItems">Deleted %0% out of %1% items</key>
+
+    <key alias="publishedItem">Published %0% item</key>
+    <key alias="publishedItems">Published %0% items</key>
+    <key alias="publishedItemOfItem">Published %0% out of %1% item</key>
+    <key alias="publishedItemOfItems">Published %0% out of %1% items</key>
+
+    <key alias="unpublishedItem">Unpublished %0% item</key>
+    <key alias="unpublishedItems">Unpublished %0% items</key>
+    <key alias="unpublishedItemOfItem">Unpublished %0% out of %1% item</key>
+    <key alias="unpublishedItemOfItems">Unpublished %0% out of %1% items</key>
+
+    <key alias="movedItem">Moved %0% item</key>
+    <key alias="movedItems">Moved %0% items</key>
+    <key alias="movedItemOfItem">Moved %0% out of %1% item</key>
+    <key alias="movedItemOfItems">Moved %0% out of %1% items</key>
+
+    <key alias="copiedItem">Copied %0% item</key>
+    <key alias="copiedItems">Copied %0% items</key>
+    <key alias="copiedItemOfItem">Copied %0% out of %1% item</key>
+    <key alias="copiedItemOfItems">Copied %0% out of %1% items</key>
   </area>
   <area alias="defaultdialogs">
     <key alias="anchorInsert">锚点名称</key>
@@ -349,6 +383,7 @@
     <key alias="showPageOnSend">在发送时预览</key>
     <key alias="size">大小</key>
     <key alias="sort">排序</key>
+    <key alias="submit">Submit</key> <!-- TODO: Translate this -->
     <key alias="type">类型</key>
     <key alias="typeToSearch">输入内容开始查找…</key>
     <key alias="up">上</key>
@@ -363,6 +398,8 @@
     <key alias="welcome">欢迎…</key>
     <key alias="width">宽</key>
     <key alias="yes">是</key>
+    <key alias="reorder">Reorder</key>
+    <key alias="reorderDone">I am done reordering</key>
   </area>
   <area alias="graphicheadline">
     <key alias="backgroundcolor">背景色</key>
@@ -382,9 +419,9 @@
     <key alias="databaseInstall"><![CDATA[点击<strong>安装</strong>进行 %0% 数据库配置]]></key>
     <key alias="databaseInstallDone"><![CDATA[%0%数据库安装完成。点击<strong>下一步</strong>继续。]]></key>
     <key alias="databaseNotFound"><![CDATA[<p>数据库未找到！请检查数据库连接串设置。</p>
-              <p>您可以自行编辑“web.config”文件，键名为 “umbracoDbDSN”</p>
+              <p>您可以自行编辑“web.config”文件，键名为 “UmbracoDbDSN”</p>
               <p>
-             当自行编辑后，单击<strong>重试</strong>按钮<br /><a href="http://umbraco.org/redir/installWebConfig" target="_blank">。
+             当自行编辑后，单击<strong>重试</strong>按钮<br /><a href="http://our.umbraco.org/documentation/Using-Umbraco/Config-files/webconfig7" target="_blank">。
                                     如何编辑web.config</a></p>
     ]]></key>
     <key alias="databaseText"><![CDATA[完成本步，需要配置一个正确的连接字符串（“connection string”）。<br />
@@ -413,7 +450,7 @@
         </p>
     ]]></key>
     <key alias="greatStart">作为入门者，从视频教程开始吧！</key>
-    <key alias="licenseText">点击下一步 (或在Web.config中自行修改umbracoConfigurationStatus)，意味着您接受上述许可协议。</key>
+    <key alias="licenseText">点击下一步 (或在Web.config中自行修改UmbracoConfigurationStatus)，意味着您接受上述许可协议。</key>
     <key alias="None">安装失败。</key>
     <key alias="permissionsAffectedFolders">受影响的文件和文件夹</key>
     <key alias="permissionsAffectedFoldersMoreInfo">此处查看更多信息</key>
@@ -444,7 +481,7 @@
     <key alias="runwayFromScratch">我要从头开始</key>
     <key alias="runwayFromScratchText"><![CDATA[
        此时您的网站是全空的,您应该首先建立您的文档类型和模板
-        (<a href="http://umbraco.tv/documentation/videos/for-site-builders/foundation/document-types">如何操作？</a>)
+        (<a href="http://Umbraco.tv/documentation/videos/for-site-builders/foundation/document-types">如何操作？</a>)
        您也可以安装晚一些安装“Runway”。
     ]]></key>
     <key alias="runwayHeader">您刚刚安装了一个干净的系统，要继续吗？</key>
@@ -478,7 +515,7 @@
     <key alias="theEndFurtherHelp"><![CDATA[<h3>更多的帮助信息</h3>
 从社区获取帮助]]></key>
     <key alias="theEndHeader">系统 %0% 安装完毕</key>
-    <key alias="theEndInstallFailed"><![CDATA[完成安装，您需要手工编辑<strong>/web.config file</strong> 的 AppSetting 键 <strong>umbracoConfigurationStatus</strong>为 <strong>'%0%'</strong>。]]></key>
+    <key alias="theEndInstallFailed"><![CDATA[完成安装，您需要手工编辑<strong>/web.config file</strong> 的 AppSetting 键 <strong>UmbracoConfigurationStatus</strong>为 <strong>'%0%'</strong>。]]></key>
     <key alias="theEndInstallSuccess"><![CDATA[您想要<strong>立即开始</strong>请点“运行系统”<br />如果您是<strong>新手</strong>, 您可以得到相当丰富的学习资源。]]></key>
     <key alias="theEndOpenUmbraco"><![CDATA[<h3>运行系统</h3>
 管理您的网站, 运行后台添加内容，也可以添加模板和功能。
@@ -501,7 +538,7 @@
   </area>
   <area alias="login">
     <key alias="bottomText"><![CDATA[<p style="text-align:right;">&copy; 2001 - %0%</p> ]]></key>
-    <key alias="topText">欢迎使用umbraco，在下方输入用户名和密码</key>
+    <key alias="topText">欢迎使用Umbraco，在下方输入用户名和密码</key>
   </area>
   <area alias="main">
     <key alias="dashboard">仪表板</key>
@@ -530,7 +567,7 @@
   您好！这是一封自动邮件，提醒您用户'%3%'执行'%1%'任务已经在完成'%2%'。
       
 
-      转到 http://%4%/actions/editContent.aspx?id=%5% 进行编辑
+      转到 http://%4%/#/content/content/edit/%5% 进行编辑
     
     ]]></key>
     <key alias="mailBodyHtml"><![CDATA[<p>%0%：</p>
@@ -538,9 +575,7 @@
                   <p>您好！这是一封自动发送的邮件，告诉您任务<strong>'%1%'</strong>已在<a href="http://%4%/actions/preview.aspx?id=%5%"><strong>'%2%'</strong></a>被用户<strong>'%3%'</strong>执行</p>
                   <div style="margin: 8px 0; padding: 8px; display: block;">
                                 <br />
-                                <a style="color: white; font-weight: bold; background-color: #66cc66; text-decoration : none; margin-right: 20px; border: 8px solid #66cc66; width: 150px;" href="http://%4%/actions/publish.aspx?id=%5%">&nbsp;&nbsp;发布&nbsp;&nbsp;</a> &nbsp; 
-                                <a style="color: white; font-weight: bold; background-color: #5372c3; text-decoration : none; margin-right: 20px; border: 8px solid #5372c3; width: 150px;" href="http://%4%/actions/editContent.aspx?id=%5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编辑&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> &nbsp; 
-                                <a style="color: white; font-weight: bold; background-color: #ca4a4a; text-decoration : none; margin-right: 20px; border: 8px solid #ca4a4a; width: 150px;" href="http://%4%/actions/delete.aspx?id=%5%">&nbsp;&nbsp;&nbsp;&nbsp;删除&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                                <a style="color: white; font-weight: bold; background-color: #5372c3; text-decoration : none; margin-right: 20px; border: 8px solid #5372c3; width: 150px;" href="http://%4%/#/content/content/edit/%5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编辑&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> &nbsp; 
                                 <br />
                   </div>
                   <p>
@@ -552,9 +587,7 @@
 
                   <div style="margin: 8px 0; padding: 8px; display: block;">
                                 <br />
-                                <a style="color: white; font-weight: bold; background-color: #66cc66; text-decoration : none; margin-right: 20px; border: 8px solid #66cc66; width: 150px;" href="http://%4%/actions/publish.aspx?id=%5%">&nbsp;&nbsp;发布&nbsp;&nbsp;</a> &nbsp; 
-                                <a style="color: white; font-weight: bold; background-color: #5372c3; text-decoration : none; margin-right: 20px; border: 8px solid #5372c3; width: 150px;" href="http://%4%/actions/editContent.aspx?id=%5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编辑&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> &nbsp; 
-                                <a style="color: white; font-weight: bold; background-color: #ca4a4a; text-decoration : none; margin-right: 20px; border: 8px solid #ca4a4a; width: 150px;" href="http://%4%/actions/delete.aspx?id=%5%">&nbsp;&nbsp;&nbsp;&nbsp;删除&nbsp;&nbsp;&nbsp;&nbsp;</a>
+                                <a style="color: white; font-weight: bold; background-color: #5372c3; text-decoration : none; margin-right: 20px; border: 8px solid #5372c3; width: 150px;" href="http://%4%/#/content/content/edit/%5%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编辑&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a> &nbsp; 
                                 <br />
                   </div>
 
@@ -600,7 +633,7 @@
   </area>
   <area alias="paste">
     <key alias="doNothing">带格式粘贴（不推荐）</key>
-    <key alias="errorMessage">您所粘贴的文本含有特殊字符或格式，umbraco将清除以适应网页。</key>
+    <key alias="errorMessage">您所粘贴的文本含有特殊字符或格式，Umbraco将清除以适应网页。</key>
     <key alias="removeAll">无格式粘贴</key>
     <key alias="removeSpecialFormattering">粘贴并移除格式（推荐）</key>
   </area>
@@ -699,6 +732,8 @@
     <key alias="noPropertiesDefinedOnTab">没有字段设置在该标签页</key>
   </area>
   <area alias="sort">
+    <key alias="sortOrder">Sort order</key>
+    <key alias="sortCreationDate">Creation date</key>
     <key alias="sortDone">排序完成。</key>
     <key alias="sortHelp">上下拖拽项目或单击列头进行排序</key>
     <key alias="sortPleaseWait"><![CDATA[正在排序请稍候…<br/><br/>请不要关闭窗口]]></key>
@@ -777,6 +812,45 @@
     <key alias="quickGuide">模板标签快速指南</key>
     <key alias="template">模板</key>
   </area>
+  <area alias="grid">
+    <key alias="insertControl">Choose type of content</key>
+    <key alias="chooseLayout">Choose a layout</key>
+    <key alias="addRows">Add a row</key>
+    <key alias="addElement">Add content</key>
+    <key alias="dropElement">Drop content</key>
+    <key alias="settingsApplied">Settings applied</key>
+
+    <key alias="contentNotAllowed">This content is not allowed here</key>
+    <key alias="contentAllowed">This content is allowed here</key>
+
+    <key alias="clickToEmbed">Click to embed</key>
+    <key alias="clickToInsertImage">Click to insert image</key>
+    <key alias="placeholderImageCaption">Image caption...</key>
+    <key alias="placeholderWriteHere">Write here...</key>
+
+    <key alias="gridLayouts">Grid Layouts</key>
+    <key alias="gridLayoutsDetail">Layouts are the overall work area for the grid editor, usually you only need one or two different layouts</key>
+    <key alias="addGridLayout">Add Grid Layout</key>
+    <key alias="addGridLayoutDetail">Adjust the layout by setting column widths and adding additional sections</key>
+    <key alias="rowConfigurations">Row configurations</key>
+    <key alias="rowConfigurationsDetail">Rows are predefined cells arranged horizontally</key>
+    <key alias="addRowConfiguration">Add row configuration</key>
+    <key alias="addRowConfigurationDetail">Adjust the row by setting cell widths and adding additional cells</key>
+
+    <key alias="columns">Columns</key>
+    <key alias="columnsDetails">Total combined number of columns in the grid layout</key>
+
+    <key alias="settings">Settings</key>
+    <key alias="settingsDetails">Configure what settings editors can change</key>
+
+    <key alias="styles">Styles</key>
+    <key alias="stylesDetails">Configure what styling editors can change</key>
+
+    <key alias="settingDialogDetails">Settings will only save if the entered json configuration is valid</key>
+
+    <key alias="allowAllEditors">Allow all editors</key>
+    <key alias="allowAllRowConfigurations">Allow all row configurations</key>
+  </area>
   <area alias="templateEditor">
     <key alias="alternativeField">替代字段</key>
     <key alias="alternativeText">替代文本</key>
@@ -828,7 +902,7 @@
 
      转到 http://%3%/translation/details.aspx?id=%4% 进行编辑
 
-      或登录http://%3%/umbraco.aspx查看任务
+      或登录http://%3%查看任务
 
       祝好运!]]></key>
     <key alias="mailSubject">[%0%]翻译任务：%1%</key>
@@ -855,7 +929,7 @@
     <key alias="cacheBrowser">缓存浏览</key>
     <key alias="contentRecycleBin">回收站</key>
     <key alias="createdPackages">创建扩展包</key>
-    <key alias="datatype">数据类型</key>
+    <key alias="dataTypes">数据类型</key>
     <key alias="dictionary">字典</key>
     <key alias="installedPackages">已安装的扩展包</key>
     <key alias="installSkin">安装皮肤</key>
@@ -865,10 +939,10 @@
     <key alias="macros">宏</key>
     <key alias="mediaTypes">媒体类型</key>
     <key alias="member">会员</key>
-    <key alias="memberGroup">会员组</key>
+    <key alias="memberGroups">会员组</key>
     <key alias="memberRoles">角色</key>
-    <key alias="memberType">会员类型</key>
-    <key alias="nodeTypes">文档类型</key>
+    <key alias="memberTypes">会员类型</key>
+    <key alias="documentTypes">文档类型</key>
     <key alias="packager">扩展包</key>
     <key alias="packages">扩展包</key>
     <key alias="python">Python文件</key>
@@ -894,7 +968,6 @@
     <key alias="changePasswordDescription">要改变密码，请在框中输入新密码，然后单击“更改密码”。</key>
     <key alias="confirmNewPassword">确认新密码</key>
     <key alias="contentChannel">内容频道</key>
-    <key alias="defaultToLiveEditing">登录后进入实时编辑模式</key>
     <key alias="descriptionField">描述字段</key>
     <key alias="disabled">禁用用户</key>
     <key alias="documentType">文档类型</key>
