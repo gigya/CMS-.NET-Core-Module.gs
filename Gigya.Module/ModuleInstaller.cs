@@ -94,7 +94,7 @@ namespace Gigya.Module
 
                 restart = true;
             }
-            
+
             // register widgets
             restart = ModuleClass.RegisterControl("GigyaSettings", "Gigya Settings", typeof(GigyaSettingsController), "PageControls", ModuleClass.WidgetSectionName, "Telerik.Sitefinity.Mvc.Proxy.MvcControllerProxy") || restart;
             restart = ModuleClass.RegisterControl("GigyaLogin", "Gigya Login", typeof(GigyaLoginController), "PageControls", ModuleClass.WidgetSectionName, "Gigya.Module.Mvc.Proxy.MvcControllerProxyNoCache") || restart;
@@ -107,25 +107,29 @@ namespace Gigya.Module
                 SystemManager.RestartApplication(OperationReason.KnownKeys.DynamicModuleInstall);
             }
 
-            // custom WCF service installation
-            SystemManager.RegisterWebService(typeof(GigyaSettingsService), GigyaSettingsService.WebServiceUrl);
+            try
+            {
+                // custom WCF service installation
+                SystemManager.RegisterWebService(typeof(GigyaSettingsService), GigyaSettingsService.WebServiceUrl);
 
-            System.Web.Mvc.RouteCollectionExtensions.MapRoute(RouteTable.Routes,
-                "GigyaRoutes",
-                "api/gigya/{controller}/{action}/{id}",
-                new
-                {
-                    controller = "Account",
-                    action = "Login",
-                    id = UrlParameter.Optional
-                },
-                new string[] { "Gigya.Module.Mvc.Controllers" }
-            );
+                System.Web.Mvc.RouteCollectionExtensions.MapRoute(RouteTable.Routes,
+                    "GigyaRoutes",
+                    "api/gigya/{controller}/{action}/{id}",
+                    new
+                    {
+                        controller = "Account",
+                        action = "Login",
+                        id = UrlParameter.Optional
+                    },
+                    new string[] { "Gigya.Module.Mvc.Controllers" }
+                );
 
-            ObjectFactory.Container.RegisterType<GigyaMembershipHelper, GigyaMembershipHelper>("GigyaMembershipHelper",
-                        new ContainerControlledLifetimeManager());
+                ObjectFactory.Container.RegisterType<GigyaMembershipHelper, GigyaMembershipHelper>("GigyaMembershipHelper",
+                            new ContainerControlledLifetimeManager());
 
-            EventHub.Subscribe<IPagePreRenderCompleteEvent>(OnPagePreRenderCompleteEventHandler);
+                EventHub.Subscribe<IPagePreRenderCompleteEvent>(OnPagePreRenderCompleteEventHandler);
+            }
+            catch { }
         }
 
         private static void OnPagePreRenderCompleteEventHandler(IPagePreRenderCompleteEvent e)
@@ -134,7 +138,7 @@ namespace Gigya.Module
             {
                 return;
             }
-            
+
             // check if Sitefinity is the session leader and sign in if required
             GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(HttpContext.Current);
         }

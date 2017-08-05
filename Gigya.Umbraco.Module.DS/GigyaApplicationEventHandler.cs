@@ -16,7 +16,7 @@ namespace Gigya.Umbraco.Module.DS
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);
 
-            RouteCollectionExtensions.MapRoute(RouteTable.Routes,
+            System.Web.Mvc.RouteCollectionExtensions.MapRoute(RouteTable.Routes,
                 "GigyaDsSettings",
                 "GigyaDsSettings/{action}/{id}",
                 new

@@ -16,7 +16,7 @@ namespace Gigya.Umbraco.Module
         {
             base.ApplicationStarted(umbracoApplication, applicationContext);
 
-            RouteCollectionExtensions.MapRoute(RouteTable.Routes,
+            System.Web.Mvc.RouteCollectionExtensions.MapRoute(RouteTable.Routes,
                 "GigyaRoutes",
                 "api/gigya/{controller}/{action}/{id}",
                 new
@@ -28,7 +28,7 @@ namespace Gigya.Umbraco.Module
                 new string[] { "Gigya.Umbraco.Module.Mvc.Controllers" }
             );
 
-            RouteCollectionExtensions.MapRoute(RouteTable.Routes,
+            System.Web.Mvc.RouteCollectionExtensions.MapRoute(RouteTable.Routes,
                 "GigyaSettings",
                 "GigyaSettings/{action}/{id}",
                 new

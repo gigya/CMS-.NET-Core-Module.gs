@@ -20,7 +20,7 @@ using Umbraco.Web.Trees;
 
 namespace Gigya.Umbraco.Module.v621.Trees
 {
-    [Tree("gigya", "gigyaTree", "Gigya Settings")]
+    [umbraco.businesslogic.Tree("gigya", "gigyaTree", "Gigya Settings")]
     [PluginController("Gigya")]
     public class GigyaTreeController : BaseTree
     {
