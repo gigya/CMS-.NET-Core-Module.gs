@@ -141,7 +141,7 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             if (!string.IsNullOrEmpty(settings.DataCenter))
             {
-                request.APIDomain = settings.DataCenter + ".gigya.com";
+                request.APIDomain = settings.DataCenter;
             }
 
             LogRequestIfRequired(settings, apiMethod);

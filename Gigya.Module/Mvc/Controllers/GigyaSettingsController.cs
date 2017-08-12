@@ -108,7 +108,7 @@ namespace Gigya.Module.Mvc.Controllers
                         model.DebugMode.ToString().ToLowerInvariant(),
                         model.IsLoggedIn.ToString().ToLowerInvariant()
             );
-            builder.AppendFormat("<script src=\"https://cdns.{0}.gigya.com/js/gigya.js?apiKey={1}\">", model.DataCenter, model.ApiKey);
+            builder.AppendFormat("<script src=\"https://cdns.{0}/js/gigya.js?apiKey={1}\">", model.DataCenter, model.ApiKey);
             builder.Append(model.SettingsJson);
             builder.Append("</script>");
             builder.AppendFormat("<script src=\"{0}\"></script>", model.GigyaScriptPath);

@@ -160,7 +160,9 @@ namespace Gigya.Module.BasicSettings
                 }
 
                 this.LoadedField = "Loaded";
-                this.DataCenter = settings.DataCenter;
+                settings.DataCenter = Core.Connector.Helpers.GigyaSettingsHelper.MapOldDataCenter(settings.DataCenter);
+
+                this.DataCenter = string.IsNullOrEmpty(settings.DataCenter) || Core.Constants.DataCenter.DataCenters.Contains(settings.DataCenter) ? settings.DataCenter : string.Empty;
                 this.DataCenterOther = settings.DataCenter;
                 this.DebugMode = settings.DebugMode;
                 this.EnableRaas = settings.EnableRaas;

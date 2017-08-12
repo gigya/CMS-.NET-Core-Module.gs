@@ -146,7 +146,7 @@ namespace Gigya.UnitTests.DS
                 ApplicationKey = _dsUserKey,
                 ApplicationSecret = _dsSecret,
                 MappingFields = string.Empty,
-                DataCenter = "eu1"
+                DataCenter = "eu1.gigya.com"
             };
 
             //var settingsHelper = new Mock<GigyaDsSettingsHelper>(_logger);
@@ -184,7 +184,7 @@ namespace Gigya.UnitTests.DS
                 Id = -1,
                 ApiKey = "3_qkAT5OcGyvYpkjc_VF6-OfoeTKGk4T_jVwjFF9f5TQzoAg-mH8SBsjQi1srdsOm6",
                 MappingFields = string.Empty,
-                DataCenter = "eu1"
+                DataCenter = "eu1.gigya.com"
             };
 
             var helper = new GigyaDsHelper(settings, _logger, dsSettings);
@@ -200,7 +200,7 @@ namespace Gigya.UnitTests.DS
                 Id = -1,
                 ApiKey = "3_qkAT5OcGyvYpkjc_VF6-OfoeTKGk4T_jVwjFF9f5TQzoAg-mH8SBsjQi1srdsOm6",
                 MappingFields = string.Empty,
-                DataCenter = "eu1"
+                DataCenter = "eu1.gigya.com"
             };
 
             var helper = new GigyaDsHelper(settings, _logger, dsSettings);

@@ -291,7 +291,8 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             var user = UmbracoContext.Application.Services.UserService.GetByUsername(User.Identity.Name);
             var language = new GigyaLanguageModel();
             language.Code = string.IsNullOrEmpty(settings.Language) || settings.Language == Core.Constants.Languages.Auto || GigyaLanguageHelper.Languages.ContainsKey(settings.Language) ? settings.Language : Core.Constants.Languages.Other;
-            
+            settings.DataCenter = Core.Connector.Helpers.GigyaSettingsHelper.MapOldDataCenter(settings.DataCenter);
+
             var model = new GigyaSettingsModel
             {
                 CanViewApplicationSecret = (user.UserType.Name == Constants.UserTypes.Admin) || User.IsInRole(Constants.Roles.GigyaAdmin),
@@ -302,7 +303,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                 LanguageFallback = new GigyaLanguageModel { Code = settings.LanguageFallback },
                 LanguageOther = language.Code == Core.Constants.Languages.Other ? settings.Language : string.Empty,
                 DebugMode = settings.DebugMode,
-                DataCenter = string.IsNullOrEmpty(settings.DataCenter) || Core.Constants.DataCenter.DataCenters.Contains(settings.DataCenter) ? settings.DataCenter :  Core.Constants.DataCenter.Other,
+                DataCenter = string.IsNullOrEmpty(settings.DataCenter) || Core.Constants.DataCenter.DataCenters.Contains(settings.DataCenter) ? settings.DataCenter : Core.Constants.DataCenter.Other,
                 DataCenterOther = settings.DataCenter,
                 EnableRaas = settings.EnableRaas,
                 RedirectUrl = settings.RedirectUrl,

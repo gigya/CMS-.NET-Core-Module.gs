@@ -12,7 +12,7 @@
             authenticated: @Model.IsLoggedIn.ToString().ToLowerInvariant()
         };
     </script>
-    <script src="https://cdns.@(Model.DataCenter).gigya.com/js/gigya.js?apiKey=@Model.ApiKey">
+    <script src="https://cdns.@(Model.DataCenter)/js/gigya.js?apiKey=@Model.ApiKey">
         @Html.Raw(Model.SettingsJson)
     </script>
     <script src="@Model.GigyaScriptPath"></script>

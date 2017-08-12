@@ -138,6 +138,8 @@ namespace Gigya.Module.Core.Connector.Helpers
             settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields) 
                 ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
 
+            MapOldDataCenter(ref settings);
+
             if (context != null)
             {
                 // cache for the rest of this request
@@ -145,6 +147,31 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
 
             return settings;
+        }
+
+        private void MapOldDataCenter(ref IGigyaModuleSettings settings)
+        {
+            settings.DataCenter = MapOldDataCenter(settings.DataCenter);
+        }
+
+        public static string MapOldDataCenter(string dataCenter)
+        {
+            // map old DataCenters
+            switch (dataCenter)
+            {
+                case "eu1":
+                case "us1":
+                case "au1":
+                case "ru1":
+                    return string.Concat(dataCenter, ".gigya.com");
+            }
+
+            if (!string.IsNullOrEmpty(dataCenter) && !dataCenter.Contains("."))
+            {
+                return string.Concat(dataCenter, ".gigya.com");
+            }
+
+            return dataCenter;
         }
 
         /// <summary>

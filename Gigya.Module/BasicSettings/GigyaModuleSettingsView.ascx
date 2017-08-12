@@ -212,10 +212,11 @@
     <div id="data-center-wrapper">
         <sfFields:ChoiceField ID="DataCenterField" Title="" runat="server" DataFieldName="DataCenter" DisplayMode="Write" RenderChoicesAs="DropDown">
             <Choices>
-                <sfFields:ChoiceItem Text="US" Value="us1" />
-                <sfFields:ChoiceItem Text="EU" Value="eu1" />
-                <sfFields:ChoiceItem Text="AU" Value="au1" />
-                <sfFields:ChoiceItem Text="RU" Value="ru1" />
+                <sfFields:ChoiceItem Text="US" Value="us1.gigya.com" />
+                <sfFields:ChoiceItem Text="EU" Value="eu1.gigya.com" />
+                <sfFields:ChoiceItem Text="AU" Value="au1.gigya.com" />
+                <sfFields:ChoiceItem Text="RU" Value="ru1.gigya.com" />
+                <sfFields:ChoiceItem Text="CN" Value="cn1.gigya-api.cn" />
                 <sfFields:ChoiceItem Text="Other" Value="" />
             </Choices>
         </sfFields:ChoiceField>
@@ -372,7 +373,7 @@
             gigyaSettings.addProfileProperties();
             gigyaSettings.deserializeFieldMappings();
 
-            gigyaSettings.addOtherWrapperChangeEvent('#data-center-wrapper select', '#data-center-other-wrapper', '');
+            gigyaSettings.addOtherWrapperChangeEvent('#data-center-wrapper select', '#data-center-other-wrapper', '', true);
             gigyaSettings.addLanguageChangeEvent('#language-wrapper select', '#language-other-wrapper', '#language-fallback-wrapper');
 
             $('.sfInheritanceMsg .sfLinkBtn').click(function () {
