@@ -25,7 +25,7 @@ namespace Gigya.Module.Core
         public class DataCenter
         {
             public const string Other = "Other";
-            public static readonly string[] DataCenters = new string[] { "us1", "eu1", "au1", "ru1" };
+            public static readonly string[] DataCenters = new string[] { "us1.gigya.com", "eu1.gigya.com", "au1.gigya.com", "ru1.gigya.com", "cn1.gigya-api.cn" };
         }
 
         public class Languages

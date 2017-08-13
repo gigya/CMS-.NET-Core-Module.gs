@@ -243,7 +243,8 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
         {
             var language = new GigyaLanguageModel();
             language.Code = string.IsNullOrEmpty(settings.Language) || settings.Language == Core.Constants.Languages.Auto || GigyaLanguageHelper.Languages.ContainsKey(settings.Language) ? settings.Language : Core.Constants.Languages.Other;
-            
+            settings.DataCenter = Core.Connector.Helpers.GigyaSettingsHelper.MapOldDataCenter(settings.DataCenter);
+
             var model = new GigyaSettingsModel
             {
                 CanViewApplicationSecret = (UmbracoUser.UserType.Name == Constants.UserTypes.Admin) || User.IsInRole(Constants.Roles.GigyaAdmin),

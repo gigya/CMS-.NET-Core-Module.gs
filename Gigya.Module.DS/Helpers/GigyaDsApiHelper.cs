@@ -27,7 +27,7 @@ namespace Gigya.Module.DS.Helpers
             var request = new GSRequest(settings.ApiKey, applicationSecret, method, null, true, settings.ApplicationKey);            
             if (!string.IsNullOrEmpty(settings.DataCenter))
             {
-                request.APIDomain = settings.DataCenter + ".gigya.com";
+                request.APIDomain = settings.DataCenter;
             }
 
             return request;

@@ -60,10 +60,11 @@
 
                 <umb:PropertyPanel ID="PropertyPanel4" runat="server" Text="Data Center">
                     <select id="data-center" name="data-center" ng-disabled="model.Inherited" ng-model="model.DataCenter" class="umb-editor umb-dropdown" required>
-                        <option value="us1">US</option>
-                        <option value="eu1">EU</option>
-                        <option value="au1">AU</option>
-                        <option value="ru1">RU</option>
+                        <option value="us1.gigya.com">US</option>
+                        <option value="eu1.gigya.com">EU</option>
+                        <option value="au1.gigya.com">AU</option>
+                        <option value="ru1.gigya.com">RU</option>
+                        <option value="cn1.gigya-api.cn">CN</option>
                         <option value="Other">Other</option>
                     </select>
                 </umb:PropertyPanel>

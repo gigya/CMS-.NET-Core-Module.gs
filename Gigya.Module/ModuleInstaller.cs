@@ -107,25 +107,29 @@ namespace Gigya.Module
                 SystemManager.RestartApplication(OperationReason.KnownKeys.DynamicModuleInstall);
             }
 
-            // custom WCF service installation
-            SystemManager.RegisterWebService(typeof(GigyaSettingsService), GigyaSettingsService.WebServiceUrl);
-            
-            RouteCollectionExtensions.MapRoute(RouteTable.Routes,
-                "GigyaRoutes",
-                "api/gigya/{controller}/{action}/{id}",
-                new
-                {
-                    controller = "Account",
-                    action = "Login",
-                    id = UrlParameter.Optional
-                },
-                new string[] { "Gigya.Module.Mvc.Controllers" }
-            );
+            try
+            {
+                // custom WCF service installation
+                SystemManager.RegisterWebService(typeof(GigyaSettingsService), GigyaSettingsService.WebServiceUrl);
 
-            ObjectFactory.Container.RegisterType<GigyaMembershipHelper, GigyaMembershipHelper>("GigyaMembershipHelper",
-                        new ContainerControlledLifetimeManager());
+                RouteCollectionExtensions.MapRoute(RouteTable.Routes,
+                    "GigyaRoutes",
+                    "api/gigya/{controller}/{action}/{id}",
+                    new
+                    {
+                        controller = "Account",
+                        action = "Login",
+                        id = UrlParameter.Optional
+                    },
+                    new string[] { "Gigya.Module.Mvc.Controllers" }
+                );
 
-            EventHub.Subscribe<IPagePreRenderCompleteEvent>(OnPagePreRenderCompleteEventHandler);
+                ObjectFactory.Container.RegisterType<GigyaMembershipHelper, GigyaMembershipHelper>("GigyaMembershipHelper",
+                            new ContainerControlledLifetimeManager());
+
+                EventHub.Subscribe<IPagePreRenderCompleteEvent>(OnPagePreRenderCompleteEventHandler);
+            }
+            catch { }
         }
 
         private static void OnPagePreRenderCompleteEventHandler(IPagePreRenderCompleteEvent e)
