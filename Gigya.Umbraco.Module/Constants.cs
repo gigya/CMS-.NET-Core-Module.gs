@@ -8,7 +8,7 @@ namespace Gigya.Umbraco.Module
 {
     public static class Constants
     {
-        public const string ModuleVersion = "1.0.0.3";
+        public const string ModuleVersion = "1.0.0.6";
         public static readonly string HomepageAlias = ConfigurationManager.AppSettings["umbracoHomepageAlias"] ?? "Home";
         public static readonly string MemberTypeAlias = ConfigurationManager.AppSettings["umbracoMemberTypeAlias"] ?? "Member";
 
