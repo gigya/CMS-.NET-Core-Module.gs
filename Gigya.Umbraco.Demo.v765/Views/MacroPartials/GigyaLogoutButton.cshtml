@@ -1,0 +1,22 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using System.Web.Mvc.Html
+@using ClientDependency.Core.Mvc
+@using Umbraco.Web
+@using Umbraco.Web.Models
+@using Umbraco.Web.Controllers
+@using Gigya.Umbraco.Module.Connector
+
+@{ 
+    var loginStatusModel = Members.GetCurrentLoginStatus();
+    var label = Utils.UmbracoMacroProperty(Model.MacroParameters, "Label") ?? "Logout";
+    var designMode = Request.Url.AbsolutePath.Contains("GetMacroResultAsHtmlForEditor");
+}
+
+@if (loginStatusModel.IsLoggedIn || designMode)
+{
+    <button type="button" class="gigya-logout">@label</button>
+    if (!designMode)
+    {
+    <script>gigyaCms.authenticated = true</script>
+    }
+}
