@@ -90,3 +90,17 @@
 /Gigya.Sitefinity.DS.10.0.6400.1.0.0.4.nupkg
 /Gigya.Sitefinity.Core.10.0.6400.1.0.0.4.nupkg
 /Gigya.Module/Gigya.Sitefinity.Core.10.0.6400.1.0.0.5.nupkg
+/.vs/Gigya/v15/Server/sqlite3
+/.vs/Gigya/v15
+*.user
+/Gigya.Umbraco.Demo.v765/App_Data/cache/d/7/b/1/7/a
+/Gigya.Umbraco.Demo.v765/App_Data/Logs
+/Gigya.Umbraco.Demo.v765/App_Data/Models
+/Gigya.Umbraco.Demo.v765/App_Data/TEMP/ClientDependency
+/Gigya.Umbraco.Demo.v765/App_Data/TEMP/ExamineIndexes
+/Gigya.Umbraco.Demo.v765/App_Data/TEMP
+/Gigya.Umbraco.Demo.v765/bin
+/Gigya.Umbraco.Demo.v765/obj
+/Gigya.Sitefinity.Core.9.2.6200.1.0.0.7.nupkg
+/Gigya.Sitefinity.Core.9.1.6110.1.0.0.7.nupkg
+/Gigya.Sitefinity.Core.9.0.6010.1.0.0.7.nupkg

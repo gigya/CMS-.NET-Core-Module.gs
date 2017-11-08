@@ -39,7 +39,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         {
             var method = "accounts.getPolicies";
             var request = NewRequest(settings, applicationSecret, method);
-            var response = Send(request, method, settings);
+            var response = Send(request, method, settings, false);
             return response;
         }
 
@@ -64,7 +64,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             // this uses the Send method which validates the signature
             var response = ExchangeSignature(userId, settings, originalResponse.GetString(Constants.GigyaFields.UserIdSignature, null),
                 originalResponse.GetString(Constants.GigyaFields.SignatureTimestamp, null), settings.ApplicationKey);
-            
+
             return ValidateExchangeSignatureResponse(response);
         }
 
@@ -90,7 +90,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             request.SetParam("UID", userId);
             request.SetParam("include", "identities-active,identities-all,loginIDs,emails,profile,data,password,lastLoginLocation,regSource,irank");
 
-            var response = Send(request, method, settings);
+            var response = Send(request, method, settings, false);
             return response;
         }
 
@@ -102,19 +102,14 @@ namespace Gigya.Module.Core.Connector.Helpers
             request.SetParam("sessionExpiration", sessionExpiration);
             request.SetParam("cid", "cms relogin");
 
-            var response = Send(request, method, settings);
+            var response = Send(request, method, settings, false);
             return response;
         }
 
         public bool ValidateSignature(string userId, IGigyaModuleSettings settings, GSResponse response, bool disableSignatureExchange = false)
         {
-            if (disableSignatureExchange)
-            {
-                return SigUtils.ValidateUserSignature(userId, response.GetString(Constants.GigyaFields.SignatureTimestamp, null),
-                    settings.ApplicationSecret, response.GetString(Constants.GigyaFields.UserIdSignature, null));
-            }
-
-            return ValidateApplicationKeySignature(userId, settings, response);
+            return SigUtils.ValidateUserSignature(userId, response.GetString(Constants.GigyaFields.SignatureTimestamp, null),
+                settings.ApplicationSecret, response.GetString(Constants.GigyaFields.UserIdSignature, null));
         }
 
         /// <summary>
@@ -123,9 +118,9 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <param name="request">Request object.</param>
         /// <param name="apiMethod">The Gigya method to call.</param>
         /// <param name="settings">The Gigya module settings.</param>
-        /// <param name="disableSignatureExchange">If set to true, the signature won't be exchanged even if there's an application key set in the settings.</param>
+        /// <param name="validateSignature">If set to true, the signature will be validated.</param>
         /// <returns></returns>
-        private GSResponse Send(GSRequest request, string apiMethod, IGigyaModuleSettings settings, bool disableSignatureExchange = false)
+        private GSResponse Send(GSRequest request, string apiMethod, IGigyaModuleSettings settings, bool validateSignature)
         {
             if (apiMethod == "accounts.getAccountInfo")
             {
@@ -175,8 +170,9 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 return response;
             }
-            
-            if (!ValidateSignature(userId, settings, response, disableSignatureExchange))
+
+            // no need to validate server calls unless explicitly required e.g. for signature exchange
+            if (validateSignature && !ValidateSignature(userId, settings, response))
             {
                 if (settings.DebugMode)
                 {
