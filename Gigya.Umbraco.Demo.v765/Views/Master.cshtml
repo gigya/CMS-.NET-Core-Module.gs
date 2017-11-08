@@ -23,6 +23,7 @@
 
     <link rel="stylesheet" href="@Url.Content("~/css/umbraco-starterkit-style.css")" />
     @RenderSection("Header", required: false)
+    @Html.Action("Index", "GigyaSettings")
 </head>
 
 <body class="frontpage theme-font-@font theme-color-@colorTheme">
