@@ -351,7 +351,7 @@ namespace Gigya.Module
         #endregion
 
         #region Private members & constants
-        public const string Version = "1.0.0.6";
+        public const string Version = "1.0.0.7";
         public const string AssemblyName = "Gigya.Module";
         public const string ModuleName = "Gigya Module";
         internal const string ModuleTitle = "Gigya Module";
