@@ -18,7 +18,7 @@
     <AssemblyName>Gigya.Module</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <!--<EnhancerAssembly>$(SolutionDir)\packages\Telerik.DataAccess.Fluent.2016.1.224.1\tools\enhancer\enhancer.exe</EnhancerAssembly>-->
+    <!--<EnhancerAssembly>$(ProjectDir)\packages\Telerik.DataAccess.Fluent.2016.1.224.1\tools\enhancer\enhancer.exe</EnhancerAssembly>-->
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -52,6 +52,9 @@
     <Reference Include="GSCSharpSDK, Version=2.15.5.0, Culture=neutral, PublicKeyToken=ecc5cd8277006f58, processorArchitecture=MSIL">
       <HintPath>..\packages\Gigya.CSharpSdk.1.0.0\lib\GSCSharpSDK.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.6.1.7600.16394\lib\net35\Microsoft.IdentityModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -265,7 +268,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:53459/</IISUrl>
+          <IISUrl>http://localhost:51279/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
