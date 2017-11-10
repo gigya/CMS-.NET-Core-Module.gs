@@ -83,7 +83,23 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 model.Settings.lang = Language(settings);
             }
-            if (!settingsProperties.ContainsKey("sessionExpiration"))
+
+            if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Sliding)
+            {
+                // client needs -1 to specify a sliding session
+                model.Settings.sessionExpiration = -1;
+            }
+            else if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Forever)
+            {
+                // client needs -1 to specify a session that stays valid until the browser closes
+                model.Settings.sessionExpiration = -2;
+            }
+            else if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Session)
+            {
+                // client needs 0 to specify a session cookie
+                model.Settings.sessionExpiration = 0;
+            }
+            else if (!settingsProperties.ContainsKey("sessionExpiration"))
             {
                 model.Settings.sessionExpiration = settings.SessionTimeout;
             }

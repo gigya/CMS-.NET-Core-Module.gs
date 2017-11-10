@@ -30,7 +30,7 @@ namespace Gigya.Module.Mvc.Controllers
             }
 
             // check if Sitefinity is the session leader and sign in if required
-            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(System.Web.HttpContext.Current);
+            GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current);
 
             var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaLogout/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaLogout.Index.cshtml");
 

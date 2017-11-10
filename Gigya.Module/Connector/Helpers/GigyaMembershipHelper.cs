@@ -319,6 +319,10 @@ namespace Gigya.Module.Connector.Helpers
             if (authenticated)
             {
                 response.RedirectUrl = settings.RedirectUrl;
+
+                var settingsHelper = new GigyaSettingsHelper();
+                var accountHelper = new GigyaAccountHelper(settingsHelper, _logger, this, settings);
+                accountHelper.UpdateSessionExpirationCookieIfRequired(HttpContext.Current);
             }
         }
 
@@ -469,6 +473,41 @@ namespace Gigya.Module.Connector.Helpers
                     }
                     return loginStatus;
             }
+        }
+
+        public bool Login(string userIdOrName)//, IGigyaModuleSettings settings)
+        {
+            //var uidMapping = settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId && !string.IsNullOrEmpty(i.CmsFieldName));
+            //if (uidMapping != null && uidMapping.CmsFieldName != Constants.SitefinityFields.UserId)
+            //{
+            //    // get member to find UID field
+            //    var userManager = UserManager.GetManager();
+            //    var currentUser = userManager.GetUser(identity.UserId);
+            //    if (currentUser == null)
+            //    {
+            //        _logger.Error(string.Format("Couldn't find member with username of {0} so couldn't sign them in.", currentIdentity.Name));
+            //        return;
+            //    }
+
+            //    var profileManager = UserProfileManager.GetManager();
+            //    var profile = profileManager.GetUserProfile<SitefinityProfile>(currentUser);
+            //    if (profile == null)
+            //    {
+            //        _logger.Error(string.Format("Couldn't find profile for member with username of {0} so couldn't sign them in.", currentIdentity.Name));
+            //        return;
+            //    }
+
+            //    currentIdentity.UID = profile.GetValue<string>(uidMapping.CmsFieldName);
+            //}
+
+            User user;
+            var loginStatus = SecurityManager.AuthenticateUser(null, userIdOrName, false, out user);
+            return loginStatus == UserLoggingReason.Success;
+        }
+
+        public void Logout()
+        {
+            SecurityManager.Logout();
         }
     }
 }

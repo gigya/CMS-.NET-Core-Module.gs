@@ -396,5 +396,16 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             }
             return true;
         }
+
+        public bool Login(string userIdOrName)
+        {
+            FormsAuthentication.SetAuthCookie(userIdOrName, false);
+            return true;
+        }
+
+        public void Logout()
+        {
+            FormsAuthentication.SignOut();
+        }
     }
 }

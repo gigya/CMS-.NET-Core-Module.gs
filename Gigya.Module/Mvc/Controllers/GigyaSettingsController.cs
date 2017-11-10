@@ -58,7 +58,7 @@ namespace Gigya.Module.Mvc.Controllers
             }
 
             // check if Sitefinity is the session leader and sign in if required
-            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(System.Web.HttpContext.Current, settings);
+            GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current, settings);
 
             var identity = ClaimsManager.GetCurrentIdentity();
             var currentIdentity = new CurrentIdentity

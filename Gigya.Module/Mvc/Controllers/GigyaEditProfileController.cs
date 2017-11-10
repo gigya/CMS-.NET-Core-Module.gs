@@ -35,7 +35,7 @@ namespace Gigya.Module.Mvc.Controllers
             }
 
             // check if Sitefinity is the session leader and sign in if required
-            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(System.Web.HttpContext.Current);
+            GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current);
 
             if (RenderMethod != Constants.Resources.Designer.EmbeddedScreen)
             {

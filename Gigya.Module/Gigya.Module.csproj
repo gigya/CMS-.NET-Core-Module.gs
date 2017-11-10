@@ -157,6 +157,7 @@
     <Compile Include="Connector\Logging\SitefinityLogger.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaLanguage.cs" />
+    <Compile Include="HttpModules\GigyaRequestModule.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
     <Compile Include="Mvc\Controllers\GigyaLoginController.cs" />
     <Compile Include="Mvc\Controllers\GigyaEditProfileController.cs" />
@@ -219,15 +220,6 @@
     <Content Include="OpenAccessNuGet.targets" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
-    </None>
-    <Content Include="web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <None Include="web.Debug.config">
-      <DependentUpon>web.config</DependentUpon>
-    </None>
-    <None Include="web.Release.config">
-      <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>

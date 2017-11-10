@@ -24,6 +24,7 @@ using Gigya.Module.Connector.Logging;
 using Gigya.Module.Core.Connector.Enums;
 using Gigya.Module.Core.Mvc.Models;
 using System.Web;
+using Gigya.Module.HttpModules;
 
 namespace Gigya.Module
 {
@@ -45,6 +46,8 @@ namespace Gigya.Module
         public static void PreApplicationStart()
         {
             Bootstrapper.Initialized += ModuleInstaller.OnBootstrapperInitialized;
+
+            HttpApplication.RegisterModule(typeof(GigyaRequestModule));
         }
         #endregion
 
@@ -129,7 +132,10 @@ namespace Gigya.Module
 
                 EventHub.Subscribe<IPagePreRenderCompleteEvent>(OnPagePreRenderCompleteEventHandler);
             }
-            catch { }
+            catch (Exception e)
+            {
+
+            }
         }
 
         private static void OnPagePreRenderCompleteEventHandler(IPagePreRenderCompleteEvent e)
@@ -139,8 +145,8 @@ namespace Gigya.Module
                 return;
             }
             
-            // check if Sitefinity is the session leader and sign in if required
-            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(HttpContext.Current);
+            // run any gigya related code that needs to be done for every request
+            GigyaAccountHelper.ProcessRequestChecks(HttpContext.Current);
         }
 
         #endregion
