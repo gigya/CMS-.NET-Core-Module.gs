@@ -107,7 +107,8 @@ namespace Gigya.Module.Connector.Helpers
                 MappingFields = settings.MappingFields,
                 GlobalParameters = settings.GlobalParameters,
                 SessionTimeout = settings.SessionTimeout,
-                SessionProvider = settings.SessionProvider
+                SessionProvider = settings.SessionProvider,
+                GigyaSessionMode = settings.GigyaSessionMode
             };
         }
 

@@ -66,5 +66,18 @@ namespace Gigya.Module.Core.Connector.Helpers
                 _logger.Error("No sessionInfo returned from gigya.accounts.notifyLogin for user " + currentIdentity.Name);
             }
         }
+
+        protected virtual void UpdateSessionExpirationCookie(HttpContext context)
+        {
+            throw new NotImplementedException();
+
+            if (_settings.SessionProvider != Enums.GigyaSessionProvider.Gigya || _settings.GigyaSessionMode != Enums.GigyaSessionMode.Sliding)
+            {
+                return;
+            }
+
+            var gltCookie = context.Request.Cookies["gltCookieToken"];
+
+        }
     }
 }

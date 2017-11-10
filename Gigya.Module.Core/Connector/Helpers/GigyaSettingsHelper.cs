@@ -217,6 +217,19 @@ namespace Gigya.Module.Core.Connector.Helpers
                 throw new ArgumentException("Language fallback is required");
             }
 
+            if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya)
+            {
+                if (settings.GigyaSessionMode == Enums.GigyaSessionMode.Sliding && settings.SessionTimeout <= 0)
+                {
+                    throw new ArgumentException("Session timeout must be greater than 0 if sliding session mode enabled");
+                }
+
+                if (settings.GigyaSessionMode == Enums.GigyaSessionMode.Fixed && settings.SessionTimeout <= 0)
+                {
+                    throw new ArgumentException("Session timeout must be greater than 0 if fixed session mode enabled");
+                }
+            }
+
             if (!string.IsNullOrEmpty(settings.GlobalParameters))
             {
                 try

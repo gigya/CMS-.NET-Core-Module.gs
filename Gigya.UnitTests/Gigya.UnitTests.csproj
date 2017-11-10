@@ -75,6 +75,9 @@
       <HintPath>..\packages\Examine.0.1.60.2941\lib\Examine.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GSCSharpSDK, Version=2.15.5.0, Culture=neutral, PublicKeyToken=ecc5cd8277006f58, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gigya.CSharpSdk.1.0.0\lib\GSCSharpSDK.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -278,6 +281,7 @@
     <Compile Include="SettingsTests.cs" />
     <Compile Include="Umbraco\ConsoleApplicationBase.cs" />
     <Compile Include="Umbraco\ConsoleBootManager.cs" />
+    <Compile Include="ApiTests.cs" />
     <Compile Include="UtilsTests.cs" />
   </ItemGroup>
   <ItemGroup>
