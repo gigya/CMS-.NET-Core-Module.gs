@@ -13,6 +13,7 @@ using Telerik.Sitefinity.Model;
 using Telerik.Sitefinity.Security;
 using Telerik.Sitefinity.Security.Claims;
 using Telerik.Sitefinity.Security.Model;
+using Telerik.Sitefinity.Web;
 
 namespace Gigya.Module.Connector.Helpers
 {
@@ -53,6 +54,19 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="settings"></param>
         public static void ProcessRequestChecks(HttpContext context, IGigyaModuleSettings settings = null)
         {
+            var currentNode = SiteMapBase.GetCurrentNode();
+            if (currentNode != null && currentNode.IsBackend)
+            {
+                return;
+            }
+
+            // don't need to do anything if the user is editing content in the CMS
+            var identity = ClaimsManager.GetCurrentIdentity();
+            if (identity.IsBackendUser)
+            {
+                return;
+            }
+
             if (context.Items.Contains(_executedProcessRequestKey))
             {
                 return;

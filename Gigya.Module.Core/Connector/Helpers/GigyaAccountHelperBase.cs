@@ -102,14 +102,16 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             context.Response.Cookies.Set(cookie);
 
-            if (!currentIdentity.IsAuthenticated)
+            if (!currentIdentity.IsAuthenticated && gigyaAuthCookieSplit.Length > 1)
             {
                 // try and get the user from the UID
-                //UUID=b2f5dda5de6046c5ab870c7376641ab8
-
-
-
-                _membershipHelper.Login(currentIdentity.Name);
+                // UUID=b2f5dda5de6046c5ab870c7376641ab8
+                var uidKeyValue = gigyaAuthCookieSplit[1];
+                if (uidKeyValue.Length > 5)
+                {
+                    var uid = uidKeyValue.Substring(5, 32);
+                    _membershipHelper.Login(uid, _settings);
+                }
             }
         }
     }

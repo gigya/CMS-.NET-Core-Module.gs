@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Telerik.Sitefinity.Security.Claims;
+using Telerik.Sitefinity.Web;
 
 namespace Gigya.Module.HttpModules
 {
@@ -28,7 +30,7 @@ namespace Gigya.Module.HttpModules
                 // currently we only care about ajax requests since full page loads will go through the normal CMS pipeline
                 return;
             }
-            
+
             GigyaAccountHelper.ProcessRequestChecks(context);
         }
     }

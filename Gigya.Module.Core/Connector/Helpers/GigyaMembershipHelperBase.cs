@@ -26,6 +26,8 @@ namespace Gigya.Module.Core.Connector.Helpers
             _logger = logger;
         }
 
+        protected abstract string CmsUserIdField { get; }
+
         /// <summary>
         /// 
         /// </summary>
@@ -147,6 +149,31 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             GigyaEventHub.Instance.RaiseAccountInfoMergeCompleted(this, accountInfoMergeCompletedArgs);
             return accountInfoMergeCompletedArgs.GigyaModel;
+        }
+
+        protected virtual string GetCmsUsername(List<MappingField> mappingFields, dynamic userInfo)
+        {
+            if (!mappingFields.Any())
+            {
+                return userInfo.UID;
+            }
+
+            return GetGigyaFieldFromCmsAlias(userInfo, CmsUserIdField, userInfo.UID, mappingFields);
+        }
+
+        protected abstract bool LoginByUsername(string username, IGigyaModuleSettings settings);
+
+        public bool Login(string gigyaUid, IGigyaModuleSettings settings)
+        {
+            var username = gigyaUid;
+
+            var uidMapping = settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId && !string.IsNullOrEmpty(i.CmsFieldName));
+            if (uidMapping == null || uidMapping.CmsFieldName != CmsUserIdField)
+            {
+                return false;
+            }
+
+            return LoginByUsername(username, settings);
         }
     }
 }

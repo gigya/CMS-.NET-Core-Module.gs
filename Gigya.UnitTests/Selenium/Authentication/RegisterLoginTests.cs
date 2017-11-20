@@ -27,7 +27,7 @@ namespace Gigya.UnitTests.Selenium
     {
         protected IWebDriver _driver;
 
-        protected const string _passsword = "aa234567";
+        protected string _passsword = "aa234567";
         protected const string _firstName = "Mr";
         protected const string _lastName = "Tester";
 
@@ -51,7 +51,12 @@ namespace Gigya.UnitTests.Selenium
 
         protected virtual void SetupTest()
         {
-            _driver = new FirefoxDriver();
+            var options = new FirefoxOptions
+            {
+                BrowserExecutableLocation = "C:\\Program Files\\Mozilla Firefox\\Firefox.exe"
+            };
+            
+            _driver = new FirefoxDriver(options);
             _driver.Manage().Window.Maximize();
             _newEmail = string.Concat(Guid.NewGuid(), "@purestone.co.uk");
             _initialized = true;

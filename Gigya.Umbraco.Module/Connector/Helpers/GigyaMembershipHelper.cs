@@ -31,6 +31,8 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         {
         }
 
+        protected override string CmsUserIdField => Constants.CmsFields.Username;
+
         /// <summary>
         /// Updates the users Umbraco profile.
         /// </summary>
@@ -351,15 +353,15 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             return true;
         }
 
-        public bool Login(string userIdOrName)
-        {
-            FormsAuthentication.SetAuthCookie(userIdOrName, false);
-            return true;
-        }
-
         public void Logout()
         {
             FormsAuthentication.SignOut();
+        }
+
+        protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        {
+            FormsAuthentication.SetAuthCookie(username, false);
+            return true;
         }
     }
 }

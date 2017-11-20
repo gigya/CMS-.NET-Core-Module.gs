@@ -29,6 +29,8 @@ namespace Gigya.Module.Connector.Helpers
         {
         }
 
+        protected override string CmsUserIdField => Constants.SitefinityFields.UserId;
+
         /// <summary>
         /// Updates the users Sitefinity profile.
         /// </summary>
@@ -373,16 +375,6 @@ namespace Gigya.Module.Connector.Helpers
             return Guid.Parse(currentSiteId.ToString());
         }
 
-        private string GetCmsUsername(List<MappingField> mappingFields, dynamic userInfo)
-        {
-            if (!mappingFields.Any())
-            {
-                return userInfo.UID;
-            }
-
-            return GetGigyaFieldFromCmsAlias(userInfo, Constants.SitefinityFields.UserId, userInfo.UID, mappingFields);
-        }
-
         /// <summary>
         /// Gets the Gigya UID for the current logged in user. If the user isn't logged in, null is returned.
         /// </summary>
@@ -474,34 +466,11 @@ namespace Gigya.Module.Connector.Helpers
                     return loginStatus;
             }
         }
-
-        public bool Login(string userIdOrName)//, IGigyaModuleSettings settings)
+        
+        protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
         {
-            //var uidMapping = settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId && !string.IsNullOrEmpty(i.CmsFieldName));
-            //if (uidMapping != null && uidMapping.CmsFieldName != Constants.SitefinityFields.UserId)
-            //{
-            //    // get member to find UID field
-            //    var userManager = UserManager.GetManager();
-            //    var currentUser = userManager.GetUser(identity.UserId);
-            //    if (currentUser == null)
-            //    {
-            //        _logger.Error(string.Format("Couldn't find member with username of {0} so couldn't sign them in.", currentIdentity.Name));
-            //        return;
-            //    }
-
-            //    var profileManager = UserProfileManager.GetManager();
-            //    var profile = profileManager.GetUserProfile<SitefinityProfile>(currentUser);
-            //    if (profile == null)
-            //    {
-            //        _logger.Error(string.Format("Couldn't find profile for member with username of {0} so couldn't sign them in.", currentIdentity.Name));
-            //        return;
-            //    }
-
-            //    currentIdentity.UID = profile.GetValue<string>(uidMapping.CmsFieldName);
-            //}
-
             User user;
-            var loginStatus = SecurityManager.AuthenticateUser(null, userIdOrName, false, out user);
+            var loginStatus = SecurityManager.AuthenticateUser(null, username, false, out user);
             return loginStatus == UserLoggingReason.Success;
         }
 
