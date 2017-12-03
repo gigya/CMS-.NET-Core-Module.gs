@@ -67,7 +67,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <summary>
         /// Updates the Gigya session cookie if required.
         /// </summary>
-        public override void UpdateSessionExpirationCookieIfRequired(HttpContext context)
+        public override void UpdateSessionExpirationCookieIfRequired(HttpContext context, bool isLoggingIn = false)
         {
             if (!_settings.EnableRaas)
             {
@@ -101,7 +101,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
                 currentIdentity.UID = member.GetValue<string>(uidMapping.CmsFieldName);
             }
 
-            UpdateSessionExpirationCookie(context, currentIdentity);
+            UpdateSessionExpirationCookie(context, currentIdentity, isLoggingIn);
         }
     }
 }

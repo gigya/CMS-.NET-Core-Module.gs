@@ -566,6 +566,13 @@ var gigyaSitefinity = {
             // Process the error
             gigyaSitefinity.loggingIn = false;
 
+            if (xhr.status == 0) {
+                // aborting the request so no need to logout
+                gigyaSitefinity.log('login request aborted...skipping');
+                bodyElem.classList.remove(gigyaSitefinity.loggingInClassName);
+                return;
+            }
+
             var error = {
                 e: e,
                 xhr: xhr,

@@ -310,11 +310,14 @@
     <Content Include="config\404handlers.config" />
     <Content Include="App_Plugins\GigyaDS\package.manifest" />
     <Content Include="App_Plugins\Gigya\package.manifest" />
+    <None Include="bundleconfig.json" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
     <Content Include="scripts\gigya-cms.js" />
-    <Content Include="scripts\gigya-cms.min.js" />
+    <Content Include="scripts\gigya-cms.min.js">
+      <DependentUpon>gigya-cms.js</DependentUpon>
+    </Content>
     <Content Include="Views\Web.config" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />

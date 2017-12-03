@@ -324,7 +324,7 @@ namespace Gigya.Module.Connector.Helpers
 
                 var settingsHelper = new GigyaSettingsHelper();
                 var accountHelper = new GigyaAccountHelper(settingsHelper, _logger, this, settings);
-                accountHelper.UpdateSessionExpirationCookieIfRequired(HttpContext.Current);
+                accountHelper.UpdateSessionExpirationCookieIfRequired(HttpContext.Current, true);
             }
         }
 

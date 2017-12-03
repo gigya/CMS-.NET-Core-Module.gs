@@ -283,6 +283,13 @@ var gigyaCms = {
          })
         .catch(function (e, xhr, response) {
             gigyaCms.loggingIn = false;
+
+            if (xhr.status == 0) {
+                // aborting the request so no need to logout
+                gigyaCms.log('login request aborted...skipping');
+                return;
+            }
+
             gigyaCms.log('login error');
             gigya.accounts.logout();
 

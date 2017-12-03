@@ -253,6 +253,19 @@ namespace Gigya.Module.BasicSettings
                 settings.SessionProvider = this.SessionProvider;
                 settings.GigyaSessionMode = this.GigyaSessionMode;
 
+                if (settings.SessionProvider == GigyaSessionProvider.Gigya)
+                {
+                    switch (settings.GigyaSessionMode)
+                    {
+                        case GigyaSessionMode.Session:
+                            settings.SessionTimeout = 0;
+                            break;
+                        case GigyaSessionMode.Forever:
+                            settings.SessionTimeout = -2;
+                            break;
+                    }
+                }
+
                 var mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(MappingFields);
                 if (mappingFields == null || !mappingFields.Any())
                 {

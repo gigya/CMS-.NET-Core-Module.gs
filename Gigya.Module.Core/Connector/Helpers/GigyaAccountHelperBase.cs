@@ -71,11 +71,41 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
         }
 
-        public abstract void UpdateSessionExpirationCookieIfRequired(HttpContext context);
-
-        protected virtual void UpdateSessionExpirationCookie(HttpContext context, CurrentIdentity currentIdentity)
+        private bool IsDynamicSessionExtensionsRequired(HttpContext context, bool isLoggingIn)
         {
             if (_settings.SessionProvider != Enums.GigyaSessionProvider.Gigya || _settings.GigyaSessionMode != Enums.GigyaSessionMode.Sliding)
+            {
+                return false;
+            }
+
+            if (isLoggingIn)
+            {
+                return true;
+            }
+
+            var gigyaExpCookie = context.Request.Cookies["gltexp_" + _settings.ApiKey];
+            if (gigyaExpCookie == null)
+            {
+                return false;
+            }
+
+            var currentSessionExpiryEpoch = 0L;
+            var gigyaAuthCookieSplit = HttpUtility.UrlDecode(gigyaExpCookie.Value).Split('_');
+            if (gigyaAuthCookieSplit.Length == 0 || !long.TryParse(gigyaAuthCookieSplit[0], out currentSessionExpiryEpoch))
+            {
+                // no cookie provided so we need to create one...according to Inbal's sample code
+                return true;
+            }
+
+            var epoch = DateTime.UtcNow.DateTimeToUnixTimestamp();
+            return currentSessionExpiryEpoch > epoch;
+        }
+
+        public abstract void UpdateSessionExpirationCookieIfRequired(HttpContext context, bool isLoggingIn = false);
+        
+        protected virtual void UpdateSessionExpirationCookie(HttpContext context, CurrentIdentity currentIdentity, bool isLoggingIn)
+        {
+            if (!IsDynamicSessionExtensionsRequired(context, isLoggingIn))
             {
                 return;
             }
@@ -93,7 +123,7 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             var cookie = new HttpCookie("gltexp_" + _settings.ApiKey);
             var sessionExpiration = _settingsHelper.SessionExpiration(_settings);
-            cookie.Expires = DateTime.Now.AddSeconds(sessionExpiration);
+            cookie.Expires = cookie.Expires = DateTime.UtcNow.AddYears(10);
 
             var gigyaAuthCookieSplit = HttpUtility.UrlDecode(gigyaAuthCookie.Value).Split('|');
             var loginToken = gigyaAuthCookieSplit[0];
@@ -101,18 +131,6 @@ namespace Gigya.Module.Core.Connector.Helpers
             cookie.Path = "/";
 
             context.Response.Cookies.Set(cookie);
-
-            if (!currentIdentity.IsAuthenticated && gigyaAuthCookieSplit.Length > 1)
-            {
-                // try and get the user from the UID
-                // UUID=b2f5dda5de6046c5ab870c7376641ab8
-                var uidKeyValue = gigyaAuthCookieSplit[1];
-                if (uidKeyValue.Length > 5)
-                {
-                    var uid = uidKeyValue.Substring(5, 32);
-                    _membershipHelper.Login(uid, _settings);
-                }
-            }
         }
     }
 }
