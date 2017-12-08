@@ -13,6 +13,13 @@
     .sfDropdownList { display: inline-block; margin-bottom: 10px; }
     .required { color: red; }
     select { padding: 2px 2px 3px 2px; }
+    #session-management-wrapper br { display: none; }
+    #session-management-wrapper br + input { margin-left: 10px; }
+    #gigya-session-mode-wrapper, #gigya-session-mode-wrapper div { display: inline; }
+    #session-timeout-wrapper, #session-timeout-wrapper div { display: inline; }
+    .label-after-field { display: inline; }
+    #gigya-session-mode-wrapper { margin-right: 10px; }
+    #session-timeout-wrapper input { margin: 0; }
 </style>
 
 <div class="sfSettingsSection">
@@ -204,8 +211,8 @@
     <div id="session-management-wrapper" style="margin-top: 5px; margin-bottom: 5px;">
         <sfFields:ChoiceField ID="SessionManagement" Title="" runat="server" DataFieldName="SessionProvider" DisplayMode="Write" RenderChoicesAs="RadioButtons">
             <Choices>
-                <sfFields:ChoiceItem Text="Gigya (When the Gigya session expires, the user is also logged out of Sitefinity)" Value="0" />
-                <sfFields:ChoiceItem Text="Sitefinity (When the Sitefinity session expires, the user is also logged out of Gigya)" Value="1" />
+                <sfFields:ChoiceItem Text="Gigya" Value="0" />
+                <sfFields:ChoiceItem Text="Sitefinity" Value="1" />
             </Choices>
         </sfFields:ChoiceField>
     </div>
@@ -222,13 +229,14 @@
     <div id="session-timeout-wrapper" style="margin-top: 10px;">
         <sfFields:TextField ID="SessionTimeout" runat="server"
             DataFieldName="SessionTimeout"
-            Title="Session Duration (seconds)"
+            Title="Session Duration"
             DisplayMode="Write"
             WrapperTag="div">
         </sfFields:TextField>
+        <span class="label-after-field sfTxtLbl">Seconds</span>
     </div>
-
-    <div class="sfTxtLbl sfInlineBlock" style="margin-top: 10px;">
+    <br />
+    <div class="sfTxtLbl sfInlineBlock">
         Data Center<span class='required'>*</span>
     </div>
     <div id="data-center-wrapper">
@@ -401,10 +409,6 @@
             });
             
             var sessionManagementBr = $('#session-management-wrapper').find('br');
-            if (sessionManagementBr.length) {
-                var sessionWrapper = $('#gigya-session-mode-wrapper').remove();
-                sessionManagementBr.after(sessionWrapper);
-            }
             
             var sessionWrapperElems = $('#session-management-wrapper input');
             sessionWrapperElems.change(function () {
