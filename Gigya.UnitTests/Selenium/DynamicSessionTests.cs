@@ -68,16 +68,14 @@ namespace Gigya.UnitTests.Selenium
             _passsword = "aa234567";
 
             CanLoginToFrontEnd();
-
-            // wait 160 seconds
-            Thread.Sleep(160000);
+            
+            Thread.Sleep(150000);
 
             // refresh browser
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
             Thread.Sleep(10000);
 
             _driver.Navigate().Refresh();
-
             Thread.Sleep(10000);
 
             // should be logged out

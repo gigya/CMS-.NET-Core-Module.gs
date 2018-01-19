@@ -621,7 +621,9 @@ var gigyaSitefinity = {
 };
 
 gigyaSitefinity.applyConfig();
-gigyaSitefinity.initGetAccountInfo();
+if (!window.gigyaConfig || window.gigyaConfig.getInfoRequired) {
+    gigyaSitefinity.initGetAccountInfo();
+}
 
 onDomReady(function () {
     gigyaSitefinity.init();

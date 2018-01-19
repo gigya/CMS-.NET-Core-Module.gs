@@ -73,7 +73,8 @@ namespace Gigya.Module.Core.Connector.Helpers
                 LogoutUrl = settings.LogoutUrl,
                 IsLoggedIn = currentIdentity.IsAuthenticated,
                 Id = settings.Id,
-                DataCenter = settings.DataCenter
+                DataCenter = settings.DataCenter,
+                IsGetInfoRequired = settings.SessionProvider == Enums.GigyaSessionProvider.CMS
             };
             
             model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<ExpandoObject>(settings.GlobalParameters) : new ExpandoObject();

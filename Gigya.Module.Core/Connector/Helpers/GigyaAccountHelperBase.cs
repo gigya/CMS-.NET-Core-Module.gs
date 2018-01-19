@@ -71,7 +71,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
         }
 
-        private bool IsDynamicSessionExtensionsRequired(HttpContext context, bool isLoggingIn)
+        private bool IsDynamicSessionExtensionRequired(HttpContext context, bool isLoggingIn)
         {
             if (_settings.SessionProvider != Enums.GigyaSessionProvider.Gigya || _settings.GigyaSessionMode != Enums.GigyaSessionMode.Sliding)
             {
@@ -105,7 +105,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         
         protected virtual void UpdateSessionExpirationCookie(HttpContext context, CurrentIdentity currentIdentity, bool isLoggingIn)
         {
-            if (!IsDynamicSessionExtensionsRequired(context, isLoggingIn))
+            if (!IsDynamicSessionExtensionRequired(context, isLoggingIn))
             {
                 return;
             }
@@ -123,13 +123,12 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             var cookie = new HttpCookie("gltexp_" + _settings.ApiKey);
             var sessionExpiration = _settingsHelper.SessionExpiration(_settings);
-            cookie.Expires = cookie.Expires = DateTime.UtcNow.AddYears(10);
+            cookie.Expires = DateTime.UtcNow.AddYears(10);
 
             var gigyaAuthCookieSplit = HttpUtility.UrlDecode(gigyaAuthCookie.Value).Split('|');
             var loginToken = gigyaAuthCookieSplit[0];
             cookie.Value = GigyaSignatureHelpers.GetDynamicSessionSignatureUserSigned(loginToken, sessionExpiration, _settings.ApplicationKey, _settings.ApplicationSecret);
             cookie.Path = "/";
-
             context.Response.Cookies.Set(cookie);
         }
     }
