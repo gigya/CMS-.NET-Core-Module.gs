@@ -9,7 +9,8 @@
             loggedInRedirectUrl: '@HttpUtility.JavaScriptStringEncode(Model.LoggedInRedirectUrl)',
             logoutRedirectUrl: '@HttpUtility.JavaScriptStringEncode(Model.LogoutUrl)',
             debugMode: @Model.DebugMode.ToString().ToLowerInvariant(),
-            authenticated: @Model.IsLoggedIn.ToString().ToLowerInvariant()
+            authenticated: @Model.IsLoggedIn.ToString().ToLowerInvariant(),
+            getInfoRequired: @Model.IsGetInfoRequired.ToString().ToLowerInvariant()
         };
     </script>
     <script src="https://cdns.@(Model.DataCenter)/js/gigya.js?apiKey=@Model.ApiKey">

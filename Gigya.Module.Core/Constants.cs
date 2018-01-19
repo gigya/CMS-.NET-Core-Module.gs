@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 
@@ -15,6 +16,11 @@ namespace Gigya.Module.Core
             public const string UserId = "UID";
             public const string UserIdSignature = "UIDSignature";
             public const string SignatureTimestamp = "signatureTimestamp";
+        }
+
+        public class SignatureValidation
+        {
+            public static readonly string[] MethodsToIgnoreSignatureValidation = (ConfigurationManager.AppSettings["Gigya.MethodsToIgnoreSignatureValidation"] ?? "accounts.getAccountInfo").Split(',');
         }
 
         public class Testing

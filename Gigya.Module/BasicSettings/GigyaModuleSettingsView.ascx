@@ -13,6 +13,13 @@
     .sfDropdownList { display: inline-block; margin-bottom: 10px; }
     .required { color: red; }
     select { padding: 2px 2px 3px 2px; }
+    #session-management-wrapper br { display: none; }
+    #session-management-wrapper br + input { margin-left: 10px; }
+    #gigya-session-mode-wrapper, #gigya-session-mode-wrapper div { display: inline; }
+    #session-timeout-wrapper, #session-timeout-wrapper div { display: inline; }
+    .label-after-field { display: inline; }
+    #gigya-session-mode-wrapper { margin-right: 10px; }
+    #session-timeout-wrapper input { margin: 0; }
 </style>
 
 <div class="sfSettingsSection">
@@ -196,17 +203,40 @@
         </sfFields:ChoiceField>
     </div>
 
-    <div class="sfTxtLbl sfInlineBlock">
-        Session Management (Choose which platform determines session expiration)<span class='required'>*</span>
+    <div class="sfInlineBlock" style="line-height: 1.6;">
+        <span class="sfTxtLbl">Session Management<span class='required'>*</span></span>
+        Choose whether Gigya or Sitefinity controls the login session. If Gigya controls the session, in site groups that share a single sign-on, the recommended setting is "Sliding Session", which extends/restarts the session every time a server call is made. 
+        For more information, visit <a target="_blank" href="https://developers.gigya.com/display/GD/Managing+Session+Expiration">Gigya's documentation</a>.
     </div>
-    <sfFields:ChoiceField ID="SessionManagement" Title="" runat="server" DataFieldName="SessionProvider" DisplayMode="Write" RenderChoicesAs="RadioButtons">
-        <Choices>
-            <sfFields:ChoiceItem Text="Gigya (When the Gigya session expires, the user is also logged out of Sitefinity)" Value="0" />
-            <sfFields:ChoiceItem Text="Sitefinity (When the Sitefinity session expires, the user is also logged out of Gigya)" Value="1" />
-        </Choices>
-    </sfFields:ChoiceField>
-
-    <div class="sfTxtLbl sfInlineBlock" style="margin-top: 5px;">
+    <div id="session-management-wrapper" style="margin-top: 5px; margin-bottom: 5px;">
+        <sfFields:ChoiceField ID="SessionManagement" Title="" runat="server" DataFieldName="SessionProvider" DisplayMode="Write" RenderChoicesAs="RadioButtons">
+            <Choices>
+                <sfFields:ChoiceItem Text="Gigya" Value="0" />
+                <sfFields:ChoiceItem Text="Sitefinity" Value="1" />
+            </Choices>
+        </sfFields:ChoiceField>
+    </div>
+    <div id="gigya-session-mode-wrapper" style="display: none; margin-top: 5px;">
+        <sfFields:ChoiceField ID="GigyaSession" Title="" runat="server" DataFieldName="GigyaSessionMode" DisplayMode="Write" RenderChoicesAs="DropDown">
+            <Choices>
+                <sfFields:ChoiceItem Text="Sliding session" Value="0" />
+                <sfFields:ChoiceItem Text="Fixed duration" Value="1" />
+                <sfFields:ChoiceItem Text="Valid forever" Value="2" />
+                <sfFields:ChoiceItem Text="Until browser closes" Value="3" />
+            </Choices>
+        </sfFields:ChoiceField>
+    </div>
+    <div id="session-timeout-wrapper" style="margin-top: 10px;">
+        <sfFields:TextField ID="SessionTimeout" runat="server"
+            DataFieldName="SessionTimeout"
+            Title="Session Duration"
+            DisplayMode="Write"
+            WrapperTag="div">
+        </sfFields:TextField>
+        <span class="label-after-field sfTxtLbl">Seconds</span>
+    </div>
+    <br />
+    <div class="sfTxtLbl sfInlineBlock">
         Data Center<span class='required'>*</span>
     </div>
     <div id="data-center-wrapper">
@@ -247,12 +277,6 @@
         DisplayMode="Write"
         MaxCharactersCount="255"
         Tooltip="If blank the current page will be reloaded otherwise the user will be redirected to this url"
-        WrapperTag="div">
-    </sfFields:TextField>
-    <sfFields:TextField ID="SessionTimeout" runat="server"
-        DataFieldName="SessionTimeout"
-        Title="Session Expiration (seconds)"
-        DisplayMode="Write"
         WrapperTag="div">
     </sfFields:TextField>
     <div id="mapping-field-wrapper" style="display: none;">
@@ -332,6 +356,7 @@
     var gigyaSettings = {
         mappingTable: null,
         hiddenMappingField: null,
+        gigyaSessionTimeoutWrapper: null,
         init: function () {
             $('#gigya-settings-section :text').attr('autocomplete', 'off');
 
@@ -348,6 +373,7 @@
                 return false;
             });
 
+            gigyaSettings.gigyaSessionTimeoutWrapper = $('#session-timeout-wrapper');
             gigyaSettings.mappingTable = $('.mapping-fields-table');
             gigyaSettings.hiddenMappingField = $('#mapping-field-wrapper input');
 
@@ -381,6 +407,51 @@
                     gigyaSettings.toggleDisabledFields(!$('#data-center-wrapper select').is(':disabled'));
                 }, 100);
             });
+            
+            var sessionManagementBr = $('#session-management-wrapper').find('br');
+            
+            var sessionWrapperElems = $('#session-management-wrapper input');
+            sessionWrapperElems.change(function () {
+                var $this = $(this);
+                var show = $this.is(':checked') && $this.val() == '0';
+                gigyaSettings.toggleGigyaSessionMode($this.val());
+
+                if (show) {
+                    $('#session-timeout-wrapper input').prop('checked', false);
+                }
+            });
+
+            var checkedSessionElem = sessionWrapperElems.filter(':checked');
+            gigyaSettings.toggleGigyaSessionMode(checkedSessionElem.val());
+            
+            var gigyaSessionModeWrapper = $('#gigya-session-mode-wrapper select');
+            gigyaSessionModeWrapper.change(function () {
+                var $this = $(this);
+                var value = $this.val();
+                gigyaSettings.toggleSessionTimeout(value);
+            }).change();
+        },
+        toggleSessionTimeout: function (value) {
+            var show = value == '0' || value == '1';
+
+            if (show) {
+                gigyaSettings.gigyaSessionTimeoutWrapper.fadeIn();
+            } else {
+                gigyaSettings.gigyaSessionTimeoutWrapper.fadeOut();
+            }
+        },
+        toggleGigyaSessionMode: function (sessionProvider) {
+            var show = sessionProvider == '0';
+            var gigyaSessionModeWrapper = $('#gigya-session-mode-wrapper');
+            if (show) {
+                gigyaSessionModeWrapper.fadeIn();
+                gigyaSettings.toggleSessionTimeout(gigyaSessionModeWrapper.find('select').val());
+            } else {
+                gigyaSessionModeWrapper.fadeOut();
+
+                // session timeout always required if CMS mode
+                gigyaSettings.gigyaSessionTimeoutWrapper.fadeIn();
+            }
         },
         addLanguageChangeEvent: function (selectSelector, otherWrapperSelector, fallbackWrapperSelector) {
             var otherWrapper = $(otherWrapperSelector);

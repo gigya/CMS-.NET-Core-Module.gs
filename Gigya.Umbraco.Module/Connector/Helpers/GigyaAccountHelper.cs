@@ -14,7 +14,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
 {
     public class GigyaAccountHelper : Gigya.Module.Core.Connector.Helpers.GigyaAccountHelperBase
     {
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger) : base(settingsHelper, logger)
+        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaMembershipHelper membershipHelper) : base(settingsHelper, logger, membershipHelper)
         {
         }
 
@@ -62,6 +62,46 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             
             // user logged into Umbraco but not Gigya so call notifyLogin to sign in
             LoginToGigya(currentIdentity);
+        }
+
+        /// <summary>
+        /// Updates the Gigya session cookie if required.
+        /// </summary>
+        public override void UpdateSessionExpirationCookieIfRequired(HttpContext context, bool isLoggingIn = false)
+        {
+            if (!_settings.EnableRaas)
+            {
+                _logger.Error("RaaS not enabled.");
+                return;
+            }
+
+            if (_settings.SessionProvider != GigyaSessionProvider.Gigya || _settings.GigyaSessionMode != GigyaSessionMode.Sliding)
+            {
+                return;
+            }
+            
+            var currentIdentity = new CurrentIdentity
+            {
+                IsAuthenticated = context.User.Identity.IsAuthenticated,
+                Name = context.User.Identity.Name
+            };
+
+            // get UID if not the username
+            var uidMapping = _settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId && !string.IsNullOrEmpty(i.CmsFieldName));
+            if (uidMapping != null && uidMapping.CmsFieldName != Constants.CmsFields.Username)
+            {
+                // get member to find UID field
+                var member = ApplicationContext.Current.Services.MemberService.GetByUsername(currentIdentity.Name);
+                if (member == null)
+                {
+                    _logger.Error(string.Format("Couldn't find member with username of {0} so couldn't sign them in.", currentIdentity.Name));
+                    return;
+                }
+
+                currentIdentity.UID = member.GetValue<string>(uidMapping.CmsFieldName);
+            }
+
+            UpdateSessionExpirationCookie(context, currentIdentity, isLoggingIn);
         }
     }
 }

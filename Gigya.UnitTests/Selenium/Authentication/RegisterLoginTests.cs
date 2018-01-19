@@ -27,7 +27,7 @@ namespace Gigya.UnitTests.Selenium
     {
         protected IWebDriver _driver;
 
-        protected const string _passsword = "aa234567";
+        protected string _passsword = "aa234567";
         protected const string _firstName = "Mr";
         protected const string _lastName = "Tester";
 
@@ -51,7 +51,12 @@ namespace Gigya.UnitTests.Selenium
 
         protected virtual void SetupTest()
         {
-            _driver = new FirefoxDriver();
+            var options = new FirefoxOptions
+            {
+                BrowserExecutableLocation = "C:\\Program Files\\Mozilla Firefox\\Firefox.exe"
+            };
+            
+            _driver = new FirefoxDriver(options);
             _driver.Manage().Window.Maximize();
             _newEmail = string.Concat(Guid.NewGuid(), "@purestone.co.uk");
             _initialized = true;
@@ -160,6 +165,10 @@ namespace Gigya.UnitTests.Selenium
 
             _driver.Navigate().GoToUrl(Config.Site2BaseURL);
 
+            Thread.Sleep(10000);
+
+            _driver.Navigate().Refresh();
+
             var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
             Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
         }
@@ -188,7 +197,12 @@ namespace Gigya.UnitTests.Selenium
 
         protected void CanLoginToFrontEnd()
         {
-            _driver.Navigate().GoToUrl(Config.Site1BaseURL);
+            CanLoginToFrontEnd(Config.Site1BaseURL);
+        }
+
+        protected void CanLoginToFrontEnd(string url)
+        {
+            _driver.Navigate().GoToUrl(url);
 
             // wait the usual 3 mins for sitefinity to start up....
             var loginButton = _driver.FindElement(By.CssSelector(".gigya-login"), 10);

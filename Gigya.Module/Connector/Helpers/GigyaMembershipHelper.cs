@@ -33,6 +33,8 @@ namespace Gigya.Module.Connector.Helpers
         {
         }
 
+        protected override string CmsUserIdField => Constants.SitefinityFields.UserId;
+
         /// <summary>
         /// Updates the users Sitefinity profile.
         /// </summary>
@@ -323,6 +325,10 @@ namespace Gigya.Module.Connector.Helpers
             if (authenticated)
             {
                 response.RedirectUrl = settings.RedirectUrl;
+
+                var settingsHelper = new GigyaSettingsHelper();
+                var accountHelper = new GigyaAccountHelper(settingsHelper, _logger, this, settings);
+                accountHelper.UpdateSessionExpirationCookieIfRequired(HttpContext.Current, true);
             }
         }
 
@@ -371,16 +377,6 @@ namespace Gigya.Module.Connector.Helpers
             }
 
             return Guid.Parse(currentSiteId.ToString());
-        }
-
-        private string GetCmsUsername(List<MappingField> mappingFields, dynamic userInfo)
-        {
-            if (!mappingFields.Any())
-            {
-                return userInfo.UID;
-            }
-
-            return GetGigyaFieldFromCmsAlias(userInfo, Constants.SitefinityFields.UserId, userInfo.UID, mappingFields);
         }
 
         /// <summary>
@@ -474,6 +470,18 @@ namespace Gigya.Module.Connector.Helpers
                     }
                     return loginStatus;
             }
+        }
+        
+        protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        {
+            User user;
+            var loginStatus = SecurityManager.AuthenticateUser(null, username, false, out user);
+            return loginStatus == UserLoggingReason.Success;
+        }
+
+        public void Logout()
+        {
+            SecurityManager.Logout();
         }
     }
 }

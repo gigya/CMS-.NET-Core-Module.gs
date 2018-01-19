@@ -41,6 +41,8 @@ namespace Gigya.Module.Core.Data
 
         public GigyaSessionProvider SessionProvider { get; set; }
 
+        public GigyaSessionMode GigyaSessionMode { get; set; }
+
         public List<MappingField> MappedMappingFields { get; set; }
     }
 }

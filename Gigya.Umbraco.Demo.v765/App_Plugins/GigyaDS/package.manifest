@@ -1,0 +1,7 @@
+﻿{
+  javascript: [
+    "~/App_Plugins/GigyaDS/backoffice/gigyaDsTree/edit.controller.js",
+    "~/App_Plugins/GigyaDS/backoffice/gigyaDsTree/dashboard.controller.js",
+    "~/App_Plugins/GigyaDS/backoffice/gigyaDsTree/gigyaTree.resource.js"
+  ]
+}

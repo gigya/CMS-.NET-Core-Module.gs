@@ -20,5 +20,6 @@ namespace Gigya.Module.Core.Mvc.Models
         public string LoggedInRedirectUrl { get; set; }
         public string LogoutUrl { get; set; }
         public bool IsLoggedIn { get; set; }
+        public bool IsGetInfoRequired { get; set; }
     }
 }

@@ -58,7 +58,7 @@ namespace Gigya.Module.Mvc.Controllers
             }
 
             // check if Sitefinity is the session leader and sign in if required
-            GigyaAccountHelper.ValidateAndLoginToGigyaIfRequired(System.Web.HttpContext.Current, settings);
+            GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current, settings);
 
             var identity = ClaimsManager.GetCurrentIdentity();
             var currentIdentity = new CurrentIdentity
@@ -99,14 +99,16 @@ namespace Gigya.Module.Mvc.Controllers
                     loggedInRedirectUrl: '{2}',
                     logoutRedirectUrl: '{3}',
                     debugMode: {4},
-                    authenticated: {5}
+                    authenticated: {5},
+                    getInfoRequired: {6}
                 }};
             </script>", HttpUtility.JavaScriptStringEncode(model.ErrorMessage),
                         model.Id,
                         HttpUtility.JavaScriptStringEncode(model.LoggedInRedirectUrl),
                         HttpUtility.JavaScriptStringEncode(model.LogoutUrl),
                         model.DebugMode.ToString().ToLowerInvariant(),
-                        model.IsLoggedIn.ToString().ToLowerInvariant()
+                        model.IsLoggedIn.ToString().ToLowerInvariant(),
+                        model.IsGetInfoRequired.ToString().ToLowerInvariant()
             );
             builder.AppendFormat("<script src=\"https://cdns.{0}/js/gigya.js?apiKey={1}\">", model.DataCenter, model.ApiKey);
             builder.Append(model.SettingsJson);

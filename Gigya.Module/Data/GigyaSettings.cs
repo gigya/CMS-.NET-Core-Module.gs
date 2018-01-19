@@ -42,6 +42,8 @@ namespace Gigya.Module.Data
 
         public GigyaSessionProvider SessionProvider { get; set; }
 
+        public GigyaSessionMode GigyaSessionMode { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GigyaModuleSettings"/> class.
         /// </summary>

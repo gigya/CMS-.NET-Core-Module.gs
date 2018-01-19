@@ -113,6 +113,9 @@ namespace Gigya.Module.BasicSettings
         public GigyaSessionProvider SessionProvider { get; set; }
 
         [DataMember]
+        public GigyaSessionMode GigyaSessionMode { get; set; }
+
+        [DataMember]
         public string ProfileProperties { get; set; }
 
         /// <summary>
@@ -172,6 +175,7 @@ namespace Gigya.Module.BasicSettings
                 this.LanguageFallback = settings.LanguageFallback;
                 this.SessionTimeout = settings.SessionTimeout;
                 this.SessionProvider = settings.SessionProvider;
+                this.GigyaSessionMode = settings.GigyaSessionMode;
 
                 var mappingFields = !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
                 AddMappingField(Constants.GigyaFields.UserId, Constants.SitefinityFields.UserId, ref mappingFields, true);
@@ -247,6 +251,20 @@ namespace Gigya.Module.BasicSettings
                 settings.LogoutUrl = this.LogoutUrl;
                 settings.SessionTimeout = this.SessionTimeout;
                 settings.SessionProvider = this.SessionProvider;
+                settings.GigyaSessionMode = this.GigyaSessionMode;
+
+                if (settings.SessionProvider == GigyaSessionProvider.Gigya)
+                {
+                    switch (settings.GigyaSessionMode)
+                    {
+                        case GigyaSessionMode.Session:
+                            settings.SessionTimeout = 0;
+                            break;
+                        case GigyaSessionMode.Forever:
+                            settings.SessionTimeout = -2;
+                            break;
+                    }
+                }
 
                 var mappingFields = JsonConvert.DeserializeObject<List<MappingField>>(MappingFields);
                 if (mappingFields == null || !mappingFields.Any())
@@ -356,7 +374,8 @@ namespace Gigya.Module.BasicSettings
                 MappingFields = settings.MappingFields,
                 RedirectUrl = settings.RedirectUrl,
                 SessionTimeout = settings.SessionTimeout,
-                SessionProvider = settings.SessionProvider
+                SessionProvider = settings.SessionProvider,
+                GigyaSessionMode = settings.GigyaSessionMode
             };
 
             return model;

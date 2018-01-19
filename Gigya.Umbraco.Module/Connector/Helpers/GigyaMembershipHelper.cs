@@ -31,6 +31,8 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         {
         }
 
+        protected override string CmsUserIdField => Constants.CmsFields.Username;
+
         /// <summary>
         /// Updates the users Umbraco profile.
         /// </summary>
@@ -348,6 +350,17 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             {
                 MapProfileFieldsAndUpdate(username, username, settings, gigyaModel, mappingFields);
             }
+            return true;
+        }
+
+        public void Logout()
+        {
+            FormsAuthentication.SignOut();
+        }
+
+        protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        {
+            FormsAuthentication.SetAuthCookie(username, false);
             return true;
         }
     }

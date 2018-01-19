@@ -396,5 +396,29 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             }
             return true;
         }
+
+        public bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        {
+            FormsAuthentication.SetAuthCookie(username, false);
+            return true;
+        }
+
+        public void Logout()
+        {
+            FormsAuthentication.SignOut();
+        }
+
+        public bool Login(string gigyaUid, IGigyaModuleSettings settings)
+        {
+            var username = gigyaUid;
+
+            var uidMapping = settings.MappedMappingFields.FirstOrDefault(i => i.GigyaFieldName == Constants.GigyaFields.UserId && !string.IsNullOrEmpty(i.CmsFieldName));
+            if (uidMapping == null || uidMapping.CmsFieldName != Constants.CmsFields.Username)
+            {
+                return false;
+            }
+
+            return LoginByUsername(username, settings);
+        }
     }
 }

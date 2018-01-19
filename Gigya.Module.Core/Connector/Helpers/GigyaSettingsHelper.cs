@@ -73,7 +73,8 @@ namespace Gigya.Module.Core.Connector.Helpers
                 LogoutUrl = settings.LogoutUrl,
                 IsLoggedIn = currentIdentity.IsAuthenticated,
                 Id = settings.Id,
-                DataCenter = settings.DataCenter
+                DataCenter = settings.DataCenter,
+                IsGetInfoRequired = settings.SessionProvider == Enums.GigyaSessionProvider.CMS
             };
             
             model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<ExpandoObject>(settings.GlobalParameters) : new ExpandoObject();
@@ -83,7 +84,23 @@ namespace Gigya.Module.Core.Connector.Helpers
             {
                 model.Settings.lang = Language(settings);
             }
-            if (!settingsProperties.ContainsKey("sessionExpiration"))
+
+            if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Sliding)
+            {
+                // client needs -1 to specify a sliding session
+                model.Settings.sessionExpiration = -1;
+            }
+            else if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Forever)
+            {
+                // client needs -1 to specify a session that stays valid until the browser closes
+                model.Settings.sessionExpiration = -2;
+            }
+            else if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Session)
+            {
+                // client needs 0 to specify a session cookie
+                model.Settings.sessionExpiration = 0;
+            }
+            else if (!settingsProperties.ContainsKey("sessionExpiration"))
             {
                 model.Settings.sessionExpiration = settings.SessionTimeout;
             }
@@ -215,6 +232,19 @@ namespace Gigya.Module.Core.Connector.Helpers
             if (settings.Language == Constants.Languages.Auto && string.IsNullOrEmpty(settings.LanguageFallback))
             {
                 throw new ArgumentException("Language fallback is required");
+            }
+
+            if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya)
+            {
+                if (settings.GigyaSessionMode == Enums.GigyaSessionMode.Sliding && settings.SessionTimeout <= 0)
+                {
+                    throw new ArgumentException("Session duration must be greater than 0 if sliding session mode enabled");
+                }
+
+                if (settings.GigyaSessionMode == Enums.GigyaSessionMode.Fixed && settings.SessionTimeout <= 0)
+                {
+                    throw new ArgumentException("Session duration must be greater than 0 if fixed session mode enabled");
+                }
             }
 
             if (!string.IsNullOrEmpty(settings.GlobalParameters))

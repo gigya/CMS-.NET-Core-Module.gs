@@ -8,24 +8,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using Telerik.Sitefinity.Model;
 using Telerik.Sitefinity.Security;
 using Telerik.Sitefinity.Security.Claims;
 using Telerik.Sitefinity.Security.Model;
+using Telerik.Sitefinity.Web;
 
 namespace Gigya.Module.Connector.Helpers
 {
     public class GigyaAccountHelper : Gigya.Module.Core.Connector.Helpers.GigyaAccountHelperBase
     {
         private const string _checkedIfLoginRequiredKey = "GigyaAccountHelper.CheckedIfLoginRequiredKey";
+        private const string _executedProcessRequestKey = "GigyaAccountHelper.ExecutedProcessRequestKey";
 
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null) : base(settingsHelper, logger, settings)
+        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaMembershipHelper membershipHelper, IGigyaModuleSettings settings = null) : base(settingsHelper, logger, membershipHelper, settings)
         {
         }
 
         /// <summary>
         /// Creates a new GigyaAccountHelper instance and calls LoginToGigyaIfRequired. This will only be run once per request no matter how many times it's called.
         /// </summary>
+        [Obsolete("Use ProcessRequestCheck instead.")]
         public static void ValidateAndLoginToGigyaIfRequired(HttpContext context, IGigyaModuleSettings settings = null)
         {
             if (context.Items.Contains(_checkedIfLoginRequiredKey))
@@ -37,8 +41,46 @@ namespace Gigya.Module.Connector.Helpers
 
             var settingsHelper = new GigyaSettingsHelper();
             var logger = LoggerFactory.Instance();
-            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, settings);
+            var membershipHelper = new GigyaMembershipHelper(new GigyaApiHelper(settingsHelper, logger), logger);
+            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, membershipHelper, settings);
+
             accountHelper.LoginToGigyaIfRequired();
+        }
+
+        /// <summary>
+        /// Executes checks which need to run for every request e.g. notifyLogin if CMS is running the session and extending the session if Gigya is managing it.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="settings"></param>
+        public static void ProcessRequestChecks(HttpContext context, IGigyaModuleSettings settings = null)
+        {
+            var currentNode = SiteMapBase.GetCurrentNode();
+            if (currentNode != null && currentNode.IsBackend)
+            {
+                return;
+            }
+
+            // don't need to do anything if the user is editing content in the CMS
+            var identity = ClaimsManager.GetCurrentIdentity();
+            if (identity.IsBackendUser)
+            {
+                return;
+            }
+
+            if (context.Items.Contains(_executedProcessRequestKey))
+            {
+                return;
+            }
+
+            context.Items[_executedProcessRequestKey] = true;
+
+            var settingsHelper = new GigyaSettingsHelper();
+            var logger = LoggerFactory.Instance();
+            var membershipHelper = new GigyaMembershipHelper(new GigyaApiHelper(settingsHelper, logger), logger);
+            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, membershipHelper, settings);
+
+            accountHelper.LoginToGigyaIfRequired();
+            accountHelper.UpdateSessionExpirationCookieIfRequired(context);
         }
 
         /// <summary>
@@ -99,6 +141,33 @@ namespace Gigya.Module.Connector.Helpers
             
             // user logged into Umbraco but not Gigya so call notifyLogin to sign in
             LoginToGigya(currentIdentity);
+        }
+
+        /// <summary>
+        /// Updates the Gigya session cookie if required.
+        /// </summary>
+        public override void UpdateSessionExpirationCookieIfRequired(HttpContext context, bool isLoggingIn = false)
+        {
+            if (!_settings.EnableRaas)
+            {
+                _logger.Error("RaaS not enabled.");
+                return;
+            }
+
+            if (_settings.SessionProvider != GigyaSessionProvider.Gigya || _settings.GigyaSessionMode != GigyaSessionMode.Sliding)
+            {
+                return;
+            }
+
+            var identity = ClaimsManager.GetCurrentIdentity();
+            var currentIdentity = new CurrentIdentity
+            {
+                IsAuthenticated = identity.IsAuthenticated,
+                Name = identity.Name,
+                UID = identity.Name
+            };
+
+            UpdateSessionExpirationCookie(context, currentIdentity, isLoggingIn);
         }
     }
 }

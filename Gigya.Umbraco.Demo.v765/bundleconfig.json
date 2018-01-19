@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "scripts/gigya-cms.min.js",
+    "inputFiles": [
+      "scripts/gigya-cms.js"
+    ]
+  }
+]

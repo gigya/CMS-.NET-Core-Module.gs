@@ -165,6 +165,7 @@
     <Compile Include="Connector\Logging\SitefinityLogger.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaLanguage.cs" />
+    <Compile Include="HttpModules\GigyaRequestModule.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
     <Compile Include="Mvc\Controllers\GigyaLoginController.cs" />
     <Compile Include="Mvc\Controllers\GigyaEditProfileController.cs" />
@@ -192,7 +193,9 @@
     <Compile Include="Web\Services\GigyaSettingsService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <EmbeddedResource Include="Mvc\Views\GigyaSettings\Index.cshtml" />
     <EmbeddedResource Include="Mvc\Scripts\gigya-sitefinity.js" />
     <EmbeddedResource Include="Mvc\Scripts\gigya-sitefinity.min.js">
