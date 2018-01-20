@@ -453,7 +453,7 @@ namespace Gigya.Module.Connector.Helpers
         protected virtual UserLoggingReason AuthenticateWithRetry(string userId, int attempts, int retries, out User user)
         {
             attempts++;
-            var loginStatus = SecurityManager.AuthenticateUser(null, userId, false, out user);
+            var loginStatus = SecurityManager.AuthenticateUser(null, userId, true, out user);
             switch (loginStatus)
             {
                 case UserLoggingReason.Success:
@@ -470,7 +470,7 @@ namespace Gigya.Module.Connector.Helpers
         protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
         {
             User user;
-            var loginStatus = SecurityManager.AuthenticateUser(null, username, false, out user);
+            var loginStatus = SecurityManager.AuthenticateUser(null, username, true, out user);
             return loginStatus == UserLoggingReason.Success;
         }
 
