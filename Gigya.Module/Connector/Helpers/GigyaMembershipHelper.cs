@@ -422,7 +422,8 @@ namespace Gigya.Module.Connector.Helpers
         {
             User user;
 
-            var loginStatus = AuthenticateWithRetry(username, 0, 2, out user);
+            var persistent = PersistentAuthRequired(settings);
+            var loginStatus = AuthenticateWithRetry(username, 0, 2, persistent, out user);
             switch (loginStatus)
             {
                 case UserLoggingReason.Success:
@@ -443,6 +444,20 @@ namespace Gigya.Module.Connector.Helpers
         }
 
         /// <summary>
+        /// Authenticates user with the ability to retry if an attempt fails.   The cookie created is a session cookie.
+        /// </summary>
+        /// <param name="userId">UserId to authenticate.</param>
+        /// <param name="attempts">Number to attempts so far.</param>
+        /// <param name="retries">Number of retries allowed.</param>
+        /// <param name="user">The authenticated user.</param>
+        /// <returns></returns>
+        [Obsolete]
+        protected virtual UserLoggingReason AuthenticateWithRetry(string userId, int attempts, int retries, out User user)
+        {
+            return AuthenticateWithRetry(userId, attempts, retries, false, out user);
+        }
+
+        /// <summary>
         /// Authenticates user with the ability to retry if an attempt fails.
         /// </summary>
         /// <param name="userId">UserId to authenticate.</param>
@@ -450,10 +465,11 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="retries">Number of retries allowed.</param>
         /// <param name="user">The authenticated user.</param>
         /// <returns></returns>
-        protected virtual UserLoggingReason AuthenticateWithRetry(string userId, int attempts, int retries, out User user)
+        protected virtual UserLoggingReason AuthenticateWithRetry(string userId, int attempts, int retries, bool persistent, out User user)
         {
             attempts++;
-            var loginStatus = SecurityManager.AuthenticateUser(null, userId, true, out user);
+
+            var loginStatus = SecurityManager.AuthenticateUser(null, userId, persistent, out user);
             switch (loginStatus)
             {
                 case UserLoggingReason.Success:
@@ -461,16 +477,17 @@ namespace Gigya.Module.Connector.Helpers
                 default:
                     if (attempts < retries)
                     {
-                        return AuthenticateWithRetry(userId, attempts, retries, out user);
+                        return AuthenticateWithRetry(userId, attempts, retries, persistent, out user);
                     }
                     return loginStatus;
             }
         }
-        
+
         protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
         {
+            var persistent = PersistentAuthRequired(settings);
             User user;
-            var loginStatus = SecurityManager.AuthenticateUser(null, username, true, out user);
+            var loginStatus = SecurityManager.AuthenticateUser(null, username, persistent, out user);
             return loginStatus == UserLoggingReason.Success;
         }
 

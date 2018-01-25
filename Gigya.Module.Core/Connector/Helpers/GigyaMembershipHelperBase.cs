@@ -68,6 +68,23 @@ namespace Gigya.Module.Core.Connector.Helpers
             return value;
         }
 
+        protected bool PersistentAuthRequired(IGigyaModuleSettings settings)
+        {
+            if (settings.SessionProvider == Enums.GigyaSessionProvider.CMS || settings.SessionProvider != Enums.GigyaSessionProvider.Gigya)
+            {
+                // legacy behaviour
+                return false;
+            }
+
+            switch (settings.GigyaSessionMode)
+            {
+                case Enums.GigyaSessionMode.Session:
+                    return false;
+                default:
+                    return true;
+            }
+        }
+
         protected GSResponse ValidateRequest(LoginModel model, IGigyaModuleSettings settings)
         {
             if (!settings.EnableRaas)
