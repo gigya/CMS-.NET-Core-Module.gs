@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Use64BitIISExpress />
+    <EnhancerAssembly>$(SolutionDir)\packages\Telerik.DataAccess.Fluent.2016.1.224.1\tools\enhancer\enhancer.exe</EnhancerAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{74357295-27B0-4757-A7F0-3A878525BFF1}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Gigya.Module</RootNamespace>
+    <AssemblyName>Gigya.Module</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <!--<EnhancerAssembly>$(ProjectDir)\packages\Telerik.DataAccess.Fluent.2016.1.224.1\tools\enhancer\enhancer.exe</EnhancerAssembly>-->
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GSCSharpSDK, Version=2.15.5.0, Culture=neutral, PublicKeyToken=ecc5cd8277006f58, processorArchitecture=MSIL">
+      <HintPath>..\packages\Gigya.CSharpSdk.1.0.0\lib\GSCSharpSDK.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.6.1.7600.16394\lib\net35\Microsoft.IdentityModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.OpenAccess, Version=2016.1.224.1, Culture=neutral, PublicKeyToken=7ce17eeaf1d59342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.DataAccess.Core.2016.1.224.1\lib\net40\Telerik.OpenAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.OpenAccess.35.Extensions, Version=2016.1.224.1, Culture=neutral, PublicKeyToken=7ce17eeaf1d59342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.DataAccess.Core.2016.1.224.1\lib\net40\Telerik.OpenAccess.35.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.OpenAccess.40.Extensions, Version=2016.1.224.1, Culture=neutral, PublicKeyToken=7ce17eeaf1d59342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.DataAccess.Core.2016.1.224.1\lib\net40\Telerik.OpenAccess.40.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.OpenAccess.Runtime, Version=2016.1.224.1, Culture=neutral, PublicKeyToken=7ce17eeaf1d59342, processorArchitecture=MSIL">
+      <HintPath>..\packages\Telerik.DataAccess.Core.2016.1.224.1\lib\net40\Telerik.OpenAccess.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Sitefinity, Version=9.0.6010.0, Culture=neutral, PublicKeyToken=b28c218413bdf563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Telerik\Current\Telerik.Sitefinity.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Sitefinity.Frontend, Version=1.5.470.0, Culture=neutral, PublicKeyToken=b28c218413bdf563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Telerik\Current\Telerik.Sitefinity.Frontend.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Sitefinity.Model, Version=9.0.6010.0, Culture=neutral, PublicKeyToken=b28c218413bdf563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Telerik\Current\Telerik.Sitefinity.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Sitefinity.Mvc, Version=1.5.470.0, Culture=neutral, PublicKeyToken=b28c218413bdf563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Telerik\Current\Telerik.Sitefinity.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Sitefinity.Services.Events, Version=9.0.6010.0, Culture=neutral, PublicKeyToken=b28c218413bdf563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Telerik\Current\Telerik.Sitefinity.Services.Events.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Sitefinity.Utilities, Version=9.0.6010.0, Culture=neutral, PublicKeyToken=b28c218413bdf563, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Lib\Telerik\Current\Telerik.Sitefinity.Utilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BasicSettings\GigyaGenericBasicSettingsView.cs" />
+    <Compile Include="BasicSettings\GigyaModuleBasicSettingsView.cs" />
+    <Compile Include="BasicSettings\GigyaModuleSettingsContract.cs" />
+    <Compile Include="BasicSettings\IGigyaSettingsDataContract.cs" />
+    <Compile Include="Configuration\GigyaModuleConfig.cs" />
+    <Compile Include="Connector\Admin\Roles.cs" />
+    <Compile Include="Connector\Events\GigyaMembershipEvents.cs" />
+    <Compile Include="Connector\Helpers\GigyaAccountHelper.cs" />
+    <Compile Include="Connector\Helpers\GigyaMembershipHelper.cs" />
+    <Compile Include="Connector\Helpers\GigyaSettingsHelper.cs" />
+    <Compile Include="Connector\Logging\LoggerFactory.cs" />
+    <Compile Include="Connector\Logging\SitefinityLogger.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Data\GigyaLanguage.cs" />
+    <Compile Include="HttpModules\GigyaRequestModule.cs" />
+    <Compile Include="Mvc\Controllers\AccountController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaLoginController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaEditProfileController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaRegisterController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaLogoutController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaSettingsController.cs" />
+    <Compile Include="Mvc\Controllers\GigyaLoginStatusController.cs" />
+    <Compile Include="Mvc\JsonNetResult.cs" />
+    <Compile Include="Data\GigyaContext.cs" />
+    <Compile Include="Data\GigyaFluentMetaDataSource.cs" />
+    <Compile Include="Data\GigyaMetaDataProvider.cs" />
+    <Compile Include="Data\GigyaSettings.cs" />
+    <Compile Include="ModuleClass.cs" />
+    <Compile Include="ModuleInstaller.cs" />
+    <Compile Include="ModuleResources.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaBaseViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaLogoutViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaEditProfileViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaRegisterViewModel.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaLoginViewModel.cs" />
+    <Compile Include="Mvc\Proxy\MvcControllerProxyNoCache.cs" />
+    <Compile Include="Mvc\ViewModels\GigyaLoginStatusViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SitefinityUtils.cs" />
+    <Compile Include="Web\Services\GigyaSettingsService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <EmbeddedResource Include="Mvc\Views\GigyaSettings\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Scripts\gigya-sitefinity.js" />
+    <EmbeddedResource Include="Mvc\Scripts\gigya-sitefinity.min.js">
+      <DependentUpon>gigya-sitefinity.js</DependentUpon>
+    </EmbeddedResource>
+    <Content Include="Mvc\Scripts\gigya-sitefinity.min.min.js">
+      <DependentUpon>gigya-sitefinity.min.js</DependentUpon>
+    </Content>
+    <Content Include="Mvc\Views\Web.config" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLoginStatus\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLoginStatus\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLoginStatus\DesignerView.Simple.cshtml" />
+    <None Include="bundleconfig.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaSettings\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaSettings\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogin\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogin\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogin\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaRegister\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaRegister\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaRegister\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaEditProfile\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaEditProfile\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaEditProfile\Index.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogout\DesignerView.Simple.cshtml" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogout\DesignerView.Simple.json" />
+    <EmbeddedResource Include="Mvc\Views\GigyaLogout\Index.cshtml" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
+    <Content Include="OpenAccessNuGet.targets" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BasicSettings\GigyaModuleSettingsView.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="BasicSettings\GigyaGenericBasicSettingsView.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </EmbeddedResource>
+    <Content Include="BasicSettings\readme.txt" />
+    <Content Include="Configuration\readme.txt" />
+    <Content Include="FieldControls\readme.txt" />
+    <Content Include="Web\Scripts\readme.txt" />
+    <Content Include="Web\Services\readme.txt" />
+    <Content Include="Web\UI\readme.txt" />
+    <Content Include="Widgets\Form\readme.txt" />
+    <Content Include="Widgets\Layout\readme.txt" />
+    <Content Include="Widgets\Page\readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mvc\Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Gigya.Module.Core\Gigya.Module.Core.csproj">
+      <Project>{7610af03-891b-4ab2-a619-549bc9657cce}</Project>
+      <Name>Gigya.Module.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="OpenAccessNuget.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51279/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
