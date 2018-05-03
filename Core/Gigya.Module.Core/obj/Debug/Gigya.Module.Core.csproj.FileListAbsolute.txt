@@ -20,10 +20,3 @@ C:\dev\CMS-.NET-Core-Module\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.csproj
 C:\dev\CMS-.NET-Core-Module\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.csproj.CoreCompileInputs.cache
 C:\dev\CMS-.NET-Core-Module\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.dll
 C:\dev\CMS-.NET-Core-Module\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.pdb
-C:\dev\CMS-.NET-Core-Module\Core\Gigya.Module.Core\bin\Debug\Gigya.Module.Core.dll
-C:\dev\CMS-.NET-Core-Module\Core\Gigya.Module.Core\bin\Debug\Gigya.Module.Core.pdb
-C:\dev\CMS-.NET-Core-Module\Core\Gigya.Module.Core\bin\Debug\Newtonsoft.Json.dll
-C:\dev\CMS-.NET-Core-Module\Core\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.csprojResolveAssemblyReference.cache
-C:\dev\CMS-.NET-Core-Module\Core\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.csproj.CoreCompileInputs.cache
-C:\dev\CMS-.NET-Core-Module\Core\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.dll
-C:\dev\CMS-.NET-Core-Module\Core\Gigya.Module.Core\obj\Debug\Gigya.Module.Core.pdb

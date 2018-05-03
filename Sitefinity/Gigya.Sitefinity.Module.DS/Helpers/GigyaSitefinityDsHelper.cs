@@ -27,8 +27,9 @@ namespace Gigya.Sitefinity.Module.DS.Helpers
         {
             var settingsHelper = new GigyaSettingsHelper();
             var apiHelper = new Gigya.Module.Core.Connector.Helpers.GigyaApiHelper(settingsHelper, _logger);
+            var accountHelper = new GigyaAccountHelper(settingsHelper, _logger);
 
-            var membershipHelper = new GigyaMembershipHelper(apiHelper, _logger);
+            var membershipHelper = new GigyaMembershipHelper(apiHelper, accountHelper, _logger);
             var currentUid = membershipHelper.GetUidForCurrentUser(_settings);
 
             return GetOrSearch(currentUid);

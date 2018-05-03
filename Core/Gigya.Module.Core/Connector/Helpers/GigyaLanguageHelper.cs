@@ -86,7 +86,6 @@ namespace Gigya.Module.Core.Connector.Helpers
             Languages.Add("tr", "Turkish");
             Languages.Add("uk", "Ukrainian");
             Languages.Add("vi", "Vietnamese");
-
         }
     }
 }

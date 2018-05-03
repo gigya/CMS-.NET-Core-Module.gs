@@ -17,15 +17,13 @@ namespace Gigya.Module.Core.Connector.Helpers
     {
         protected GigyaSettingsHelper _settingsHelper;
         protected IGigyaModuleSettings _settings;
-        protected IGigyaMembershipHelper _membershipHelper;
         protected Logger _logger;
 
-        public GigyaAccountHelperBase(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaMembershipHelper membershipHelper, IGigyaModuleSettings settings = null)
+        public GigyaAccountHelperBase(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null)
         {
             _settings = settings ?? settingsHelper.GetForCurrentSite(true);
             _logger = logger;
             _settingsHelper = settingsHelper;
-            _membershipHelper = membershipHelper;
         }
 
         public abstract void LoginToGigyaIfRequired();
@@ -101,6 +99,8 @@ namespace Gigya.Module.Core.Connector.Helpers
             return currentSessionExpiryEpoch > epoch;
         }
 
+        protected abstract void Logout();
+
         public abstract void UpdateSessionExpirationCookieIfRequired(HttpContext context, bool isLoggingIn = false);
         
         protected virtual void UpdateSessionExpirationCookie(HttpContext context, CurrentIdentity currentIdentity, bool isLoggingIn)
@@ -116,7 +116,7 @@ namespace Gigya.Module.Core.Connector.Helpers
                 if (currentIdentity.IsAuthenticated)
                 {
                     // not logged into gigya so sign out of CMS
-                    _membershipHelper.Logout();
+                    Logout();
                 }
                 return;
             }

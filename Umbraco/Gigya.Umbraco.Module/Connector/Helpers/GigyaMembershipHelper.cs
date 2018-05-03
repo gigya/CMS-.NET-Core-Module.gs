@@ -27,7 +27,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         [Obsolete("Use GigyaEventHub.Instance.GettingGigyaValue instead.")]
         public static event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
 
-        public GigyaMembershipHelper(GigyaApiHelper apiHelper, Logger logger) : base(apiHelper, logger)
+        public GigyaMembershipHelper(GigyaApiHelper apiHelper, GigyaAccountHelper gigyaAccountHelper, Logger logger) : base(apiHelper, gigyaAccountHelper, logger)
         {
         }
 
@@ -185,69 +185,6 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         }
 
         /// <summary>
-        /// Login or register a user.
-        /// </summary>
-        /// <param name="model">Details from the client e.g. signature and userId.</param>
-        /// <param name="settings">Gigya module settings.</param>
-        /// <param name="response">Response model that will be returned to the client.</param>
-        public virtual void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
-        {
-            response.Status = ResponseStatus.Error;
-
-            if (!settings.EnableRaas)
-            {
-                if (settings.DebugMode)
-                {
-                    _logger.Debug("RaaS not enabled so login aborted.");
-                }
-                return;
-            }
-
-            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
-            {
-                if (settings.DebugMode)
-                {
-                    _logger.Debug("Invalid user signature for login request.");
-                }
-                return;
-            }
-
-            // get user info
-            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
-            if (userInfoResponse == null || userInfoResponse.GetErrorCode() != 0)
-            {
-                _logger.Error("Failed to getAccountInfo");
-                return;
-            }
-
-            List<MappingField> mappingFields = GetMappingFields(settings);
-            var gigyaModel = GetAccountInfo(model.Id, settings, userInfoResponse, mappingFields);
-            
-            // find what field has been configured for the Umbraco username
-            var username = GetUmbracoUsername(mappingFields, gigyaModel);
-            
-            var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
-            var userExists = memberService.Exists(username);
-            if (!userExists)
-            {
-                // user doesn't exist so create a new one
-                var user = CreateUser(username, gigyaModel, settings, mappingFields);
-                if (user == null)
-                {
-                    return;
-                }
-            }
-
-            // user logged into Gigya so now needs to be logged into Umbraco
-            var authenticated = AuthenticateUser(username, settings, userExists, gigyaModel, mappingFields);
-            response.Status = authenticated ? ResponseStatus.Success : ResponseStatus.Error;
-            if (authenticated)
-            {
-                response.RedirectUrl = settings.RedirectUrl;
-            }
-        }
-
-        /// <summary>
         /// Updates a user's profile in Umbraco.
         /// </summary>
         public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
@@ -337,7 +274,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Umbraco.
         /// </summary>
-        protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected override bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             FormsAuthentication.SetAuthCookie(username, false);
 
@@ -362,6 +299,18 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         {
             FormsAuthentication.SetAuthCookie(username, false);
             return true;
+        }
+
+        protected override bool Exists(string username)
+        {
+            var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
+            return memberService.Exists(username);
+        }
+
+        protected override bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        {
+            var user = CreateUser(username, gigyaModel, settings, mappingFields);
+            return user != null;
         }
     }
 }

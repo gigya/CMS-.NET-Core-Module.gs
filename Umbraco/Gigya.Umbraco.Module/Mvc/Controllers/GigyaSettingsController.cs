@@ -24,12 +24,14 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
         private Logger _logger;
         private Helpers.GigyaSettingsHelper _settingsHelper;
         private IGigyaMembershipHelper _membershipHelper;
+        private readonly GigyaAccountHelper _gigyaAccountHelper;
 
         public GigyaSettingsController()
         {
             _settingsHelper = new Helpers.GigyaSettingsHelper();
             _logger = new Logger(new UmbracoLogger());
-            _membershipHelper = new GigyaMembershipHelper(new GigyaApiHelper(_settingsHelper, _logger), _logger);
+            _gigyaAccountHelper = new GigyaAccountHelper(_settingsHelper, _logger);
+            _membershipHelper = new GigyaMembershipHelper(new GigyaApiHelper(_settingsHelper, _logger), _gigyaAccountHelper, _logger);
         }
 
         public virtual ActionResult Index()
@@ -51,8 +53,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
                 return new EmptyResult();
             }
 
-            var accountHelper = new GigyaAccountHelper(_settingsHelper, _logger, _membershipHelper);
-            accountHelper.LoginToGigyaIfRequired();
+            _gigyaAccountHelper.LoginToGigyaIfRequired();
 
             var currentIdentity = new CurrentIdentity
             {

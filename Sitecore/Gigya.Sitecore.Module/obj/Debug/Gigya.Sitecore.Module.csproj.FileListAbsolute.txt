@@ -1,5 +1,0 @@
-C:\dev\CMS-.NET-Core-Module\Sitecore\Gigya.Sitecore.Module\bin\Debug\Gigya.Sitecore.Module.dll
-C:\dev\CMS-.NET-Core-Module\Sitecore\Gigya.Sitecore.Module\bin\Debug\Gigya.Sitecore.Module.pdb
-C:\dev\CMS-.NET-Core-Module\Sitecore\Gigya.Sitecore.Module\obj\Debug\Gigya.Sitecore.Module.csproj.CoreCompileInputs.cache
-C:\dev\CMS-.NET-Core-Module\Sitecore\Gigya.Sitecore.Module\obj\Debug\Gigya.Sitecore.Module.dll
-C:\dev\CMS-.NET-Core-Module\Sitecore\Gigya.Sitecore.Module\obj\Debug\Gigya.Sitecore.Module.pdb

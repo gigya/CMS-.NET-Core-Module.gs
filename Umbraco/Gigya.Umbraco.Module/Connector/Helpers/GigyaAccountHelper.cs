@@ -8,13 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Security;
 using Umbraco.Core;
 
 namespace Gigya.Umbraco.Module.Connector.Helpers
 {
     public class GigyaAccountHelper : Gigya.Module.Core.Connector.Helpers.GigyaAccountHelperBase
     {
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaMembershipHelper membershipHelper) : base(settingsHelper, logger, membershipHelper)
+        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger) : base(settingsHelper, logger)
         {
         }
 
@@ -102,6 +103,11 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             }
 
             UpdateSessionExpirationCookie(context, currentIdentity, isLoggingIn);
+        }
+
+        protected override void Logout()
+        {
+            FormsAuthentication.SignOut();
         }
     }
 }

@@ -12,18 +12,21 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
     public abstract class GigyaMembershipHelperBase
     {
+        protected readonly GigyaAccountHelperBase _gigyaAccountHelper;
         protected readonly GigyaApiHelper _gigyaApiHelper;
         protected readonly Logger _logger;
 
-        public GigyaMembershipHelperBase(GigyaApiHelper apiHelper, Logger logger)
+        public GigyaMembershipHelperBase(GigyaApiHelper apiHelper, GigyaAccountHelperBase gigyaAccountHelper, Logger logger)
         {
             _gigyaApiHelper = apiHelper;
             _logger = logger;
+            _gigyaAccountHelper = gigyaAccountHelper;
         }
 
         protected abstract string CmsUserIdField { get; }
@@ -191,6 +194,76 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
 
             return LoginByUsername(username, settings);
+        }
+
+        protected abstract bool Exists(string username);
+
+        protected abstract bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields);
+
+        protected abstract bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields);
+
+        /// <summary>
+        /// Login or register a user.
+        /// </summary>
+        /// <param name="model">Details from the client e.g. signature and userId.</param>
+        /// <param name="settings">Gigya module settings.</param>
+        /// <param name="response">Response model that will be returned to the client.</param>
+        public virtual void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        {
+            response.Status = ResponseStatus.Error;
+
+            if (!settings.EnableRaas)
+            {
+                if (settings.DebugMode)
+                {
+                    _logger.Debug("RaaS not enabled so login aborted.");
+                }
+                return;
+            }
+
+            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
+            {
+                if (settings.DebugMode)
+                {
+                    _logger.Debug("Invalid user signature for login request.");
+                }
+                return;
+            }
+
+            // get user info
+            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
+            if (userInfoResponse == null || userInfoResponse.GetErrorCode() != 0)
+            {
+                _logger.Error("Failed to getAccountInfo");
+                return;
+            }
+
+            List<MappingField> mappingFields = GetMappingFields(settings);
+            var gigyaModel = GetAccountInfo(model.Id, settings, userInfoResponse, mappingFields);
+            ThrowTestingExceptionIfRequired(settings, gigyaModel);
+
+            // find what field has been configured for the CMS username
+            var username = GetCmsUsername(mappingFields, gigyaModel);
+            
+            var userExists = Exists(username);
+            if (!userExists)
+            {
+                var createdUser = CreateUserInternal(username, gigyaModel, settings, mappingFields);
+                if (!createdUser)
+                {
+                    return;
+                }
+            }
+
+            // user logged into Gigya so now needs to be logged into CMS
+            var authenticated = AuthenticateUser(username, settings, userExists, gigyaModel, mappingFields);
+            response.Status = authenticated ? ResponseStatus.Success : ResponseStatus.Error;
+            if (authenticated)
+            {
+                response.RedirectUrl = settings.RedirectUrl;
+
+                _gigyaAccountHelper.UpdateSessionExpirationCookieIfRequired(HttpContext.Current, true);
+            }
         }
     }
 }

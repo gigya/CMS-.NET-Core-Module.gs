@@ -25,7 +25,7 @@ namespace Gigya.Module.Connector.Helpers
 {
     public class GigyaMembershipHelper : GigyaMembershipHelperBase, IGigyaMembershipHelper
     {
-        public GigyaMembershipHelper(GigyaApiHelper apiHelper, Logger logger) : base(apiHelper, logger)
+        public GigyaMembershipHelper(GigyaApiHelper apiHelper, GigyaAccountHelper gigyaAccountHelper, Logger logger) : base(apiHelper, gigyaAccountHelper, logger)
         {
         }
 
@@ -263,7 +263,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="model">Details from the client e.g. signature and userId.</param>
         /// <param name="settings">Gigya module settings.</param>
         /// <param name="response">Response model that will be returned to the client.</param>
-        public virtual void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public override void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
         {
             response.Status = ResponseStatus.Error;
             
@@ -323,7 +323,7 @@ namespace Gigya.Module.Connector.Helpers
                 response.RedirectUrl = settings.RedirectUrl;
 
                 var settingsHelper = new GigyaSettingsHelper();
-                var accountHelper = new GigyaAccountHelper(settingsHelper, _logger, this, settings);
+                var accountHelper = new GigyaAccountHelper(settingsHelper, _logger, settings);
                 accountHelper.UpdateSessionExpirationCookieIfRequired(HttpContext.Current, true);
             }
         }
@@ -418,7 +418,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Sitefinity.
         /// </summary>
-        protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected override bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             User user;
 
@@ -494,6 +494,19 @@ namespace Gigya.Module.Connector.Helpers
         public void Logout()
         {
             SecurityManager.Logout();
+        }
+
+        protected override bool Exists(string username)
+        {
+            UserManager manager = UserManager.GetManager();
+            var userExists = manager.UserExists(username);
+            return userExists;
+        }
+
+        protected override bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        {
+            MembershipCreateStatus status = CreateUser(username, gigyaModel, settings, mappingFields);
+            return status == MembershipCreateStatus.Success;
         }
     }
 }

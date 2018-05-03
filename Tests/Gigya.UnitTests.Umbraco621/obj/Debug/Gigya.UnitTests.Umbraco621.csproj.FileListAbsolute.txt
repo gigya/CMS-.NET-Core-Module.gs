@@ -90,17 +90,3 @@ C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Umbraco621\bin\Debug\Our.Umbraco.uGo
 C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Umbraco621\bin\Debug\umbraco.macroRenderings.dll
 C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Umbraco621\bin\Debug\umbraco.XmlSerializers.dll
 C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Umbraco621\bin\Debug\umbraco.macroRenderings.xml
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\obj\Debug\Gigya.UnitTests.Umbraco621.csprojResolveAssemblyReference.cache
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\obj\Debug\Gigya.UnitTests.Umbraco621.csproj.CoreCompileInputs.cache
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\obj\Debug\Gigya.UnitTests.Umbraco621.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\obj\Debug\Gigya.UnitTests.Umbraco621.pdb
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.UnitTests.Umbraco621.dll.config
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.UnitTests.Umbraco621.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.UnitTests.Umbraco621.pdb
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.Module.Core.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.Umbraco.Module.v621.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\GSCSharpSDK.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.Module.Core.pdb
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.Umbraco.Module.v621.pdb
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Umbraco621\bin\Debug\Gigya.Umbraco.Module.v621.dll.config

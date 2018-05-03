@@ -22,8 +22,13 @@ namespace Gigya.Module.Connector.Helpers
         private const string _checkedIfLoginRequiredKey = "GigyaAccountHelper.CheckedIfLoginRequiredKey";
         private const string _executedProcessRequestKey = "GigyaAccountHelper.ExecutedProcessRequestKey";
 
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaMembershipHelper membershipHelper, IGigyaModuleSettings settings = null) : base(settingsHelper, logger, membershipHelper, settings)
+        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null) : base(settingsHelper, logger, settings)
         {
+        }
+
+        protected override void Logout()
+        {
+            SecurityManager.Logout();
         }
 
         /// <summary>
@@ -41,8 +46,7 @@ namespace Gigya.Module.Connector.Helpers
 
             var settingsHelper = new GigyaSettingsHelper();
             var logger = LoggerFactory.Instance();
-            var membershipHelper = new GigyaMembershipHelper(new GigyaApiHelper(settingsHelper, logger), logger);
-            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, membershipHelper, settings);
+            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, settings);
 
             accountHelper.LoginToGigyaIfRequired();
         }
@@ -76,8 +80,7 @@ namespace Gigya.Module.Connector.Helpers
 
             var settingsHelper = new GigyaSettingsHelper();
             var logger = LoggerFactory.Instance();
-            var membershipHelper = new GigyaMembershipHelper(new GigyaApiHelper(settingsHelper, logger), logger);
-            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, membershipHelper, settings);
+            var accountHelper = new GigyaAccountHelper(settingsHelper, logger, settings);
 
             accountHelper.LoginToGigyaIfRequired();
             accountHelper.UpdateSessionExpirationCookieIfRequired(context);

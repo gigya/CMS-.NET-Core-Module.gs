@@ -20,7 +20,8 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             Logger = new Logger(new UmbracoLogger());
             SettingsHelper = new Helpers.GigyaSettingsHelper();
             var apiHelper = new GigyaApiHelper(SettingsHelper, Logger);
-            MembershipHelper = new GigyaMembershipHelper(apiHelper, Logger);
+            var accountHelper = new GigyaAccountHelper(SettingsHelper, Logger);
+            MembershipHelper = new GigyaMembershipHelper(apiHelper, accountHelper, Logger);
         }
 
         protected override CurrentIdentity GetCurrentIdentity()

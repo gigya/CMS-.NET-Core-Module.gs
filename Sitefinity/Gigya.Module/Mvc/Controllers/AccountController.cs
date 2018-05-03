@@ -17,9 +17,10 @@ namespace Gigya.Module.Mvc.Controllers
         public AccountController() : base()
         {
             Logger = new Logger(new SitefinityLogger());
-            SettingsHelper = new Connector.Helpers.GigyaSettingsHelper();
+            SettingsHelper = new Gigya.Module.Connector.Helpers.GigyaSettingsHelper();
             var apiHelper = new GigyaApiHelper(SettingsHelper, Logger);
-            MembershipHelper = new GigyaMembershipHelper(apiHelper, Logger);
+            var accountHelper = new GigyaAccountHelper((Gigya.Module.Connector.Helpers.GigyaSettingsHelper)SettingsHelper, Logger);
+            MembershipHelper = new GigyaMembershipHelper(apiHelper, accountHelper, Logger);
         }
 
         protected override CurrentIdentity GetCurrentIdentity()

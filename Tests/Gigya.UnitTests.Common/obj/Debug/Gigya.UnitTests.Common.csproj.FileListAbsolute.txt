@@ -4,8 +4,3 @@ C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\obj\Debug\Gigya.UnitTests.Com
 C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\obj\Debug\Gigya.UnitTests.Common.dll
 C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\obj\Debug\Gigya.UnitTests.Common.pdb
 C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\obj\Debug\Gigya.UnitTests.Common.csprojResolveAssemblyReference.cache
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Common\bin\Debug\Gigya.UnitTests.Common.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Common\bin\Debug\Gigya.UnitTests.Common.pdb
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Common\obj\Debug\Gigya.UnitTests.Common.csproj.CoreCompileInputs.cache
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Common\obj\Debug\Gigya.UnitTests.Common.dll
-C:\dev\CMS-.NET-Core-Module\Tests\Gigya.UnitTests.Common\obj\Debug\Gigya.UnitTests.Common.pdb
