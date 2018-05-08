@@ -1,0 +1,24 @@
+﻿@model Sitecore.Gigya.Module.Models.GigyaSettingsViewModel
+
+@if (Model.RenderScript)
+{
+    <script>
+        var gigyaConfig = {
+            errorMessage: '@HttpUtility.JavaScriptStringEncode(Model.ErrorMessage)',
+            id: '@Model.Id',
+            loggedInRedirectUrl: '@HttpUtility.JavaScriptStringEncode(Model.LoggedInRedirectUrl)',
+            logoutRedirectUrl: '@HttpUtility.JavaScriptStringEncode(Model.LogoutUrl)',
+            debugMode: @Model.DebugMode.ToString().ToLowerInvariant(),
+            authenticated: @Model.IsLoggedIn.ToString().ToLowerInvariant(),
+            getInfoRequired: @Model.IsGetInfoRequired.ToString().ToLowerInvariant()
+        };
+    </script>
+    <script src="//cdns.@(Model.DataCenter)/js/gigya.js?apiKey=@Model.ApiKey">
+        @Html.Raw(Model.SettingsJson)
+    </script>
+    <script src="@Model.GigyaScriptPath"></script>
+}
+@if (Model.DebugMode)
+{
+    <script>window.gigyaDebugMode = true;</script>
+}

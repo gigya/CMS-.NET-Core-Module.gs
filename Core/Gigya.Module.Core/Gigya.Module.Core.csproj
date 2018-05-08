@@ -95,6 +95,7 @@
     <Compile Include="Connector\Helpers\GigyaSettingsHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaSignatureHelpers.cs" />
     <Compile Include="Connector\Helpers\IGigyaMembershipHelper.cs" />
+    <Compile Include="Connector\Helpers\IGigyaSettingsHelper.cs" />
     <Compile Include="Connector\Helpers\IPathUtilities.cs" />
     <Compile Include="Connector\Helpers\PathUtilities.cs" />
     <Compile Include="Connector\Helpers\StringHelper.cs" />

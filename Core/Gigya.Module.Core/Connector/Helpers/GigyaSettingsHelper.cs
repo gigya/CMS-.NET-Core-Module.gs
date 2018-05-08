@@ -21,7 +21,7 @@ using Gigya.Module.Core.Connector.Models;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
-    public abstract class GigyaSettingsHelper
+    public abstract class GigyaSettingsHelper : IGigyaSettingsHelper
     {
         private IPathUtilities _pathUtilities = new PathUtilities();
         public IPathUtilities PathUtilities

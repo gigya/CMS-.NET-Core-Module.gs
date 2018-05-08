@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.Gigya.Extensions.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sitecore.Gigya.Module.Tests", "Sitecore\Sitecore.Gigya.Module.Tests\Sitecore.Gigya.Module.Tests.csproj", "{6C2C8ABD-DE24-471D-AAAB-414425753B2C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.Demo.v765", "Umbraco\Gigya.Umbraco.Demo.v765\Gigya.Umbraco.Demo.v765.csproj", "{A2701370-4EDE-41EC-A24F-B9981EDD7348}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -132,6 +134,12 @@ Global
 		{6C2C8ABD-DE24-471D-AAAB-414425753B2C}.Release Pro|Any CPU.Build.0 = Release|Any CPU
 		{6C2C8ABD-DE24-471D-AAAB-414425753B2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C2C8ABD-DE24-471D-AAAB-414425753B2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Release Pro|Any CPU.ActiveCfg = Release|Any CPU
+		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Release Pro|Any CPU.Build.0 = Release|Any CPU
+		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +159,7 @@ Global
 		{9BC95C63-5C43-4BD5-B733-CA1ED5424A09} = {54AC1635-2E85-473C-88F4-0D946D2B3FCE}
 		{1C6D4E8F-CD29-47C6-A6FC-BF7F8451134D} = {54AC1635-2E85-473C-88F4-0D946D2B3FCE}
 		{6C2C8ABD-DE24-471D-AAAB-414425753B2C} = {54AC1635-2E85-473C-88F4-0D946D2B3FCE}
+		{A2701370-4EDE-41EC-A24F-B9981EDD7348} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C31766D1-F4CB-4363-B191-D9B4B289F742}

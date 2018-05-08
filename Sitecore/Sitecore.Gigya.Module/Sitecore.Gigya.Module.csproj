@@ -51,6 +51,9 @@
     <Reference Include="Sitecore.Kernel, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.2.180406\lib\NET452\Sitecore.Kernel.dll</HintPath>
     </Reference>
+    <Reference Include="Sitecore.Mvc, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Mvc.NoReferences.8.2.180406\lib\NET452\Sitecore.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -99,11 +102,24 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\GigyaController.cs" />
     <Compile Include="Helpers\GigyaAccountHelper.cs" />
     <Compile Include="Helpers\GigyaMembershipHelper.cs" />
     <Compile Include="Helpers\GigyaSettingsHelper.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Logging\SitecoreLogger.cs" />
+    <Compile Include="Models\GigyaBaseRenderingModel.cs" />
+    <Compile Include="Models\GigyaBaseViewModel.cs" />
+    <Compile Include="Models\GigyaEditProfileRenderingModel.cs" />
+    <Compile Include="Models\GigyaEditProfileViewModel.cs" />
+    <Compile Include="Models\GigyaSettingsRenderingModel.cs" />
+    <Compile Include="Models\GigyaRegisterRenderingModel.cs" />
+    <Compile Include="Models\GigyaLogoutRenderingModel.cs" />
+    <Compile Include="Models\GigyaLoginRenderingModel.cs" />
+    <Compile Include="Models\GigyaLoginViewModel.cs" />
+    <Compile Include="Models\GigyaLogoutViewModel.cs" />
+    <Compile Include="Models\GigyaSettingsViewModel.cs" />
+    <Compile Include="Models\GigyaRegisterViewModel.cs" />
     <Compile Include="Pipelines\GigyaGetFieldEventArgs.cs" />
     <Compile Include="Pipelines\PipelineService.cs" />
     <Compile Include="Pipelines\RegisterWebApiRoutes.cs" />
@@ -116,7 +132,14 @@
     <Content Include="App_Config\Include\Gigya\Gigya.Module.config">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Views\Gigya\EditProfile.cshtml" />
+    <Content Include="Views\Gigya\Settings.cshtml" />
+    <Content Include="Views\Gigya\Login.cshtml" />
+    <Content Include="Views\Gigya\Logout.cshtml" />
+    <Content Include="Views\Gigya\Register.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -125,13 +148,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Views\Account\" />
+    <Folder Include="Scripts\Gigya\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Gigya.Module.Core\Gigya.Module.Core.csproj">
       <Project>{7610af03-891b-4ab2-a619-549bc9657cce}</Project>
       <Name>Gigya.Module.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Sitecore.Gigya.Extensions\Sitecore.Gigya.Extensions.csproj">
+      <Project>{9bc95c63-5c43-4bd5-b733-ca1ed5424a09}</Project>
+      <Name>Sitecore.Gigya.Extensions</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

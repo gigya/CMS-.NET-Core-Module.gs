@@ -14,7 +14,7 @@ using Core = Gigya.Module.Core;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
-    public class GigyaSettingsHelper : Core.Connector.Helpers.GigyaSettingsHelper
+    public class GigyaSettingsHelper : Core.Connector.Helpers.GigyaSettingsHelper, IGigyaSettingsHelper
     {
         private static string _cmsVersion { get; set; }
         private static string _cmsMajorVersion { get; set; }
