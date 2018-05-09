@@ -1,5 +1,0 @@
-C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\bin\Release\Gigya.UnitTests.Common.dll
-C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\bin\Release\Gigya.UnitTests.Common.pdb
-C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\obj\Release\Gigya.UnitTests.Common.csproj.CoreCompileInputs.cache
-C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\obj\Release\Gigya.UnitTests.Common.dll
-C:\dev\CMS-.NET-Core-Module\Gigya.UnitTests.Common\obj\Release\Gigya.UnitTests.Common.pdb
