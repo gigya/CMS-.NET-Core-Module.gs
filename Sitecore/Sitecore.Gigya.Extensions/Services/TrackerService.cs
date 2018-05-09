@@ -1,6 +1,7 @@
 ﻿using Sitecore.Analytics;
 using Sitecore.Diagnostics;
 using Sitecore.Exceptions;
+using Sitecore.Gigya.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Web;
 
 namespace Sitecore.Gigya.Extensions.Services
 {
-    //[Service(typeof(ITrackerService))]
+    [Service(typeof(ITrackerService))]
     public class TrackerService : ITrackerService
     {
         public bool IsActive => Tracker.Current != null && Tracker.Current.IsActive;

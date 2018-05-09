@@ -142,9 +142,9 @@ namespace Gigya.Module.Core.Connector.Helpers
                     return settings;
                 }
             }
-            
+
             var siteSettingsAndGlobal = GetForSiteAndDefault(id);
-            settings = siteSettingsAndGlobal.OrderByDescending(i => i.Id).FirstOrDefault() ?? EmptySettings(id);
+            settings = GetSettingsFromGlobalOrSite(id, siteSettingsAndGlobal);
 
             // decrypt application secret
             if (decrypt && !string.IsNullOrEmpty(settings.ApplicationSecret))
@@ -152,7 +152,7 @@ namespace Gigya.Module.Core.Connector.Helpers
                 settings.ApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
             }
 
-            settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields) 
+            settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields)
                 ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
 
             MapOldDataCenter(ref settings);
@@ -164,6 +164,11 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
 
             return settings;
+        }
+
+        protected virtual IGigyaModuleSettings GetSettingsFromGlobalOrSite(object siteId, List<IGigyaModuleSettings> siteSettingsAndGlobal)
+        {
+            return siteSettingsAndGlobal.FirstOrDefault(i => i.Id == siteId) ?? siteSettingsAndGlobal.OrderByDescending(i => i.Id).FirstOrDefault() ?? EmptySettings(siteId);
         }
 
         private void MapOldDataCenter(ref IGigyaModuleSettings settings)

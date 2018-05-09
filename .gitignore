@@ -132,3 +132,12 @@
 /Tests/Gigya.UnitTests.Umbraco621/bin/Debug
 /Tests/Gigya.UnitTests.Umbraco621/obj/Debug
 /Core/Gigya.Module.Core/obj/Debug
+/Core/Gigya.Module.DS/obj/Release
+/Sitecore/Sitecore.Gigya.DependencyInjection/bin
+/Sitecore/Sitecore.Gigya.DependencyInjection/obj/Debug
+/Sitecore/Sitecore.Gigya.Extensions/obj/Release
+/Sitecore/Sitecore.Gigya.Extensions.Tests/obj/Release
+/Sitecore/Sitecore.Gigya.Module/obj/Release
+/Sitecore/Sitecore.Gigya.Module.Tests/obj/Release
+/Sitefinity/Gigya.Sitefinity.Module.DS/obj/Release
+/Tests/Gigya.UnitTests.Common/obj/Release

@@ -87,11 +87,18 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\SitecoreContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IRenderingPropertiesRepository.cs" />
     <Compile Include="Repositories\RenderingPropertiesRepository.cs" />
     <Compile Include="Services\ITrackerService.cs" />
     <Compile Include="Services\TrackerService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sitecore.Gigya.DependencyInjection\Sitecore.Gigya.DependencyInjection.csproj">
+      <Project>{2dae103e-11a8-46ad-86bd-da40dd729411}</Project>
+      <Name>Sitecore.Gigya.DependencyInjection</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

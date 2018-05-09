@@ -4,10 +4,10 @@
     using System.Linq;
     using SC = Sitecore;
     using Sitecore.Diagnostics;
-    //using Sitecore.Foundation.DependencyInjection;
     using Sitecore.Reflection;
+    using Sitecore.Gigya.DependencyInjection;
 
-    //[Service(typeof(IRenderingPropertiesRepository))]
+    [Service(typeof(IRenderingPropertiesRepository))]
     public class RenderingPropertiesRepository : IRenderingPropertiesRepository
     {
         public T Get<T>(SC.Mvc.Presentation.Rendering rendering)

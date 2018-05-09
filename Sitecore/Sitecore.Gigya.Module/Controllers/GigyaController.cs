@@ -3,6 +3,7 @@ using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Mvc.Models;
 using Sitecore.Gigya.Extensions.Repositories;
 using Sitecore.Gigya.Module.Helpers;
+using Sitecore.Gigya.Module.Logging;
 using Sitecore.Gigya.Module.Models;
 using Sitecore.Gigya.Module.Repositories;
 using Sitecore.Mvc.Presentation;
@@ -21,6 +22,10 @@ namespace Sitecore.Gigya.Module.Controllers
         private readonly IAccountRepository _accountRepository;
         private readonly Logger _logger;
         private readonly IGigyaSettingsHelper _settingsHelper;
+
+        public GigyaController() : this(new AccountRepository(new Pipelines.PipelineService()), new RenderingPropertiesRepository(), new Logger(new SitecoreLogger()), new Helpers.GigyaSettingsHelper())
+        {
+        }
 
         public GigyaController(IAccountRepository accountRepository, IRenderingPropertiesRepository renderingPropertiesRepository, Logger logger, IGigyaSettingsHelper settingsHelper)
         {
