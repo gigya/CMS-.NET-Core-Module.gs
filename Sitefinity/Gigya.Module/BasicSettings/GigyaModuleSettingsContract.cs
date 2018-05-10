@@ -27,6 +27,8 @@ namespace Gigya.Module.BasicSettings
     [DataContract]
     public class GigyaModuleSettingsContract : IGigyaSettingsDataContract
     {
+        private IEncryptionService _encryptionService = EncryptionService.Instance;
+
         private Logger _logger;
         private Logger Logger
         {
@@ -153,7 +155,7 @@ namespace Gigya.Module.BasicSettings
                 var identity = ClaimsManager.GetCurrentIdentity();
                 this.CanViewApplicationSecret = identity.IsAuthenticated && Connector.Admin.Roles.HasRole(identity);
 
-                if (CanViewApplicationSecret && !string.IsNullOrEmpty(settings.ApplicationSecret) && Encryptor.IsConfigured)
+                if (CanViewApplicationSecret && !string.IsNullOrEmpty(settings.ApplicationSecret) && _encryptionService.IsConfigured)
                 {
                     var key = TryDecryptApplicationSecret(settings.ApplicationSecret, false);
                     if (!string.IsNullOrEmpty(key))
@@ -300,16 +302,16 @@ namespace Gigya.Module.BasicSettings
                     var canViewApplicationSecret = identity.IsAuthenticated && Gigya.Module.Connector.Admin.Roles.HasRole(identity);
                     if (canViewApplicationSecret)
                     {
-                        if (!Encryptor.IsConfigured)
+                        if (!_encryptionService.IsConfigured)
                         {
                             throw new ArgumentException("Encryption key not specified. Refer to installation guide.");
                         }
 
-                        settings.ApplicationSecret = Encryptor.Encrypt(plainTextApplicationSecret);
+                        settings.ApplicationSecret = _encryptionService.Encrypt(plainTextApplicationSecret);
                     }
                 }
 
-                if (string.IsNullOrEmpty(plainTextApplicationSecret) && Encryptor.IsConfigured && !string.IsNullOrEmpty(settings.ApplicationSecret))
+                if (string.IsNullOrEmpty(plainTextApplicationSecret) && _encryptionService.IsConfigured && !string.IsNullOrEmpty(settings.ApplicationSecret))
                 {
                     plainTextApplicationSecret = TryDecryptApplicationSecret(settings.ApplicationSecret);
                 }
@@ -343,7 +345,7 @@ namespace Gigya.Module.BasicSettings
         {
             try
             {
-                return Encryptor.Decrypt(secret);
+                return _encryptionService.Decrypt(secret);
             }
             catch (Exception e)
             {

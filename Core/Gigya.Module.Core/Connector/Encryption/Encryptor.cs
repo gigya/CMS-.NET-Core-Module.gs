@@ -1,64 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web.Hosting;
 
 namespace Gigya.Module.Core.Connector.Encryption
 {
     public static class Encryptor
     {
-        private readonly static string _key = ConfigurationManager.AppSettings["Gigya.Encryption.Key"];
-        private readonly static string _keyLocation = ConfigurationManager.AppSettings["Gigya.Encryption.KeyLocation"];
-
-        private static byte[] _salt = Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["Gigya.Encryption.Salt"] ?? "lkjslkfj!sldkflkj£$EdfS34!£$XzaEdfjkrm");
-
-        static Encryptor()
-        {
-            if (!string.IsNullOrEmpty(_keyLocation))
-            {
-                if (_keyLocation.StartsWith("~/"))
-                {
-                    _keyLocation = HostingEnvironment.MapPath(_keyLocation);
-                }
-
-                if (File.Exists(_keyLocation))
-                {
-                    // don't need a try catch as if we can't read the key we can't continue so it's better to throw the error
-                    _key = File.ReadAllText(_keyLocation);
-                }
-            }
-        }
-
-        public static bool IsConfigured
-        {
-            get
-            {
-                return !string.IsNullOrEmpty(_key);
-            }
-        }
-
-        public static string Encrypt(string plainText)
-        {
-            return EncryptStringAES(plainText, _key);
-        }
-
-        public static string Decrypt(string cipherText)
-        {
-            return DecryptStringAES(cipherText, _key);
-        }
-
         /// <summary>
         /// Encrypt the given string using AES.  The string can be decrypted using 
         /// DecryptStringAES().  The sharedSecret parameters must match.
         /// </summary>
         /// <param name="plainText">The text to encrypt.</param>
         /// <param name="sharedSecret">A password used to generate a key for encryption.</param>
-        private static string EncryptStringAES(string plainText, string sharedSecret)
+        public static string EncryptStringAES(string plainText, string sharedSecret, byte[] salt)
         {
             if (string.IsNullOrEmpty(plainText))
             {
@@ -73,7 +30,7 @@ namespace Gigya.Module.Core.Connector.Encryption
             string outStr = null;
             
             // generate the key from the shared secret and the salt
-            Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, _salt);
+            Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, salt);
             
             using (var aesAlg = new AesManaged())
             {
@@ -110,7 +67,7 @@ namespace Gigya.Module.Core.Connector.Encryption
         /// </summary>
         /// <param name="cipherText">The text to decrypt.</param>
         /// <param name="sharedSecret">A password used to generate a key for decryption.</param>
-        private static string DecryptStringAES(string cipherText, string sharedSecret)
+        public static string DecryptStringAES(string cipherText, string sharedSecret, byte[] salt)
         {
             if (string.IsNullOrEmpty(cipherText))
             {
@@ -125,7 +82,7 @@ namespace Gigya.Module.Core.Connector.Encryption
             string plaintext = null;
             
             // generate the key from the shared secret and the salt
-            Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, _salt);
+            Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(sharedSecret, salt);
 
             // Create the streams used for decryption.                
             byte[] bytes = Convert.FromBase64String(cipherText);

@@ -113,6 +113,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\GigyaController.cs" />
+    <Compile Include="Encryption\SitecoreEncryptionService.cs" />
+    <Compile Include="Events\EncryptApplicationKey.cs" />
     <Compile Include="Helpers\GigyaAccountHelper.cs" />
     <Compile Include="Helpers\GigyaMembershipHelper.cs" />
     <Compile Include="Helpers\GigyaSettingsHelper.cs" />

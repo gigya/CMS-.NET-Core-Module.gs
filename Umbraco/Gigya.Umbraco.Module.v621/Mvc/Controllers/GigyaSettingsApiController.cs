@@ -33,6 +33,7 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
     [PluginController("Gigya")]
     public class GigyaSettingsApiController : UmbracoAuthorizedApiController
     {
+        private IEncryptionService _encryptionService = EncryptionService.Instance;
         private Logger _logger = new Logger(new UmbracoLogger());
 
         /// <summary>
@@ -141,17 +142,17 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
                 var canViewApplicationSecret = (UmbracoUser.UserType.Name == Constants.UserTypes.Admin) || User.IsInRole(Constants.Roles.GigyaAdmin);
                 if (canViewApplicationSecret)
                 {
-                    if (!Encryptor.IsConfigured)
+                    if (!_encryptionService.IsConfigured)
                     {
                         response.Error = "Encryption key not specified. Refer to installation guide.";
                         _logger.Error(response.Error);
                         return response;
                     }
-                    settings.ApplicationSecret = Encryptor.Encrypt(model.ApplicationSecret);
+                    settings.ApplicationSecret = _encryptionService.Encrypt(model.ApplicationSecret);
                 }
             }
 
-            if (string.IsNullOrEmpty(plainTextApplicationSecret) && Encryptor.IsConfigured && !string.IsNullOrEmpty(settings.ApplicationSecret))
+            if (string.IsNullOrEmpty(plainTextApplicationSecret) && _encryptionService.IsConfigured && !string.IsNullOrEmpty(settings.ApplicationSecret))
             {
                 plainTextApplicationSecret = TryDecryptApplicationSecret(settings.ApplicationSecret, false);
                 if (string.IsNullOrEmpty(plainTextApplicationSecret))
@@ -203,7 +204,7 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
         {
             try
             {
-                return Encryptor.Decrypt(secret);
+                return _encryptionService.Decrypt(secret);
             }
             catch (Exception e)
             {
@@ -273,7 +274,7 @@ namespace Gigya.Umbraco.Module.v621.Mvc.Controllers
             model.MappingFields = mappingFields.OrderByDescending(i => i.Required).ThenBy(i => i.CmsFieldName).ToList();
 
             // check if authorised to view application secret
-            if (model.CanViewApplicationSecret && !string.IsNullOrEmpty(settings.ApplicationSecret) && Encryptor.IsConfigured)
+            if (model.CanViewApplicationSecret && !string.IsNullOrEmpty(settings.ApplicationSecret) && _encryptionService.IsConfigured)
             {
                 var key = TryDecryptApplicationSecret(settings.ApplicationSecret, false);
                 if (!string.IsNullOrEmpty(key))

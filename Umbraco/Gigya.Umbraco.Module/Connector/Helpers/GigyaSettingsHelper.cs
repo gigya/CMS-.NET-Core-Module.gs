@@ -27,7 +27,7 @@ namespace Gigya.Umbraco.Module.Helpers
     public class GigyaSettingsHelper : Gigya.Module.Core.Connector.Helpers.GigyaSettingsHelper
     {
         public static readonly string _CmsVersion = ConfigurationManager.AppSettings["umbracoConfigurationStatus"];
-
+        
         public override string CmsName
         {
             get

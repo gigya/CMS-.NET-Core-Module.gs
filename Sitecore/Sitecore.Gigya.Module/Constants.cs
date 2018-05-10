@@ -11,6 +11,12 @@ namespace Sitecore.Gigya.Module
         public const string ModuleVersion = "6";
         public const string GlobalSettingsId = "{3d64effe-6e9f-45a7-a716-14d588b62d44}";
 
+        public class DefaultSettings
+        {
+            public const string SessionTimeout = "1800";
+            public const string DataCenter = "US";
+        }
+
         public class CmsFields
         {
             public const string UserId = "UserId";
@@ -35,7 +41,7 @@ namespace Sitecore.Gigya.Module
             public const string EnableXdbSync = "Enable xDB Sync";
             public const string EnableMembershipProviderSync = "Enable Membership Provider Sync";
             public const string RedirectUrl = "Redirect URL";
-            public const string LogoutUrl = "LogoutUrl";
+            public const string LogoutUrl = "Logout URL";
             public const string MembershipMappingFields = "Membership Mapping Fields";
             public const string XdbMappingFields = "xDB Mapping Fields";
             public const string GigyaSessionType = "Gigya Session Type";

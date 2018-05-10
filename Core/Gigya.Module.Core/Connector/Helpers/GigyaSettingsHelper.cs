@@ -23,6 +23,17 @@ namespace Gigya.Module.Core.Connector.Helpers
 {
     public abstract class GigyaSettingsHelper : IGigyaSettingsHelper
     {
+        protected IEncryptionService _encryptionService;
+
+        public GigyaSettingsHelper() : this(EncryptionService.Instance)
+        {
+        }
+
+        public GigyaSettingsHelper(IEncryptionService encryptionService)
+        {
+            _encryptionService = encryptionService;
+        }
+
         private IPathUtilities _pathUtilities = new PathUtilities();
         public IPathUtilities PathUtilities
         {
@@ -149,7 +160,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             // decrypt application secret
             if (decrypt && !string.IsNullOrEmpty(settings.ApplicationSecret))
             {
-                settings.ApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
+                settings.ApplicationSecret = _encryptionService.Decrypt(settings.ApplicationSecret);
             }
 
             settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields)
@@ -203,7 +214,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         {
             if (!string.IsNullOrEmpty(settings.ApplicationSecret))
             {
-                settings.ApplicationSecret = Encryptor.Decrypt(settings.ApplicationSecret);
+                settings.ApplicationSecret = _encryptionService.Decrypt(settings.ApplicationSecret);
             }
         }
 

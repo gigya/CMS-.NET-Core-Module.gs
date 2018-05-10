@@ -16,6 +16,7 @@ using Sitecore.Data.Items;
 using Sitecore.Gigya.Extensions.Extensions;
 using Sitecore.Data.Fields;
 using System.Web.Mvc;
+using Sitecore.Gigya.Module.Encryption;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -23,6 +24,10 @@ namespace Sitecore.Gigya.Module.Helpers
     {
         private static string _cmsVersion { get; set; }
         private static string _cmsMajorVersion { get; set; }
+
+        public GigyaSettingsHelper() : base(SitecoreEncryptionService.Instance)
+        {
+        }
 
         public override string CmsName
         {
@@ -109,13 +114,13 @@ namespace Sitecore.Gigya.Module.Helpers
                 Language = settings.Fields[Constants.Fields.Language].Value,
                 //LanguageFallback = settings.Fields[Constants.Fields.LanguageFallback,
                 DebugMode = ((CheckboxField)settings.Fields[Constants.Fields.DebugMode]).Checked,
-                DataCenter = settings.Fields[Constants.Fields.DataCenter].Value,
+                DataCenter = StringHelper.FirstNotNullOrEmpty(settings.Fields[Constants.Fields.DataCenter].Value, Constants.DefaultSettings.DataCenter),
                 EnableRaas = ((CheckboxField)settings.Fields[Constants.Fields.EnableRaaS]).Checked,
                 RedirectUrl = settings.Fields[Constants.Fields.RedirectUrl].Value,
                 LogoutUrl = settings.Fields[Constants.Fields.LogoutUrl].Value,
                 //MappingFields = settings.Fields[Constants.Fields.MembershipMappingFields].Value,
                 GlobalParameters = settings.Fields[Constants.Fields.GlobalParameters].Value,
-                SessionTimeout = int.Parse(settings.Fields[Constants.Fields.GigyaSessionDuration].Value),
+                SessionTimeout = int.Parse(StringHelper.FirstNotNullOrEmpty(settings.Fields[Constants.Fields.GigyaSessionDuration].Value, Constants.DefaultSettings.SessionTimeout)),
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
                 GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding
             };
