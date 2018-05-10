@@ -118,6 +118,7 @@
     <Compile Include="Helpers\GigyaAccountHelper.cs" />
     <Compile Include="Helpers\GigyaMembershipHelper.cs" />
     <Compile Include="Helpers\GigyaSettingsHelper.cs" />
+    <Compile Include="Helpers\Mapper.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Logging\SitecoreLogger.cs" />
     <Compile Include="Models\GigyaBaseRenderingModel.cs" />
@@ -190,7 +191,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>55584</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connector\Common\DynamicUtils.cs" />
+    <Compile Include="Connector\Common\SecurityUtils.cs" />
     <Compile Include="Connector\Common\UrlUtils.cs" />
     <Compile Include="Connector\Encryption\EncryptionService.cs" />
     <Compile Include="Connector\Encryption\Encryptor.cs" />

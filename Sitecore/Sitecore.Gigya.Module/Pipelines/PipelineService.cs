@@ -18,7 +18,7 @@ namespace Sitecore.Gigya.Module.Pipelines
                 //UserName = user.Name,
                 //ContactId = Tracker.Current?.Contact?.ContactId
             };
-            CorePipeline.Run("accounts.loggedIn", args);
+            CorePipeline.Run("gigya.module.loggedIn", args, false);
             return args.Aborted;
         }
 
@@ -29,7 +29,7 @@ namespace Sitecore.Gigya.Module.Pipelines
                 //User = user,
                 //UserName = user.Name
             };
-            CorePipeline.Run("accounts.loggedOut", args);
+            CorePipeline.Run("gigya.module.loggedOut", args, false);
             return args.Aborted;
         }
 
@@ -40,7 +40,7 @@ namespace Sitecore.Gigya.Module.Pipelines
                 //User = user,
                 //UserName = user.Name
             };
-            CorePipeline.Run("accounts.registered", args);
+            CorePipeline.Run("gigya.module.registered", args, false);
             return args.Aborted;
         }
     }

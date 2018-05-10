@@ -199,7 +199,7 @@ namespace Sitecore.Gigya.Module.Controllers
             };
 
             var renderingModel = _renderingPropertiesRepository.Get<GigyaSettingsRenderingModel>(RenderingContext.Current.Rendering);
-            var viewModel = _settingsHelper.ViewModel(settings, Url, currentIdentity);
+            var viewModel = Mapper.Map(_settingsHelper.ViewModel(settings, Url, currentIdentity));
             //viewModel.ErrorMessage = ""//renderingModel. Res.Get(Constants.Resources.ClassId, Constants.Resources.ErrorMessage);
             viewModel.RenderScript = true;
 

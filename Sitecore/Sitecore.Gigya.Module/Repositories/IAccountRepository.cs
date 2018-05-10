@@ -11,10 +11,10 @@ namespace Sitecore.Gigya.Module.Repositories
 {
     public interface IAccountRepository
     {
-        //void RegisterUser(string email, string password, string profileId);
+        void Register(string username, string email, string password, bool persistent, string profileId);
         bool Exists(string userName);
         void Logout();
-        SC.Security.Accounts.User Login(string userName, string password);
+        SC.Security.Accounts.User Login(string userName, bool persistent);
         CurrentIdentity CurrentIdentity { get; }
     }
 }

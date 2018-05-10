@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sitecore.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,11 @@ namespace Sitecore.Gigya.Module
         {
             public const string GlobalSettings = "/sitecore/system/Modules/Gigya/Global Settings";
             public const string SiteSettingsSuffix = "Gigya Settings/Gigya Settings";
+        }
+
+        public class Templates
+        {
+            public static readonly ID GigyaSettings = new ID("{CB5000AC-098F-420E-B973-D6AD423F2DAE}");
         }
 
         public class Fields

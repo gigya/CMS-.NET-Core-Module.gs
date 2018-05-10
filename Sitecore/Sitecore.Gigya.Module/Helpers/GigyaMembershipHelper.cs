@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using SC = Sitecore;
+using Core = Gigya.Module.Core;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -168,65 +169,7 @@ namespace Sitecore.Gigya.Module.Helpers
         //    //    }
         //    //}
         //}
-
-        ///// <summary>
-        ///// Creates a new Sitefinity user from a Gigya user.
-        ///// </summary>
-        ///// <param name="username">The Id of the new user.</param>
-        ///// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        ///// <param name="settings">Gigya module settings for the site.</param>
-        ///// <returns></returns>
-        //protected virtual MembershipCreateStatus CreateUser(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
-        //{
-        //    //UserManager userManager = UserManager.GetManager();
-        //    //UserProfileManager profileManager = UserProfileManager.GetManager();
-
-        //    //MembershipCreateStatus status;
-        //    //var email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
-        //    //var firstName = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.FirstName, Constants.GigyaFields.FirstName, mappingFields);
-        //    //var lastName = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.LastName, Constants.GigyaFields.LastName, mappingFields);
-
-        //    //User user = userManager.CreateUser(username, Guid.NewGuid().ToString(), email, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, null, out status);
-        //    //SitefinityProfile profile = null;
-
-        //    //switch (status)
-        //    //{
-        //    //    case MembershipCreateStatus.Success:
-        //    //        profile = CreateProfile(gigyaModel, settings, userManager, profileManager, user, mappingFields);
-        //    //        break;
-        //    //    case MembershipCreateStatus.DuplicateEmail:
-        //    //        // insert fails if there is a duplicate email even though duplicate emails are allowed...strange huh
-        //    //        var dummyEmail = string.Concat(Guid.NewGuid(), "@gigya.com");
-
-        //    //        // try insert again with a dummy email and update it afterwards
-        //    //        user = userManager.CreateUser(username, Guid.NewGuid().ToString(), dummyEmail, Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), true, null, out status);
-        //    //        if (status == MembershipCreateStatus.Success)
-        //    //        {
-        //    //            user.Email = email;
-        //    //            profile = CreateProfile(gigyaModel, settings, userManager, profileManager, user, mappingFields);
-        //    //        }
-        //    //        break;
-        //    //}
-
-        //    //if (user == null)
-        //    //{
-        //    //    return status;
-        //    //}
-
-        //    //MapProfileFields(profile, gigyaModel, settings, mappingFields);
-
-        //    //try
-        //    //{
-        //    //    userManager.SaveChanges();
-        //    //    profileManager.SaveChanges();
-        //    //}
-        //    //catch (Exception e)
-        //    //{
-        //    //    _logger.Error("Failed to update profile for userId: " + username, e);
-        //    //}
-
-        //    return status;
-        //}
+        
 
         ///// <summary>
         ///// Creates a new Sitefinity profile.
@@ -302,13 +245,7 @@ namespace Sitecore.Gigya.Module.Helpers
         /// </summary>
         protected override object ConvertCurrentSiteId(object currentSiteId)
         {
-            var idList = currentSiteId as string[];
-            if (idList != null)
-            {
-                currentSiteId = idList[0];
-            }
-
-            return Guid.Parse(currentSiteId.ToString());
+            return currentSiteId;
         }
 
         /// <summary>
@@ -328,78 +265,10 @@ namespace Sitecore.Gigya.Module.Helpers
             return currentIdentity.Name;
         }
 
-        ///// <summary>
-        ///// Authenticates a user in Sitefinity.
-        ///// </summary>
-        //protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
-        //{
-        //    //User user;
-        //    var isLoggedIn = LoginByUsername(username, settings);
-        //    if (!isLoggedIn)
-        //    {
-        //        return false;
-        //    }
-
-        //    if (updateProfile)
-        //    {
-        //        return MapProfileFieldsAndUpdate(username, username, settings, gigyaModel, mappingFields);
-        //    }
-
-        //    return true;
-
-
-
-
-        //    //var loginStatus = AuthenticateWithRetry(username, 0, 2, persistent, out user);
-        //    //switch (loginStatus)
-        //    //{
-        //    //    case UserLoggingReason.Success:
-        //    //        if (settings.DebugMode)
-        //    //        {
-        //    //            _logger.Debug(string.Concat("User [", username, "] successfully logged into Sitefinity."));
-        //    //        }
-
-        //    //        if (updateProfile)
-        //    //        {
-        //    //            MapProfileFieldsAndUpdate(username, username, settings, gigyaModel, mappingFields);
-        //    //        }
-        //    //        return true;
-        //    //    default:
-        //    //        _logger.Error(string.Format("User [{0}] not logged into Sitefinity. Reason: {1}.", username, loginStatus));
-        //    //        return false;
-        //    //}
-        //}
-
-        ///// <summary>
-        ///// Authenticates user with the ability to retry if an attempt fails.
-        ///// </summary>
-        ///// <param name="userId">UserId to authenticate.</param>
-        ///// <param name="attempts">Number to attempts so far.</param>
-        ///// <param name="retries">Number of retries allowed.</param>
-        ///// <param name="user">The authenticated user.</param>
-        ///// <returns></returns>
-        ////protected virtual UserLoggingReason AuthenticateWithRetry(string userId, int attempts, int retries, bool persistent, out User user)
-        ////{
-        ////    attempts++;
-
-        ////    var loginStatus = SecurityManager.AuthenticateUser(null, userId, persistent, out user);
-        ////    switch (loginStatus)
-        ////    {
-        ////        case UserLoggingReason.Success:
-        ////            return loginStatus;
-        ////        default:
-        ////            if (attempts < retries)
-        ////            {
-        ////                return AuthenticateWithRetry(userId, attempts, retries, persistent, out user);
-        ////            }
-        ////            return loginStatus;
-        ////    }
-        ////}
-
         protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
         {
             var persistent = PersistentAuthRequired(settings);
-            return SC.Security.Authentication.AuthenticationManager.Login(username, persistent);
+            return _accountRepository.Login(username, persistent) != null;
         }
 
         protected override bool Exists(string username)
@@ -409,13 +278,27 @@ namespace Sitecore.Gigya.Module.Helpers
 
         protected override bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
         {
-            throw new NotImplementedException();
+            var persistent = PersistentAuthRequired(settings);
+            var email = DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.Email);
+            var password = SecurityUtils.CreateCryptographicallySecureGuid().ToString();
+            _accountRepository.Register(username, email, password, persistent, null);
+            return true;
         }
 
         protected override bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
-            throw new NotImplementedException();
-            //_accountRepository.Login(username, )
+            var isLoggedIn = LoginByUsername(username, settings);
+            if (!isLoggedIn)
+            {
+                return false;
+            }
+
+            if (updateProfile)
+            {
+                //return MapProfileFieldsAndUpdate(username, username, settings, gigyaModel, mappingFields);
+            }
+
+            return true;
         }
     }
 }

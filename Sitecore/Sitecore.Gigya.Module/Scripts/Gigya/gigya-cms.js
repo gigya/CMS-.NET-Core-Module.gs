@@ -264,7 +264,7 @@
         }, x;
 });
 
-var gigyaSitefinity = {
+var gigyaCms = {
     responseCodes: {
         Error: 0,
         Success: 1,
@@ -404,7 +404,7 @@ var gigyaSitefinity = {
     initialized: false,
     init: function init() {
         if (gigyaCms.initialized) {
-            gigyaCms.log('gigyaSitefinity already initialized...ignoring');
+            gigyaCms.log('gigyaCms already initialized...ignoring');
             return;
         }
 

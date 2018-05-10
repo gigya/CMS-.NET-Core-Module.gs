@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Sitecore.Gigya.Module.Models
 {
-    public class GigyaSettingsViewModel : GigyaBaseViewModel
+    public class GigyaSettingsViewModel
     {
         public object Id { get; set; }
         public string ApiKey { get; set; }

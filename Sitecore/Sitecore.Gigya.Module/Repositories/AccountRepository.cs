@@ -42,7 +42,7 @@ namespace Sitecore.Gigya.Module.Repositories
             return User.Exists(fullName);
         }
 
-        public User Login(string userName, string password)
+        public User Login(string userName, bool persistent)
         {
             var accountName = string.Empty;
             var domain = Context.Domain;
@@ -51,7 +51,7 @@ namespace Sitecore.Gigya.Module.Repositories
                 accountName = domain.GetFullName(userName);
             }
 
-            var result = AuthenticationManager.Login(accountName, password);
+            var result = AuthenticationManager.Login(accountName, persistent);
             if (!result)
             {
                 return null;
@@ -72,12 +72,11 @@ namespace Sitecore.Gigya.Module.Repositories
             }
         }
 
-        public void RegisterUser(string email, string password, string profileId)
+        public void Register(string username, string email, string password, bool persistent, string profileId)
         {
             Assert.ArgumentNotNullOrEmpty(email, nameof(email));
-            Assert.ArgumentNotNullOrEmpty(password, nameof(password));
 
-            var fullName = Context.Domain.GetFullName(email);
+            var fullName = Context.Domain.GetFullName(username);
             Assert.IsNotNullOrEmpty(fullName, "Can't retrieve full userName");
 
             var user = User.Create(fullName, password);
@@ -89,8 +88,6 @@ namespace Sitecore.Gigya.Module.Repositories
 
             user.Profile.Save();
             _pipelineService.RunRegistered(user);
-
-            this.Login(email, password);
         }
     }
 }
