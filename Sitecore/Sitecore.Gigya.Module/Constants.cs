@@ -11,6 +11,7 @@ namespace Sitecore.Gigya.Module
     {
         public const string ModuleVersion = "6";
         public const string GlobalSettingsId = "{3d64effe-6e9f-45a7-a716-14d588b62d44}";
+        public const string EncryptionPrefix = "___ENCRYPTED___";
 
         public class DefaultSettings
         {

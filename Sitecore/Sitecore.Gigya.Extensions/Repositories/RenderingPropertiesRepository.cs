@@ -6,6 +6,7 @@
     using Sitecore.Diagnostics;
     using Sitecore.Reflection;
     using Sitecore.Gigya.DependencyInjection;
+    using System.Web;
 
     [Service(typeof(IRenderingPropertiesRepository))]
     public class RenderingPropertiesRepository : IRenderingPropertiesRepository
@@ -34,8 +35,13 @@
         protected virtual string FilterEmptyParametrs(string parameters)
         {
             var parametersList = parameters.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
+            var parameterString = string.Join("&", parametersList.Where(x => x.Contains("=")));
+            if (!string.IsNullOrEmpty(parameterString))
+            {
+                parameterString = HttpUtility.UrlDecode(parameterString);
+            }
 
-            return string.Join("&", parametersList.Where(x => x.Contains("=")));
+            return parameterString;
         }
     }
 }

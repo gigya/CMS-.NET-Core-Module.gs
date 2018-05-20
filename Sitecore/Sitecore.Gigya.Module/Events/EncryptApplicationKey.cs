@@ -47,6 +47,12 @@ namespace Sitecore.Gigya.Module.Events
                 return;
             }
 
+            if (secretKey.StartsWith(Constants.EncryptionPrefix))
+            {
+                logger.Debug("Application Secret is already encrypted so aborting.");
+                return;
+            }
+
             if (_inProcess.ContainsKey(updatedItem.ID))
             {
                 return;
@@ -57,7 +63,8 @@ namespace Sitecore.Gigya.Module.Events
 
             try
             {
-                updatedItem.Fields[Constants.Fields.ApplicationSecret].Value = SitecoreEncryptionService.Instance.Encrypt(secretKey);
+                var encrypted = SitecoreEncryptionService.Instance.Encrypt(secretKey);
+                updatedItem.Fields[Constants.Fields.ApplicationSecret].Value = string.Concat(Constants.EncryptionPrefix, encrypted);
             }
             finally
             {

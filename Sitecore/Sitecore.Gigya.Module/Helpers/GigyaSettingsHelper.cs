@@ -108,10 +108,10 @@ namespace Sitecore.Gigya.Module.Helpers
             var mapped = new GigyaModuleSettings
             {
                 Id = id,
-                ApiKey = settings.Fields[Constants.Fields.ApiKey].Value,
-                ApplicationKey = settings.Fields[Constants.Fields.ApplicationKey].Value,
-                ApplicationSecret = settings.Fields[Constants.Fields.ApplicationSecret].Value,
-                Language = settings.Fields[Constants.Fields.Language].Value,
+                ApiKey = settings.Fields[Constants.Fields.ApiKey].Value.Trim(),
+                ApplicationKey = settings.Fields[Constants.Fields.ApplicationKey].Value.Trim(),
+                ApplicationSecret = settings.Fields[Constants.Fields.ApplicationSecret].Value.Trim(),
+                Language = settings.Fields[Constants.Fields.Language].Value.Trim(),
                 //LanguageFallback = settings.Fields[Constants.Fields.LanguageFallback,
                 DebugMode = ((CheckboxField)settings.Fields[Constants.Fields.DebugMode]).Checked,
                 DataCenter = StringHelper.FirstNotNullOrEmpty(settings.Fields[Constants.Fields.DataCenter].Value, Constants.DefaultSettings.DataCenter),
@@ -124,6 +124,11 @@ namespace Sitecore.Gigya.Module.Helpers
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
                 GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding
             };
+
+            if (!string.IsNullOrEmpty(mapped.ApplicationSecret) && mapped.ApplicationSecret.StartsWith(Constants.EncryptionPrefix))
+            {
+                mapped.ApplicationSecret = mapped.ApplicationSecret.Substring(Constants.EncryptionPrefix.Length);
+            }
 
             Core.Connector.Enums.GigyaSessionMode sessionMode;
             if (Enum.TryParse(settings.Fields[Constants.Fields.GigyaSessionType].Value, out sessionMode))

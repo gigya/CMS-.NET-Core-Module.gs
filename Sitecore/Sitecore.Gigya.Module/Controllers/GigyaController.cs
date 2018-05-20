@@ -50,7 +50,7 @@ namespace Sitecore.Gigya.Module.Controllers
 
             if (renderingModel.RenderMethod != GigyaRenderingMethod.Embedded)
             {
-                renderingModel.GenerateContainer = false;
+                //renderingModel.GenerateContainer = false;
                 renderingModel.ContainerId = null;
             }
 
@@ -65,7 +65,7 @@ namespace Sitecore.Gigya.Module.Controllers
                 StartScreen = renderingModel.StartScreen
             };
 
-            if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && (renderingModel.GenerateContainer || string.IsNullOrEmpty(model.ContainerId)))
+            if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && string.IsNullOrEmpty(model.ContainerId))
             {
                 model.ContainerId = model.GeneratedContainerId;
             }
@@ -86,7 +86,7 @@ namespace Sitecore.Gigya.Module.Controllers
             var renderingModel = _renderingPropertiesRepository.Get<GigyaLoginRenderingModel>(RenderingContext.Current.Rendering);
             if (renderingModel.RenderMethod != GigyaRenderingMethod.Embedded)
             {
-                renderingModel.GenerateContainer = false;
+                //renderingModel.GenerateContainer = false;
                 renderingModel.ContainerId = null;
             }
 
@@ -102,7 +102,7 @@ namespace Sitecore.Gigya.Module.Controllers
                 LoggedInUrl = renderingModel.LoggedInUrl
             };
 
-            if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && (renderingModel.GenerateContainer || string.IsNullOrEmpty(model.ContainerId)))
+            if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && string.IsNullOrEmpty(model.ContainerId))
             {
                 model.ContainerId = model.GeneratedContainerId;
             }
@@ -146,7 +146,7 @@ namespace Sitecore.Gigya.Module.Controllers
             var renderingModel = _renderingPropertiesRepository.Get<GigyaRegisterRenderingModel>(RenderingContext.Current.Rendering);
             if (renderingModel.RenderMethod != GigyaRenderingMethod.Embedded)
             {
-                renderingModel.GenerateContainer = false;
+                //renderingModel.GenerateContainer = false;
                 renderingModel.ContainerId = null;
             }
 
@@ -162,7 +162,7 @@ namespace Sitecore.Gigya.Module.Controllers
                 LoggedInUrl = renderingModel.LoggedInUrl
             };
 
-            if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && (renderingModel.GenerateContainer || string.IsNullOrEmpty(model.ContainerId)))
+            if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && string.IsNullOrEmpty(model.ContainerId))
             {
                 model.ContainerId = model.GeneratedContainerId;
             }
