@@ -16,7 +16,8 @@ namespace Sitecore.Gigya.Module
         public class DefaultSettings
         {
             public const string SessionTimeout = "1800";
-            public const string DataCenter = "US";
+            public const string DataCenter = "us1.gigya.com";
+            public const string LanguageFallback = "en";
         }
 
         public class CmsFields
@@ -35,12 +36,19 @@ namespace Sitecore.Gigya.Module
             public static readonly ID GigyaSettings = new ID("{CB5000AC-098F-420E-B973-D6AD423F2DAE}");
         }
 
+        public class Dictionary
+        {
+            public const string Domain = "Gigya";
+            public const string GenericError = "GenericError";
+        }
+
         public class Fields
         {
             public const string ApiKey = "API Key";
             public const string ApplicationKey = "Application Key";
             public const string ApplicationSecret = "Application Secret";
             public const string Language = "Language";
+            //public const string Language = "Language Fallback";
             public const string DebugMode = "Debug Mode";
             public const string DataCenter = "Data Center";
             public const string GlobalParameters = "Global Parameters";

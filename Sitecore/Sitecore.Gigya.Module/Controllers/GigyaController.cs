@@ -6,6 +6,7 @@ using Sitecore.Gigya.Module.Helpers;
 using Sitecore.Gigya.Module.Logging;
 using Sitecore.Gigya.Module.Models;
 using Sitecore.Gigya.Module.Repositories;
+using Sitecore.Globalization;
 using Sitecore.Mvc.Presentation;
 using System;
 using System.Collections.Generic;
@@ -120,9 +121,7 @@ namespace Sitecore.Gigya.Module.Controllers
 
             // check if Sitefinity is the session leader and sign in if required
             //GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current);
-
-            //var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaLogout/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaLogout.Index.cshtml");
-
+            
             var renderingModel = _renderingPropertiesRepository.Get<GigyaLogoutRenderingModel>(RenderingContext.Current.Rendering);
             var model = new GigyaLogoutViewModel
             {
@@ -150,7 +149,6 @@ namespace Sitecore.Gigya.Module.Controllers
                 renderingModel.ContainerId = null;
             }
 
-            //var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaRegister/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaRegister.Index.cshtml");
             var model = new GigyaRegisterViewModel
             {
                 Label = StringHelper.FirstNotNullOrEmpty(renderingModel.Label, "Register"),
@@ -200,10 +198,9 @@ namespace Sitecore.Gigya.Module.Controllers
 
             var renderingModel = _renderingPropertiesRepository.Get<GigyaSettingsRenderingModel>(RenderingContext.Current.Rendering);
             var viewModel = Mapper.Map(_settingsHelper.ViewModel(settings, Url, currentIdentity));
-            //viewModel.ErrorMessage = ""//renderingModel. Res.Get(Constants.Resources.ClassId, Constants.Resources.ErrorMessage);
+            viewModel.ErrorMessage = Translate.TextByDomain(Constants.Dictionary.Domain, Constants.Dictionary.GenericError);
             viewModel.RenderScript = true;
 
-            //var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaSettings/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaSettings.Index.cshtml");
             return View(viewModel);
         }
     }

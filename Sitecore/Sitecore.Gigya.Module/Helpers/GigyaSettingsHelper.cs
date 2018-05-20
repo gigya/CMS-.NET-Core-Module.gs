@@ -17,6 +17,7 @@ using Sitecore.Gigya.Extensions.Extensions;
 using Sitecore.Data.Fields;
 using System.Web.Mvc;
 using Sitecore.Gigya.Module.Encryption;
+using Sitecore.Data;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -112,18 +113,20 @@ namespace Sitecore.Gigya.Module.Helpers
                 ApplicationKey = settings.Fields[Constants.Fields.ApplicationKey].Value.Trim(),
                 ApplicationSecret = settings.Fields[Constants.Fields.ApplicationSecret].Value.Trim(),
                 Language = settings.Fields[Constants.Fields.Language].Value.Trim(),
-                //LanguageFallback = settings.Fields[Constants.Fields.LanguageFallback,
+                LanguageFallback = Constants.DefaultSettings.LanguageFallback,
                 DebugMode = ((CheckboxField)settings.Fields[Constants.Fields.DebugMode]).Checked,
-                DataCenter = StringHelper.FirstNotNullOrEmpty(settings.Fields[Constants.Fields.DataCenter].Value, Constants.DefaultSettings.DataCenter),
+                DataCenter = Constants.DefaultSettings.DataCenter,
                 EnableRaas = ((CheckboxField)settings.Fields[Constants.Fields.EnableRaaS]).Checked,
                 RedirectUrl = settings.Fields[Constants.Fields.RedirectUrl].Value,
                 LogoutUrl = settings.Fields[Constants.Fields.LogoutUrl].Value,
                 //MappingFields = settings.Fields[Constants.Fields.MembershipMappingFields].Value,
-                GlobalParameters = settings.Fields[Constants.Fields.GlobalParameters].Value,
+                GlobalParameters = settings.Fields[Constants.Fields.GlobalParameters].Value.Trim(),
                 SessionTimeout = int.Parse(StringHelper.FirstNotNullOrEmpty(settings.Fields[Constants.Fields.GigyaSessionDuration].Value, Constants.DefaultSettings.SessionTimeout)),
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
                 GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding
             };
+
+            ExtractDataCenter(settings, mapped);
 
             if (!string.IsNullOrEmpty(mapped.ApplicationSecret) && mapped.ApplicationSecret.StartsWith(Constants.EncryptionPrefix))
             {
@@ -137,6 +140,27 @@ namespace Sitecore.Gigya.Module.Helpers
             }
 
             return mapped;
+        }
+
+        private void ExtractDataCenter(Item settings, GigyaModuleSettings mapped)
+        {
+            ID dataCenterItemId;
+            if (!ID.TryParse(settings.Fields[Constants.Fields.DataCenter].Value, out dataCenterItemId))
+            {
+                return;
+            }
+
+            var dataCenterItem = Context.Database.GetItem(dataCenterItemId);
+            if (dataCenterItem == null)
+            {
+                return;
+            }
+
+            var dataCenterValue = dataCenterItem.Fields[Constants.Fields.DataCenter].Value;
+            if (!string.IsNullOrEmpty(dataCenterValue))
+            {
+                mapped.DataCenter = dataCenterValue;
+            }
         }
 
         protected override string Language(IGigyaModuleSettings settings)
