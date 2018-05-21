@@ -36,11 +36,36 @@ namespace Sitecore.Gigya.Module.Helpers
 
         public void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
         {
-            throw new NotImplementedException();
+            var userInfoResponse = ValidateRequest(model, settings);
+            if (userInfoResponse == null)
+            {
+                return;
+            }
+
+            var currentIdentity = _accountRepository.CurrentIdentity;
+            var currentUsername = currentIdentity.Name;
+
+            List<MappingField> mappingFields = GetMappingFields(settings);
+
+            var gigyaModel = GetAccountInfo(model.Id, settings, userInfoResponse, mappingFields);
+            ThrowTestingExceptionIfRequired(settings, gigyaModel);
+
+            string username = GetCmsUsername(mappingFields, gigyaModel);
+            var success = true;// MapProfileFieldsAndUpdate(currentUsername, username, settings, gigyaModel, mappingFields);
+            if (success)
+            {
+                response.RedirectUrl = settings.RedirectUrl;
+                response.Status = ResponseStatus.Success;
+
+                if (currentUsername != username)
+                {
+                    AuthenticateUser(username, settings, false, gigyaModel, mappingFields);
+                }
+            }
         }
 
         /// <summary>
-        /// Updates the users Sitefinity profile.
+        /// Updates the users Sitecore profile.
         /// </summary>
         /// <param name="username">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>

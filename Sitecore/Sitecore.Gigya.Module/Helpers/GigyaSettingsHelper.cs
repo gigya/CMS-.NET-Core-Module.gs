@@ -104,7 +104,12 @@ namespace Sitecore.Gigya.Module.Helpers
             return result;
         }
 
-        private IGigyaModuleSettings Map(Item settings, string id)
+        public IGigyaModuleSettings Map(Item settings, string id)
+        {
+            return Map(settings, id, Context.Database);
+        }
+
+        public IGigyaModuleSettings Map(Item settings, string id, Database database)
         {
             var mapped = new GigyaModuleSettings
             {
@@ -126,7 +131,7 @@ namespace Sitecore.Gigya.Module.Helpers
                 GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding
             };
 
-            ExtractDataCenter(settings, mapped);
+            ExtractDataCenter(settings, mapped, database);
 
             if (!string.IsNullOrEmpty(mapped.ApplicationSecret) && mapped.ApplicationSecret.StartsWith(Constants.EncryptionPrefix))
             {
@@ -142,7 +147,7 @@ namespace Sitecore.Gigya.Module.Helpers
             return mapped;
         }
 
-        private void ExtractDataCenter(Item settings, GigyaModuleSettings mapped)
+        private void ExtractDataCenter(Item settings, GigyaModuleSettings mapped, Database database)
         {
             ID dataCenterItemId;
             if (!ID.TryParse(settings.Fields[Constants.Fields.DataCenter].Value, out dataCenterItemId))
@@ -150,7 +155,7 @@ namespace Sitecore.Gigya.Module.Helpers
                 return;
             }
 
-            var dataCenterItem = Context.Database.GetItem(dataCenterItemId);
+            var dataCenterItem = database.GetItem(dataCenterItemId);
             if (dataCenterItem == null)
             {
                 return;

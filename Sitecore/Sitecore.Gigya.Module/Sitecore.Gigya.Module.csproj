@@ -44,6 +44,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GSCSharpSDK, Version=2.15.5.0, Culture=neutral, PublicKeyToken=ecc5cd8277006f58, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Gigya.CSharpSdk.1.0.0\lib\GSCSharpSDK.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=1.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
@@ -114,6 +117,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\GigyaController.cs" />
     <Compile Include="Encryption\SitecoreEncryptionService.cs" />
+    <Compile Include="Events\Validation.cs" />
     <Compile Include="Events\EncryptApplicationKey.cs" />
     <Compile Include="Helpers\GigyaAccountHelper.cs" />
     <Compile Include="Helpers\GigyaMembershipHelper.cs" />
