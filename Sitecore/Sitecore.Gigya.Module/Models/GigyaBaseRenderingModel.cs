@@ -10,7 +10,6 @@ namespace Sitecore.Gigya.Module.Models
         public GigyaRenderingMethod RenderMethod { get; set; }
         public string Label { get; set; }
         public string ScreenSet { get; set; }
-        public string MobileScreenSet { get; set; }
         public string StartScreen { get; set; }
         public string ContainerId { get; set; }
         //public bool GenerateContainer { get; set; }

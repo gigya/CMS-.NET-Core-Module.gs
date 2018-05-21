@@ -20,9 +20,15 @@
                 return (T)obj;
 
             parameters = this.FilterEmptyParametrs(parameters);
+            var nameValues = StringUtil.GetNameValues(parameters, '=', '&');
+
             try
             {
-                ReflectionUtil.SetProperties(obj, parameters);
+                foreach (string key in nameValues.Keys)
+                {
+                    var value = HttpUtility.UrlDecode(nameValues[key]);
+                    ReflectionUtil.SetProperty(obj, key, value);
+                }
             }
             catch (Exception e)
             {
@@ -36,11 +42,6 @@
         {
             var parametersList = parameters.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
             var parameterString = string.Join("&", parametersList.Where(x => x.Contains("=")));
-            if (!string.IsNullOrEmpty(parameterString))
-            {
-                parameterString = HttpUtility.UrlDecode(parameterString);
-            }
-
             return parameterString;
         }
     }

@@ -297,8 +297,18 @@ var gigyaCms = {
         }
     },
     redirectAfterLogin: function redirectAfterLogin(url) {
-        if (gigyaCms.loggedInRedirectUrl != '') {
-            url = gigyaCms.loggedInRedirectUrl;
+        gigyaCms.redirectAfterEvent(url, gigyaCms.loggedInRedirectUrl);
+    },
+    redirectAfterRegister: function redirectAfterRegister(url) {
+        var urlOverride = gigyaCms.registeredAndLoggedInRedirectUrl;
+        if (!urlOverride) {
+            urlOverride = gigyaCms.loggedInRedirectUrl;
+        }
+        gigyaCms.redirectAfterEvent(url, urlOverride);
+    },
+    redirectAfterEvent: function redirectAfterEvent(url, urlOverride) {
+        if (urlOverride) {
+            url = urlOverride;
         }
 
         if (url && url.length > 0) {
@@ -311,19 +321,12 @@ var gigyaCms = {
         // do nothing as page will be updated after next load
     },
     redirectAfterLogout: function redirectAfterLogout(url) {
-        if (gigyaCms.logoutRedirectUrl != '') {
-            url = gigyaCms.logoutRedirectUrl;
-        }
-
-        if (url && url.length > 0) {
-            window.location = url;
-        } else {
-            window.location.reload();
-        }
+        gigyaCms.redirectAfterEvent(url, gigyaCms.logglogoutRedirectUrledInRedirectUrl);
     },
     genericErrorMessage: 'Sorry an error occurred. Please try again.',
     id: '',
     loggedInRedirectUrl: '',
+    registeredAndLoggedInRedirectUrl: '',
     logoutRedirectUrl: '',
     logoutApiAction: 'logout',
     screenSetSettings: {
@@ -442,6 +445,14 @@ var gigyaCms = {
             }
         }
 
+        var registeredAndLoggedInUrlElems = document.getElementsByClassName('gigya-registered-logged-in-url');
+        for (var i = 0; i < registeredAndLoggedInUrlElems.length; i++) {
+            if (registeredAndLoggedInUrlElems[i].value) {
+                gigyaCms.registeredAndLoggedInRedirectUrl = registeredAndLoggedInUrlElems[i].value;
+                break;
+            }
+        }
+
         var loggedOutUrlElems = document.getElementsByClassName('gigya-logged-out-url');
         for (var i = 0; i < loggedOutUrlElems.length; i++) {
             if (loggedOutUrlElems[i].value) {
@@ -551,7 +562,11 @@ var gigyaCms = {
                         gigyaCms.authenticated = true;
                         gigyaCms.authenticatedOnServerByCurrentPage = true;
                         if (redirectAfterLogin === true || gigyaCms.loginEventFired) {
-                            gigyaCms.redirectAfterLogin(response.redirectUrl);
+                            if (eventObj.newUser) {
+                                gigyaCms.redirectAfterRegister(response.redirectUrl);
+                            } else {
+                                gigyaCms.redirectAfterLogin(response.redirectUrl);
+                            }
                         } else {
                             bodyElem.classList.remove(gigyaCms.loggingInClassName);
                         }

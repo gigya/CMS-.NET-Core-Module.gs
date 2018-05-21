@@ -2,10 +2,10 @@
 
 @if (!string.IsNullOrEmpty(Model.ContainerId))
 {
-    <div id="@Model.GeneratedContainerId" data-gigya-container-id="@Model.ContainerId" class="gigya-embedded-screen" data-gigya-screen="@Model.ScreenSet" data-gigya-mobile-screen="@Model.MobileScreenSet" data-gigya-start-screen="@Model.StartScreen"></div>
+    <div id="@Model.GeneratedContainerId" data-gigya-container-id="@Model.ContainerId" class="gigya-embedded-screen" data-gigya-screen="@Model.ScreenSet" data-gigya-start-screen="@Model.StartScreen"></div>
 }
 else
 {
-    <button type="button" class="gigya-register" data-gigya-screen="@Model.ScreenSet" data-gigya-mobile-screen="@Model.MobileScreenSet" data-gigya-start-screen="@Model.StartScreen">@Model.Label</button>
+    <button type="button" class="gigya-register" data-gigya-screen="@Model.ScreenSet" data-gigya-start-screen="@Model.StartScreen">@Model.Label</button>
 }
-<input type="hidden" class="gigya-logged-in-url" value="@Model.LoggedInUrl" />
+<input type="hidden" class="gigya-registered-logged-in-url" value="@Model.LoggedInUrl" />

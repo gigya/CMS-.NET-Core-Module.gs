@@ -27,7 +27,7 @@ namespace Sitecore.Gigya.Module
 
         public class Paths
         {
-            public const string GlobalSettings = "/sitecore/system/Modules/Gigya/Global Settings";
+            public static readonly ID GlobalSettings = new ID("{2EB49887-39E6-40FC-8EC5-3CBE241B2494}");
             public const string SiteSettingsSuffix = "Gigya Settings/Gigya Settings";
         }
 

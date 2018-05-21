@@ -1,6 +1,8 @@
 ﻿using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Mvc.Models;
+using Sitecore.Data.Fields;
+using Sitecore.Gigya.Extensions.Fields;
 using Sitecore.Gigya.Extensions.Repositories;
 using Sitecore.Gigya.Module.Helpers;
 using Sitecore.Gigya.Module.Logging;
@@ -8,6 +10,7 @@ using Sitecore.Gigya.Module.Models;
 using Sitecore.Gigya.Module.Repositories;
 using Sitecore.Globalization;
 using Sitecore.Mvc.Presentation;
+using Sitecore.Xml.Xsl;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -55,13 +58,11 @@ namespace Sitecore.Gigya.Module.Controllers
                 renderingModel.ContainerId = null;
             }
 
-            //var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaEditProfile/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaEditProfile.Index.cshtml");
             var model = new GigyaEditProfileViewModel
             {
                 Label = StringHelper.FirstNotNullOrEmpty(renderingModel.Label, "Edit Profile"),
                 ContainerId = renderingModel.ContainerId,
                 GeneratedContainerId = string.Concat("gigya-container-", Guid.NewGuid()),
-                MobileScreenSet = renderingModel.MobileScreenSet,
                 ScreenSet = StringHelper.FirstNotNullOrEmpty(renderingModel.ScreenSet, "Default-ProfileUpdate"),
                 StartScreen = renderingModel.StartScreen
             };
@@ -91,16 +92,14 @@ namespace Sitecore.Gigya.Module.Controllers
                 renderingModel.ContainerId = null;
             }
 
-            //var viewPath = FileHelper.GetPath("~/Mvc/Views/GigyaLogin/Index.cshtml", ModuleClass.ModuleVirtualPath + "Gigya.Module.Mvc.Views.GigyaLogin.Index.cshtml");
             var model = new GigyaLoginViewModel
             {
                 Label = StringHelper.FirstNotNullOrEmpty(renderingModel.Label, "Login"),
                 ContainerId = renderingModel.ContainerId,
                 GeneratedContainerId = string.Concat("gigya-container-", Guid.NewGuid()),
-                MobileScreenSet = renderingModel.MobileScreenSet,
                 ScreenSet = StringHelper.FirstNotNullOrEmpty(renderingModel.ScreenSet, "Default-RegistrationLogin"),
                 StartScreen = renderingModel.StartScreen,
-                LoggedInUrl = renderingModel.LoggedInUrl
+                LoggedInUrl = new ExtendedLinkUrl().GetUrl(renderingModel.LoggedInUrl, Context.Database)
             };
 
             if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && string.IsNullOrEmpty(model.ContainerId))
@@ -126,7 +125,7 @@ namespace Sitecore.Gigya.Module.Controllers
             var model = new GigyaLogoutViewModel
             {
                 Label = StringHelper.FirstNotNullOrEmpty(renderingModel.Label, "Logout"),
-                LoggedOutUrl = renderingModel.LoggedOutUrl
+                LoggedOutUrl = new ExtendedLinkUrl().GetUrl(renderingModel.LoggedOutUrl, Context.Database)
             };
 
             return View(model);
@@ -154,10 +153,9 @@ namespace Sitecore.Gigya.Module.Controllers
                 Label = StringHelper.FirstNotNullOrEmpty(renderingModel.Label, "Register"),
                 ContainerId = renderingModel.ContainerId,
                 GeneratedContainerId = string.Concat("gigya-container-", Guid.NewGuid()),
-                MobileScreenSet = renderingModel.MobileScreenSet,
                 ScreenSet = StringHelper.FirstNotNullOrEmpty(renderingModel.ScreenSet, "Default-RegistrationLogin"),
                 StartScreen = StringHelper.FirstNotNullOrEmpty(renderingModel.StartScreen, "gigya-register-screen"),
-                LoggedInUrl = renderingModel.LoggedInUrl
+                LoggedInUrl = new ExtendedLinkUrl().GetUrl(renderingModel.LoggedInUrl, Context.Database)
             };
 
             if (renderingModel.RenderMethod == GigyaRenderingMethod.Embedded && string.IsNullOrEmpty(model.ContainerId))
