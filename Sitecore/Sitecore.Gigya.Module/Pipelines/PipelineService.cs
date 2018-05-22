@@ -50,11 +50,7 @@ namespace Sitecore.Gigya.Module.Pipelines
         {
             var args = new GetAccountInfoCompletedPipelineArgs
             {
-                CurrentSiteId = e.CurrentSiteId,
-                GigyaModel = e.GigyaModel,
-                Logger = e.Logger,
-                MappingFields = e.MappingFields,
-                Settings = e.Settings
+                EventArgs = e
             };
 
             CorePipeline.Run("gigya.module.getAccountInfoCompleted", args, false);
@@ -65,10 +61,7 @@ namespace Sitecore.Gigya.Module.Pipelines
         {
             var args = new AccountInfoMergeCompletedPipelineArgs
             {
-                CurrentSiteId = e.CurrentSiteId,
-                GigyaModel = e.GigyaModel,
-                Logger = e.Logger,
-                Settings = e.Settings
+                EventArgs = e
             };
 
             CorePipeline.Run("gigya.module.getAccountInfoMergeCompleted", args, false);

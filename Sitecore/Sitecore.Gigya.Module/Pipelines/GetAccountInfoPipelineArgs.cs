@@ -11,9 +11,5 @@ namespace Sitecore.Gigya.Module.Pipelines
 {
     public abstract class GetAccountInfoPipelineArgs : PipelineArgs
     {
-        public Logger Logger { get; set; }
-        public IGigyaModuleSettings Settings { get; set; }
-        public dynamic GigyaModel { get; set; }
-        public object CurrentSiteId { get; set; }
     }
 }

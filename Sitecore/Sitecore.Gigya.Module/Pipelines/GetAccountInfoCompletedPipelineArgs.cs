@@ -1,4 +1,5 @@
-﻿using Gigya.Module.Core.Connector.Logging;
+﻿using Gigya.Module.Core.Connector.Events;
+using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Connector.Models;
 using Gigya.Module.Core.Data;
 using Sitecore.Pipelines;
@@ -11,6 +12,6 @@ namespace Sitecore.Gigya.Module.Pipelines
 {
     public class GetAccountInfoCompletedPipelineArgs : GetAccountInfoPipelineArgs
     {
-        public List<MappingField> MappingFields { get; set; }
+        public GetAccountInfoCompletedEventArgs EventArgs { get; set; }
     }
 }
