@@ -137,8 +137,14 @@
     <Compile Include="Models\GigyaLogoutViewModel.cs" />
     <Compile Include="Models\GigyaSettingsViewModel.cs" />
     <Compile Include="Models\GigyaRegisterViewModel.cs" />
+    <Compile Include="Models\SitecoreGigyaModuleSettings.cs" />
+    <Compile Include="Pipelines\GetAccountInfoPipelineArgs.cs" />
+    <Compile Include="Pipelines\AccountPipelineArgs.cs" />
+    <Compile Include="Pipelines\AccountInfoMergedCompletedPipelineArgs.cs" />
+    <Compile Include="Pipelines\GetAccountInfoCompletedPipelineArgs.cs" />
     <Compile Include="Pipelines\GigyaGetFieldEventArgs.cs" />
     <Compile Include="Pipelines\PipelineService.cs" />
+    <Compile Include="Pipelines\RegisterPipelines.cs" />
     <Compile Include="Pipelines\RegisterWebApiRoutes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AccountRepository.cs" />
