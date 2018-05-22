@@ -93,6 +93,7 @@ namespace Gigya.UnitTests.Selenium
             dialog.FindElement(By.Name("profile.lastName")).SendKeys(_lastName);
             dialog.FindElement(By.Name("password")).SendKeys(_passsword);
             dialog.FindElement(By.Name("passwordRetype")).SendKeys(_passsword);
+            Thread.Sleep(1000);
             dialog.FindElement(By.CssSelector("input.gigya-input-submit")).Click();
 
             // wait up to 30 seconds for reload

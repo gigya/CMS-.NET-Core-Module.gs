@@ -218,6 +218,22 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
         }
 
+        public string TryDecryptApplicationSecret(string secret, bool throwOnException = true)
+        {
+            try
+            {
+                return _encryptionService.Decrypt(secret);
+            }
+            catch (Exception e)
+            {
+                if (throwOnException)
+                {
+                    throw new ArgumentException("Couldn't decrypt application secret. Please enter it again.", e);
+                }
+            }
+            return null;
+        }
+
         public void Validate(IGigyaModuleSettings settings)
         {
             if (string.IsNullOrEmpty(settings.ApiKey))

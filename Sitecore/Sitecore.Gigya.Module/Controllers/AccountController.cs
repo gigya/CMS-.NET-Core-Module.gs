@@ -37,12 +37,7 @@ namespace Sitecore.Gigya.Module.Controllers
 
         protected override CurrentIdentity GetCurrentIdentity()
         {
-            var currentIdentity = SC.Context.User;
-            return new CurrentIdentity
-            {
-                IsAuthenticated = currentIdentity.IsAuthenticated,
-                Name = currentIdentity.Name
-            };
+            return _accountRepository.CurrentIdentity;
         }
 
         protected override void Signout()
