@@ -25,13 +25,13 @@ namespace Sitecore.Gigya.Module.Controllers
         private readonly IRenderingPropertiesRepository _renderingPropertiesRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly Logger _logger;
-        private readonly IGigyaSettingsHelper _settingsHelper;
+        private readonly IGigyaSettingsHelper<SitecoreGigyaModuleSettings> _settingsHelper;
 
         public GigyaController() : this(new AccountRepository(new Pipelines.PipelineService()), new RenderingPropertiesRepository(), new Logger(new SitecoreLogger()), new Helpers.GigyaSettingsHelper())
         {
         }
 
-        public GigyaController(IAccountRepository accountRepository, IRenderingPropertiesRepository renderingPropertiesRepository, Logger logger, IGigyaSettingsHelper settingsHelper)
+        public GigyaController(IAccountRepository accountRepository, IRenderingPropertiesRepository renderingPropertiesRepository, Logger logger, IGigyaSettingsHelper<SitecoreGigyaModuleSettings> settingsHelper)
         {
             _accountRepository = accountRepository;
             _renderingPropertiesRepository = renderingPropertiesRepository;

@@ -263,7 +263,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             return null;
         }
 
-        private IGigyaModuleSettings Map(GigyaUmbracoModuleSettings settings)
+        private GigyaModuleSettings Map(GigyaUmbracoModuleSettings settings)
         {
             var model = new GigyaModuleSettings
             {

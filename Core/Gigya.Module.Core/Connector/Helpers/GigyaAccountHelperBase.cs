@@ -16,10 +16,10 @@ namespace Gigya.Module.Core.Connector.Helpers
     public abstract class GigyaAccountHelperBase
     {
         protected GigyaSettingsHelper _settingsHelper;
-        protected IGigyaModuleSettings _settings;
+        protected GigyaModuleSettings _settings;
         protected Logger _logger;
 
-        public GigyaAccountHelperBase(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null)
+        public GigyaAccountHelperBase(GigyaSettingsHelper settingsHelper, Logger logger, GigyaModuleSettings settings = null)
         {
             _settings = settings ?? settingsHelper.GetForCurrentSite(true);
             _logger = logger;

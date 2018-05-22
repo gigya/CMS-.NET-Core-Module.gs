@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Web;
 using SC = Sitecore;
 using Core = Gigya.Module.Core;
+using Sitecore.Gigya.Module.Models;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -70,48 +71,53 @@ namespace Sitecore.Gigya.Module.Helpers
         /// <param name="username">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        //protected virtual bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
-        //{
-        //    //UserProfileManager profileManager = UserProfileManager.GetManager();
-        //    //UserManager userManager = UserManager.GetManager();
+        protected virtual bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, SitecoreGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        {
+            if (!settings.EnableMembershipSync)
+            {
+                return false;
+            }
 
-        //    //using (new ElevatedModeRegion(userManager))
-        //    //{
-        //    //    var user = userManager.GetUser(currentUsername);
-        //    //    user.Email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
+            //UserProfileManager profileManager = UserProfileManager.GetManager();
+            //UserManager userManager = UserManager.GetManager();
 
-        //    //    if (user.UserName != updatedUsername)
-        //    //    {
-        //    //        user.SetUserName(updatedUsername);
-        //    //    }
+            //using (new ElevatedModeRegion(userManager))
+            //{
+            //    var user = userManager.GetUser(currentUsername);
+            //    user.Email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
 
-        //    //    SitefinityProfile profile = profileManager.GetUserProfile<SitefinityProfile>(user);
+            //    if (user.UserName != updatedUsername)
+            //    {
+            //        user.SetUserName(updatedUsername);
+            //    }
 
-        //    //    if (profile == null)
-        //    //    {
-        //    //        profile = profileManager.CreateProfile(user, Guid.NewGuid(), typeof(SitefinityProfile)) as SitefinityProfile;
+            //    SitefinityProfile profile = profileManager.GetUserProfile<SitefinityProfile>(user);
 
-        //    //        // only set this on creation as it's possible to get 2 users with the same email address
-        //    //        profile.Nickname = user.Email;
-        //    //    }
+            //    if (profile == null)
+            //    {
+            //        profile = profileManager.CreateProfile(user, Guid.NewGuid(), typeof(SitefinityProfile)) as SitefinityProfile;
 
-        //    //    // map any custom fields
-        //    //    MapProfileFields(profile, gigyaModel, settings, mappingFields);
+            //        // only set this on creation as it's possible to get 2 users with the same email address
+            //        profile.Nickname = user.Email;
+            //    }
 
-        //    //    try
-        //    //    {
-        //    //        userManager.SaveChanges();
-        //    //        profileManager.SaveChanges();
-        //    //        return true;
-        //    //    }
-        //    //    catch (Exception e)
-        //    //    {
-        //    //        _logger.Error("Failed to update profile for userId: " + currentUsername, e);
-        //    //    }
-        //    //}
+            //    // map any custom fields
+            //    MapProfileFields(profile, gigyaModel, settings, mappingFields);
 
-        //    return false;
-        //}
+            //    try
+            //    {
+            //        userManager.SaveChanges();
+            //        profileManager.SaveChanges();
+            //        return true;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        _logger.Error("Failed to update profile for userId: " + currentUsername, e);
+            //    }
+            //}
+
+            return false;
+        }
 
         ///// <summary>
         ///// Gets a Gigya value from the model.
@@ -194,7 +200,7 @@ namespace Sitecore.Gigya.Module.Helpers
         //    //    }
         //    //}
         //}
-        
+
 
         ///// <summary>
         ///// Creates a new Sitefinity profile.

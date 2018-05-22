@@ -18,10 +18,11 @@ using Sitecore.Data.Fields;
 using System.Web.Mvc;
 using Sitecore.Gigya.Module.Encryption;
 using Sitecore.Data;
+using Sitecore.Gigya.Module.Models;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
-    public class GigyaSettingsHelper : Core.Connector.Helpers.GigyaSettingsHelper, IGigyaSettingsHelper
+    public class GigyaSettingsHelper : Core.Connector.Helpers.GigyaSettingsHelper<SitecoreGigyaModuleSettings>, IGigyaSettingsHelper<SitecoreGigyaModuleSettings>
     {
         private static string _cmsVersion { get; set; }
         private static string _cmsMajorVersion { get; set; }
@@ -72,7 +73,7 @@ namespace Sitecore.Gigya.Module.Helpers
             LoadCmsVersion();
         }
 
-        public override IGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
+        public override SitecoreGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
         {
             var model = Get(Context.Site.Name, decrypt);
 
@@ -81,9 +82,9 @@ namespace Sitecore.Gigya.Module.Helpers
             return model;
         }
 
-        protected override List<IGigyaModuleSettings> GetForSiteAndDefault(object id)
+        protected override List<SitecoreGigyaModuleSettings> GetForSiteAndDefault(object id)
         {
-            var result = new List<IGigyaModuleSettings>();
+            var result = new List<SitecoreGigyaModuleSettings>();
 
             using (SecurityModel.SecurityDisabler disabler = new SecurityModel.SecurityDisabler())
             {
@@ -104,14 +105,14 @@ namespace Sitecore.Gigya.Module.Helpers
             return result;
         }
 
-        public IGigyaModuleSettings Map(Item settings, string id)
+        public SitecoreGigyaModuleSettings Map(Item settings, string id)
         {
             return Map(settings, id, Context.Database);
         }
 
-        public IGigyaModuleSettings Map(Item settings, string id, Database database)
+        public SitecoreGigyaModuleSettings Map(Item settings, string id, Database database)
         {
-            var mapped = new GigyaModuleSettings
+            var mapped = new SitecoreGigyaModuleSettings
             {
                 Id = id,
                 ApiKey = settings.Fields[Constants.Fields.ApiKey].Value.Trim(),
@@ -122,6 +123,8 @@ namespace Sitecore.Gigya.Module.Helpers
                 DebugMode = ((CheckboxField)settings.Fields[Constants.Fields.DebugMode]).Checked,
                 DataCenter = Constants.DefaultSettings.DataCenter,
                 EnableRaas = ((CheckboxField)settings.Fields[Constants.Fields.EnableRaaS]).Checked,
+                EnableMembershipSync = ((CheckboxField)settings.Fields[Constants.Fields.EnableMembershipProviderSync]).Checked,
+                EnableXdb = ((CheckboxField)settings.Fields[Constants.Fields.EnableXdbSync]).Checked,
                 RedirectUrl = ((LinkField)settings.Fields[Constants.Fields.RedirectUrl]).GetFriendlyUrl(),
                 LogoutUrl = ((LinkField)settings.Fields[Constants.Fields.LogoutUrl]).GetFriendlyUrl(),
                 //MappingFields = settings.Fields[Constants.Fields.MembershipMappingFields].Value,
@@ -168,13 +171,13 @@ namespace Sitecore.Gigya.Module.Helpers
             }
         }
 
-        protected override string Language(IGigyaModuleSettings settings)
+        protected override string Language(SitecoreGigyaModuleSettings settings)
         {
             var languageHelper = new GigyaLanguageHelper();
             return languageHelper.Language(settings, SC.Context.Language.CultureInfo);
         }
 
-        protected override string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
+        protected override string ClientScriptPath(SitecoreGigyaModuleSettings settings, UrlHelper urlHelper)
         {
             var scriptName = settings.DebugMode ? "gigya-cms.js" : "gigya-cms.min.js";
             return string.Concat("~/scripts/gigya/", scriptName);
@@ -185,9 +188,9 @@ namespace Sitecore.Gigya.Module.Helpers
             throw new NotImplementedException();
         }
 
-        protected override IGigyaModuleSettings EmptySettings(object id)
+        protected override SitecoreGigyaModuleSettings EmptySettings(object id)
         {
-            return new GigyaModuleSettings { Id = id, DebugMode = true, EnableRaas = true };
+            return new SitecoreGigyaModuleSettings { Id = id, DebugMode = true, EnableRaas = true };
         }
     }
 }

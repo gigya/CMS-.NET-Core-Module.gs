@@ -59,7 +59,7 @@ namespace Gigya.Module.Connector.Helpers
             LoadSitefinityAssemblyVersion();
         }
 
-        public override IGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
+        public override GigyaModuleSettings GetForCurrentSite(bool decrypt = false)
         {
             var siteId = Guid.Empty;
             if (SystemManager.CurrentContext.IsMultisiteMode)
@@ -74,7 +74,7 @@ namespace Gigya.Module.Connector.Helpers
             return model;
         }
 
-        protected override List<IGigyaModuleSettings> GetForSiteAndDefault(object id)
+        protected override List<GigyaModuleSettings> GetForSiteAndDefault(object id)
         {
             var idList = id as string[];
             if (idList != null)
@@ -89,7 +89,7 @@ namespace Gigya.Module.Connector.Helpers
             }
         }
 
-        private IGigyaModuleSettings Map(GigyaSitefinityModuleSettings settings)
+        private GigyaModuleSettings Map(GigyaSitefinityModuleSettings settings)
         {
             return new GigyaModuleSettings
             {
@@ -112,7 +112,7 @@ namespace Gigya.Module.Connector.Helpers
             };
         }
 
-        protected override string Language(IGigyaModuleSettings settings)
+        protected override string Language(GigyaModuleSettings settings)
         {
             var languageHelper = new GigyaLanguageHelper();
 
@@ -128,7 +128,7 @@ namespace Gigya.Module.Connector.Helpers
             return languageHelper.Language(settings, culture);
         }
 
-        protected override string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
+        protected override string ClientScriptPath(GigyaModuleSettings settings, UrlHelper urlHelper)
         {
             var scriptName = settings.DebugMode ? "gigya-sitefinity.js" : "gigya-sitefinity.min.js";
             var scriptPath = FileHelper.GetPath("~/Mvc/Scripts/" + scriptName, urlHelper.WidgetContent("Mvc/Scripts/" + scriptName, ModuleClass.AssemblyName));
@@ -154,7 +154,7 @@ namespace Gigya.Module.Connector.Helpers
             }
         }
 
-        protected override IGigyaModuleSettings EmptySettings(object id)
+        protected override GigyaModuleSettings EmptySettings(object id)
         {
             return new GigyaModuleSettings { Id = id, DebugMode = true, EnableRaas = true };
         }

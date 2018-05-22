@@ -358,7 +358,7 @@ namespace Gigya.Module.BasicSettings
             return null;
         }
 
-        private IGigyaModuleSettings Map(GigyaSitefinityModuleSettings settings)
+        private GigyaModuleSettings Map(GigyaSitefinityModuleSettings settings)
         {
             var model = new GigyaModuleSettings
             {
