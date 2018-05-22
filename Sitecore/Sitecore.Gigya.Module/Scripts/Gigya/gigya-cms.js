@@ -275,7 +275,7 @@ var gigyaCms = {
         Login: 0,
         GetAccountInfo: 1
     },
-    loggingInClassName: 'gigya-logging-in',
+    loggingInClassName: 'gigya-cms-logging-in',
     authenticated: false,
     authenticatedOnServerByCurrentPage: false,
     baseUrl: '/api/gigya/account/',
@@ -411,25 +411,25 @@ var gigyaCms = {
             return;
         }
 
-        gigyaCms.attachEvents(document.getElementsByClassName('gigya-login'), 'click', function (event) {
+        gigyaCms.attachEvents(document.getElementsByClassName('gigya-cms-login'), 'click', function (event) {
             gigyaCms.showScreenSet(gigyaCms.screenSetSettings.login, event);
             event.preventDefault();
             return false;
         });
 
-        gigyaCms.attachEvents(document.getElementsByClassName('gigya-logout'), 'click', function (event) {
+        gigyaCms.attachEvents(document.getElementsByClassName('gigya-cms-logout'), 'click', function (event) {
             gigya.accounts.logout({ callback: gigyaCms.onLogoutTriggeredByUser });
             event.preventDefault();
             return false;
         });
 
-        gigyaCms.attachEvents(document.getElementsByClassName('gigya-register'), 'click', function (event) {
+        gigyaCms.attachEvents(document.getElementsByClassName('gigya-cms-register'), 'click', function (event) {
             gigyaCms.showScreenSet(gigyaCms.screenSetSettings.register, event);
             event.preventDefault();
             return false;
         });
 
-        gigyaCms.attachEvents(document.getElementsByClassName('gigya-edit-profile'), 'click', function (event) {
+        gigyaCms.attachEvents(document.getElementsByClassName('gigya-cms-edit-profile'), 'click', function (event) {
             gigyaCms.showScreenSet(gigyaCms.screenSetSettings.editProfile, event);
             event.preventDefault();
             return false;
@@ -437,7 +437,7 @@ var gigyaCms = {
 
         gigyaCms.initEmbeddedScreens();
 
-        var loggedInUrlElems = document.getElementsByClassName('gigya-logged-in-url');
+        var loggedInUrlElems = document.getElementsByClassName('gigya-cms-logged-in-url');
         for (var i = 0; i < loggedInUrlElems.length; i++) {
             if (loggedInUrlElems[i].value) {
                 gigyaCms.loggedInRedirectUrl = loggedInUrlElems[i].value;
@@ -445,7 +445,7 @@ var gigyaCms = {
             }
         }
 
-        var registeredAndLoggedInUrlElems = document.getElementsByClassName('gigya-registered-logged-in-url');
+        var registeredAndLoggedInUrlElems = document.getElementsByClassName('gigya-cms-registered-logged-in-url');
         for (var i = 0; i < registeredAndLoggedInUrlElems.length; i++) {
             if (registeredAndLoggedInUrlElems[i].value) {
                 gigyaCms.registeredAndLoggedInRedirectUrl = registeredAndLoggedInUrlElems[i].value;
@@ -453,7 +453,7 @@ var gigyaCms = {
             }
         }
 
-        var loggedOutUrlElems = document.getElementsByClassName('gigya-logged-out-url');
+        var loggedOutUrlElems = document.getElementsByClassName('gigya-cms-logged-out-url');
         for (var i = 0; i < loggedOutUrlElems.length; i++) {
             if (loggedOutUrlElems[i].value) {
                 gigyaCms.logoutRedirectUrl = loggedOutUrlElems[i].value;
@@ -464,7 +464,7 @@ var gigyaCms = {
         gigyaCms.initialized = true;
     },
     initEmbeddedScreens: function initEmbeddedScreens() {
-        var embeddedScreens = document.getElementsByClassName('gigya-embedded-screen');
+        var embeddedScreens = document.getElementsByClassName('gigya-cms-embedded-screen');
         for (var i = 0; i < embeddedScreens.length; i++) {
             var elem = embeddedScreens[i];
 
