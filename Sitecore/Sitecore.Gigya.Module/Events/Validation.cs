@@ -40,9 +40,26 @@ namespace Sitecore.Gigya.Module.Events
             {
                 return;
             }
+
+            if (updatedItem.Name == Constants.StandardValuesName)
+            {
+                // no need to validate standard values
+                return;
+            }
+
+            if ((DateTime.UtcNow - updatedItem.Created) < TimeSpan.FromSeconds(10))
+            {
+                // bit of hack to prevent this validation from running when and item is created
+                return;
+            }
             
             var settingsHelper = new Helpers.GigyaSettingsHelper();
             var mappedSettings = settingsHelper.Map(updatedItem, "validation-test", Context.ContentDatabase);
+            if (!mappedSettings.EnableRaas)
+            {
+                // RaaS not enabled or API key is empty so no need to continue
+                return;
+            }
 
             try
             {
