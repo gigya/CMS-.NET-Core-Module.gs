@@ -321,7 +321,7 @@ var gigyaCms = {
         // do nothing as page will be updated after next load
     },
     redirectAfterLogout: function redirectAfterLogout(url) {
-        gigyaCms.redirectAfterEvent(url, gigyaCms.logglogoutRedirectUrledInRedirectUrl);
+        gigyaCms.redirectAfterEvent(url, gigyaCms.logoutRedirectUrl);
     },
     genericErrorMessage: 'Sorry an error occurred. Please try again.',
     id: '',
