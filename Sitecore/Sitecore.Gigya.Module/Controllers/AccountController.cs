@@ -12,10 +12,11 @@ using SC = Sitecore;
 
 using Core = Gigya.Module.Core;
 using Sitecore.Gigya.Module.Repositories;
+using Sitecore.Gigya.Module.Models;
 
 namespace Sitecore.Gigya.Module.Controllers
 {
-    public class AccountController : Core.Mvc.Controllers.AccountController
+    public class AccountController : Core.Mvc.Controllers.AccountController<SitecoreGigyaModuleSettings>
     {
         protected readonly IAccountRepository _accountRepository;
         protected readonly GigyaAccountHelper _gigyaAccountHelper;
@@ -30,8 +31,8 @@ namespace Sitecore.Gigya.Module.Controllers
             Logger = new Logger(new SitecoreLogger());
             SettingsHelper = new Helpers.GigyaSettingsHelper();
 
-            _gigyaAccountHelper = new GigyaAccountHelper((Sitecore.Gigya.Module.Helpers.GigyaSettingsHelper)SettingsHelper, Logger, null, _accountRepository);
-            var apiHelper = new GigyaApiHelper(SettingsHelper, Logger);
+            _gigyaAccountHelper = new GigyaAccountHelper(SettingsHelper, Logger, null, _accountRepository);
+            var apiHelper = new GigyaApiHelper<SitecoreGigyaModuleSettings>(SettingsHelper, Logger);
             MembershipHelper = new GigyaMembershipHelper(apiHelper, Logger, _gigyaAccountHelper, _accountRepository);
         }
 

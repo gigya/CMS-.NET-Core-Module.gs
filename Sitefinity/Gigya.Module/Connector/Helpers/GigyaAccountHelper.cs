@@ -22,7 +22,7 @@ namespace Gigya.Module.Connector.Helpers
         private const string _checkedIfLoginRequiredKey = "GigyaAccountHelper.CheckedIfLoginRequiredKey";
         private const string _executedProcessRequestKey = "GigyaAccountHelper.ExecutedProcessRequestKey";
 
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null) : base(settingsHelper, logger, settings)
+        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, GigyaModuleSettings settings = null) : base(settingsHelper, logger, settings)
         {
         }
 
@@ -35,7 +35,7 @@ namespace Gigya.Module.Connector.Helpers
         /// Creates a new GigyaAccountHelper instance and calls LoginToGigyaIfRequired. This will only be run once per request no matter how many times it's called.
         /// </summary>
         [Obsolete("Use ProcessRequestCheck instead.")]
-        public static void ValidateAndLoginToGigyaIfRequired(HttpContext context, IGigyaModuleSettings settings = null)
+        public static void ValidateAndLoginToGigyaIfRequired(HttpContext context, GigyaModuleSettings settings = null)
         {
             if (context.Items.Contains(_checkedIfLoginRequiredKey))
             {
@@ -56,7 +56,7 @@ namespace Gigya.Module.Connector.Helpers
         /// </summary>
         /// <param name="context"></param>
         /// <param name="settings"></param>
-        public static void ProcessRequestChecks(HttpContext context, IGigyaModuleSettings settings = null)
+        public static void ProcessRequestChecks(HttpContext context, GigyaModuleSettings settings = null)
         {
             var currentNode = SiteMapBase.GetCurrentNode();
             if (currentNode != null && currentNode.IsBackend)

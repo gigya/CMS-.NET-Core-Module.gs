@@ -15,14 +15,15 @@ using System.Threading.Tasks;
 using System.Web;
 using SC = Sitecore;
 using Core = Gigya.Module.Core;
+using Sitecore.Gigya.Module.Models;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
-    public class GigyaMembershipHelper : GigyaMembershipHelperBase, IGigyaMembershipHelper
+    public class GigyaMembershipHelper : GigyaMembershipHelperBase<SitecoreGigyaModuleSettings>, IGigyaMembershipHelper<SitecoreGigyaModuleSettings>
     {
         private readonly IAccountRepository _accountRepository;
 
-        public GigyaMembershipHelper(GigyaApiHelper apiHelper, Logger logger, GigyaAccountHelper gigyaAccountHelper, IAccountRepository accountRepository) : base(apiHelper, gigyaAccountHelper, logger)
+        public GigyaMembershipHelper(GigyaApiHelper<SitecoreGigyaModuleSettings> apiHelper, Logger logger, GigyaAccountHelper gigyaAccountHelper, IAccountRepository accountRepository) : base(apiHelper, gigyaAccountHelper, logger)
         {
             _accountRepository = accountRepository;
         }
@@ -34,7 +35,7 @@ namespace Sitecore.Gigya.Module.Helpers
             _accountRepository.Logout();
         }
 
-        public void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public void UpdateProfile(LoginModel model, SitecoreGigyaModuleSettings settings, ref LoginResponseModel response)
         {
             var userInfoResponse = ValidateRequest(model, settings);
             if (userInfoResponse == null)
@@ -70,48 +71,53 @@ namespace Sitecore.Gigya.Module.Helpers
         /// <param name="username">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        //protected virtual bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
-        //{
-        //    //UserProfileManager profileManager = UserProfileManager.GetManager();
-        //    //UserManager userManager = UserManager.GetManager();
+        protected virtual bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, SitecoreGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        {
+            if (!settings.EnableMembershipSync)
+            {
+                return false;
+            }
 
-        //    //using (new ElevatedModeRegion(userManager))
-        //    //{
-        //    //    var user = userManager.GetUser(currentUsername);
-        //    //    user.Email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
+            //UserProfileManager profileManager = UserProfileManager.GetManager();
+            //UserManager userManager = UserManager.GetManager();
 
-        //    //    if (user.UserName != updatedUsername)
-        //    //    {
-        //    //        user.SetUserName(updatedUsername);
-        //    //    }
+            //using (new ElevatedModeRegion(userManager))
+            //{
+            //    var user = userManager.GetUser(currentUsername);
+            //    user.Email = GetMappedFieldWithFallback(gigyaModel, Constants.SitefinityFields.Email, Constants.GigyaFields.Email, mappingFields);
 
-        //    //    SitefinityProfile profile = profileManager.GetUserProfile<SitefinityProfile>(user);
+            //    if (user.UserName != updatedUsername)
+            //    {
+            //        user.SetUserName(updatedUsername);
+            //    }
 
-        //    //    if (profile == null)
-        //    //    {
-        //    //        profile = profileManager.CreateProfile(user, Guid.NewGuid(), typeof(SitefinityProfile)) as SitefinityProfile;
+            //    SitefinityProfile profile = profileManager.GetUserProfile<SitefinityProfile>(user);
 
-        //    //        // only set this on creation as it's possible to get 2 users with the same email address
-        //    //        profile.Nickname = user.Email;
-        //    //    }
+            //    if (profile == null)
+            //    {
+            //        profile = profileManager.CreateProfile(user, Guid.NewGuid(), typeof(SitefinityProfile)) as SitefinityProfile;
 
-        //    //    // map any custom fields
-        //    //    MapProfileFields(profile, gigyaModel, settings, mappingFields);
+            //        // only set this on creation as it's possible to get 2 users with the same email address
+            //        profile.Nickname = user.Email;
+            //    }
 
-        //    //    try
-        //    //    {
-        //    //        userManager.SaveChanges();
-        //    //        profileManager.SaveChanges();
-        //    //        return true;
-        //    //    }
-        //    //    catch (Exception e)
-        //    //    {
-        //    //        _logger.Error("Failed to update profile for userId: " + currentUsername, e);
-        //    //    }
-        //    //}
+            //    // map any custom fields
+            //    MapProfileFields(profile, gigyaModel, settings, mappingFields);
 
-        //    return false;
-        //}
+            //    try
+            //    {
+            //        userManager.SaveChanges();
+            //        profileManager.SaveChanges();
+            //        return true;
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        _logger.Error("Failed to update profile for userId: " + currentUsername, e);
+            //    }
+            //}
+
+            return false;
+        }
 
         ///// <summary>
         ///// Gets a Gigya value from the model.
@@ -140,7 +146,7 @@ namespace Sitecore.Gigya.Module.Helpers
         ///// <param name="profile">The profile to update.</param>
         ///// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         ///// <param name="settings">The Gigya module settings.</param>
-        //protected virtual void MapProfileFields(SitefinityProfile profile, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        //protected virtual void MapProfileFields(SitefinityProfile profile, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         //{
         //    //if (mappingFields == null)
         //    //{
@@ -194,7 +200,7 @@ namespace Sitecore.Gigya.Module.Helpers
         //    //    }
         //    //}
         //}
-        
+
 
         ///// <summary>
         ///// Creates a new Sitefinity profile.
@@ -204,7 +210,7 @@ namespace Sitecore.Gigya.Module.Helpers
         ///// <param name="userManager">Sitefinity user manager.</param>
         ///// <param name="profileManager">Sitefinity profile manager.</param>
         ///// <param name="user">The user that will be associated with the new profile.</param>
-        //protected virtual SitefinityProfile CreateProfile(dynamic gigyaModel, IGigyaModuleSettings settings, UserManager userManager, UserProfileManager profileManager, User user, List<MappingField> mappingFields)
+        //protected virtual SitefinityProfile CreateProfile(dynamic gigyaModel, GigyaModuleSettings settings, UserManager userManager, UserProfileManager profileManager, User user, List<MappingField> mappingFields)
         //{
         //    //SitefinityProfile profile = profileManager.CreateProfile(user, Guid.NewGuid(), typeof(SitefinityProfile)) as SitefinityProfile;
 
@@ -235,7 +241,7 @@ namespace Sitecore.Gigya.Module.Helpers
         ///// <summary>
         ///// Updates a user's profile in Sitefinity.
         ///// </summary>
-        //public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        //public virtual void UpdateProfile(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
         //{
         //    var userInfoResponse = ValidateRequest(model, settings);
         //    if (userInfoResponse == null)
@@ -278,7 +284,7 @@ namespace Sitecore.Gigya.Module.Helpers
         /// </summary>
         /// <param name="settings">Current site settings.</param>
         /// <returns>The UID value.</returns>
-        public string GetUidForCurrentUser(IGigyaModuleSettings settings)
+        public string GetUidForCurrentUser(GigyaModuleSettings settings)
         {
             // check user is logged in
             var currentIdentity = SC.Context.User;
@@ -290,7 +296,7 @@ namespace Sitecore.Gigya.Module.Helpers
             return currentIdentity.Name;
         }
 
-        protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        protected override bool LoginByUsername(string username, SitecoreGigyaModuleSettings settings)
         {
             var persistent = PersistentAuthRequired(settings);
             return _accountRepository.Login(username, persistent) != null;
@@ -301,7 +307,7 @@ namespace Sitecore.Gigya.Module.Helpers
             return _accountRepository.Exists(username);
         }
 
-        protected override bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected override bool CreateUserInternal(string username, dynamic gigyaModel, SitecoreGigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             var persistent = PersistentAuthRequired(settings);
             var email = DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.Email);
@@ -310,7 +316,7 @@ namespace Sitecore.Gigya.Module.Helpers
             return true;
         }
 
-        protected override bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected override bool AuthenticateUser(string username, SitecoreGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             var isLoggedIn = LoginByUsername(username, settings);
             if (!isLoggedIn)

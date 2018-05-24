@@ -10,6 +10,8 @@ using System.Linq;
 using System.Web;
 using Sitecore.Gigya.Module.Helpers;
 using Gigya.Module.Core.Connector.Helpers;
+using Gigya.Module.Core.Data;
+using Sitecore.Gigya.Module.Models;
 
 namespace Sitecore.Gigya.Module.Events
 {
@@ -72,7 +74,7 @@ namespace Sitecore.Gigya.Module.Events
                 return;
             }
 
-            var apiHelper = new GigyaApiHelper(settingsHelper, logger);
+            var apiHelper = new GigyaApiHelper<SitecoreGigyaModuleSettings>(settingsHelper, logger);
             var plainTextApplicationSecret = settingsHelper.TryDecryptApplicationSecret(mappedSettings.ApplicationSecret, false);
             if (string.IsNullOrEmpty(plainTextApplicationSecret))
             {

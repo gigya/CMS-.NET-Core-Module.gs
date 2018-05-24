@@ -14,28 +14,35 @@ using Gigya.Module.Core.Connector.Common;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
-    public class GigyaApiHelper
+    public class GigyaApiHelper : GigyaApiHelper<GigyaModuleSettings>
     {
-        private readonly GigyaSettingsHelper _settingsHelper;
+        public GigyaApiHelper(IGigyaSettingsHelper<GigyaModuleSettings> settingsHelper, Logger logger) : base(settingsHelper, logger)
+        {
+        }
+    }
+
+    public class GigyaApiHelper<T> where T: GigyaModuleSettings
+    {
+        private readonly IGigyaSettingsHelper<T> _settingsHelper;
         private readonly Logger _logger;
 
-        public GigyaApiHelper(GigyaSettingsHelper settingsHelper, Logger logger)
+        public GigyaApiHelper(IGigyaSettingsHelper<T> settingsHelper, Logger logger)
         {
             _settingsHelper = settingsHelper;
             _logger = logger;
         }
 
-        private GSRequest NewRequest(IGigyaModuleSettings settings, string applicationSecret, string method)
+        private GSRequest NewRequest(GigyaModuleSettings settings, string applicationSecret, string method)
         {
             return new GSRequest(settings.ApiKey, applicationSecret, method, null, true, settings.ApplicationKey);
         }
 
-        private GSRequest NewRequest(IGigyaModuleSettings settings, string method)
+        private GSRequest NewRequest(GigyaModuleSettings settings, string method)
         {
             return NewRequest(settings, settings.ApplicationSecret, method);
         }
 
-        public GSResponse VerifySettings(IGigyaModuleSettings settings, string applicationSecret)
+        public GSResponse VerifySettings(GigyaModuleSettings settings, string applicationSecret)
         {
             var method = "accounts.getPolicies";
             var request = NewRequest(settings, applicationSecret, method);
@@ -43,7 +50,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return response;
         }
 
-        public GSResponse ExchangeSignature(string userId, IGigyaModuleSettings settings, string userIdSignature, string signatureTimestamp, string userKey)
+        public GSResponse ExchangeSignature(string userId, GigyaModuleSettings settings, string userIdSignature, string signatureTimestamp, string userKey)
         {
             var method = "accounts.exchangeUIDSignature";
             var request = NewRequest(settings, method);
@@ -59,7 +66,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <summary>
         /// Validates an application key signatures by calling accounts.exchangeUIDSignature and checking the response signature.
         /// </summary>
-        public bool ValidateApplicationKeySignature(string userId, IGigyaModuleSettings settings, GSResponse originalResponse)
+        public bool ValidateApplicationKeySignature(string userId, GigyaModuleSettings settings, GSResponse originalResponse)
         {
             // this uses the Send method which validates the signature
             var response = ExchangeSignature(userId, settings, originalResponse.GetString(Constants.GigyaFields.UserIdSignature, null),
@@ -77,13 +84,13 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <summary>
         /// Validates an application key signatures by calling accounts.exchangeUIDSignature and checking the response signature.
         /// </summary>
-        public bool ValidateApplicationKeySignature(string userId, IGigyaModuleSettings settings, string signatureTimestamp, string signature)
+        public bool ValidateApplicationKeySignature(string userId, GigyaModuleSettings settings, string signatureTimestamp, string signature)
         {
             var response = ExchangeSignature(userId, settings, signature, signatureTimestamp, settings.ApplicationKey);
             return ValidateExchangeSignatureResponse(response);
         }
 
-        public GSResponse GetAccountInfo(string userId, IGigyaModuleSettings settings)
+        public GSResponse GetAccountInfo(string userId, GigyaModuleSettings settings)
         {
             var method = "accounts.getAccountInfo";
             var request = NewRequest(settings, method);
@@ -94,7 +101,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return response;
         }
 
-        public GSResponse NotifyLogin(string userId, int sessionExpiration, IGigyaModuleSettings settings)
+        public GSResponse NotifyLogin(string userId, int sessionExpiration, GigyaModuleSettings settings)
         {
             var method = "accounts.notifyLogin";
             var request = NewRequest(settings, method);
@@ -106,7 +113,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return response;
         }
 
-        public bool ValidateSignature(string userId, IGigyaModuleSettings settings, GSResponse response, bool disableSignatureExchange = false)
+        public bool ValidateSignature(string userId, GigyaModuleSettings settings, GSResponse response, bool disableSignatureExchange = false)
         {
             return SigUtils.ValidateUserSignature(userId, response.GetString(Constants.GigyaFields.SignatureTimestamp, null),
                 settings.ApplicationSecret, response.GetString(Constants.GigyaFields.UserIdSignature, null));
@@ -120,7 +127,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <param name="settings">The Gigya module settings.</param>
         /// <param name="validateSignature">If set to true, the signature will be validated.</param>
         /// <returns></returns>
-        private GSResponse Send(GSRequest request, string apiMethod, IGigyaModuleSettings settings, bool validateSignature)
+        private GSResponse Send(GSRequest request, string apiMethod, GigyaModuleSettings settings, bool validateSignature)
         {
             if (apiMethod == "accounts.getAccountInfo")
             {
@@ -187,7 +194,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return response;
         }
 
-        private void LogRequestIfRequired(IGigyaModuleSettings settings, string apiMethod)
+        private void LogRequestIfRequired(GigyaModuleSettings settings, string apiMethod)
         {
             if (settings.DebugMode)
             {
@@ -195,12 +202,12 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
         }
 
-        private void LogResponseIfRequired(IGigyaModuleSettings settings, string apiMethod, GSResponse response)
+        private void LogResponseIfRequired(GigyaModuleSettings settings, string apiMethod, GSResponse response)
         {
             LogResponseIfRequired(_logger, settings, apiMethod, response);
         }
 
-        public static void LogResponseIfRequired(Logger logger, IGigyaModuleSettings settings, string apiMethod, GSResponse response)
+        public static void LogResponseIfRequired(Logger logger, GigyaModuleSettings settings, string apiMethod, GSResponse response)
         {
             if (settings.DebugMode)
             {

@@ -21,7 +21,14 @@ using Gigya.Module.Core.Connector.Models;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
-    public abstract class GigyaSettingsHelper : IGigyaSettingsHelper
+    public abstract class GigyaSettingsHelper : GigyaSettingsHelper<GigyaModuleSettings>, IGigyaSettingsHelper
+    {
+        public GigyaSettingsHelper() : base()
+        {
+        }
+    }
+
+    public abstract class GigyaSettingsHelper<T> : IGigyaSettingsHelper<T> where T: GigyaModuleSettings
     {
         protected IEncryptionService _encryptionService;
 
@@ -41,7 +48,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         }
 
         private const string _cacheKeyBase = "GigyaSettingsHelper-6A0A6E65-F65B-4197-8D4E-2BDCD5680EAF";
-        protected abstract string Language(IGigyaModuleSettings settings);
+        protected abstract string Language(T settings);
         public abstract string CmsName { get; }
         public abstract string CmsVersion { get; }
         public abstract string ModuleVersion { get; }
@@ -50,7 +57,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// Gets the Gigya module settings for the current site.
         /// </summary>
         /// <param name="decrypt">Whether to decrypt the application secret.</param>
-        public abstract IGigyaModuleSettings GetForCurrentSite(bool decrypt = false);
+        public abstract T GetForCurrentSite(bool decrypt = false);
 
         /// <summary>
         /// Deletes the Gigya module settings for the site with id of <paramref name="id"/>.
@@ -58,11 +65,11 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <param name="id">Id of the site whose settings will be deleted.</param>
         public abstract void Delete(object id);
 
-        protected abstract List<IGigyaModuleSettings> GetForSiteAndDefault(object id);
+        protected abstract List<T> GetForSiteAndDefault(object id);
 
-        protected abstract IGigyaModuleSettings EmptySettings(object id);
+        protected abstract T EmptySettings(object id);
 
-        protected virtual string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
+        protected virtual string ClientScriptPath(T settings, UrlHelper urlHelper)
         {
             var scriptName = settings.DebugMode ? "gigya-cms.js" : "gigya-cms.min.js";
             return string.Concat("~/scripts/", scriptName);
@@ -73,7 +80,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// </summary>
         /// <param name="settings">The settings for the current site.</param>
         /// <param name="urlHelper">UrlHelper for the current request.</param>
-        public virtual GigyaSettingsViewModel ViewModel(IGigyaModuleSettings settings, UrlHelper urlHelper, CurrentIdentity currentIdentity)
+        public virtual GigyaSettingsViewModel ViewModel(T settings, UrlHelper urlHelper, CurrentIdentity currentIdentity)
         {
             var model = new GigyaSettingsViewModel
             {
@@ -120,7 +127,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return model;
         }
 
-        public int SessionExpiration(IGigyaModuleSettings settings)
+        public int SessionExpiration(T settings)
         {
             var globalSettings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<ExpandoObject>(settings.GlobalParameters) : new ExpandoObject();
 
@@ -139,15 +146,15 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// </summary>
         /// <param name="id">The Id of the site.</param>
         /// <param name="decrypt">Whether to decrypt the application secret.</param>
-        public virtual IGigyaModuleSettings Get(object id, bool decrypt = false)
+        public virtual T Get(object id, bool decrypt = false)
         {
             var cacheKey = string.Concat(_cacheKeyBase, id, decrypt);
-            IGigyaModuleSettings settings = null;
+            T settings = null;
 
             var context = HttpContext.Current;
             if (context != null)
             {
-                settings = context.Items[cacheKey] as IGigyaModuleSettings;
+                settings = context.Items[cacheKey] as T;
                 if (settings != null)
                 {
                     return settings;
@@ -177,12 +184,12 @@ namespace Gigya.Module.Core.Connector.Helpers
             return settings;
         }
 
-        protected virtual IGigyaModuleSettings GetSettingsFromGlobalOrSite(object siteId, List<IGigyaModuleSettings> siteSettingsAndGlobal)
+        protected virtual T GetSettingsFromGlobalOrSite(object siteId, List<T> siteSettingsAndGlobal)
         {
             return siteSettingsAndGlobal.FirstOrDefault(i => i.Id == siteId) ?? siteSettingsAndGlobal.OrderByDescending(i => i.Id).FirstOrDefault() ?? EmptySettings(siteId);
         }
 
-        private void MapOldDataCenter(ref IGigyaModuleSettings settings)
+        private void MapOldDataCenter(ref T settings)
         {
             settings.DataCenter = MapOldDataCenter(settings.DataCenter);
         }
@@ -210,7 +217,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <summary>
         /// Decrypts an application secret if required.
         /// </summary>
-        public virtual void DecryptApplicationSecret(ref IGigyaModuleSettings settings)
+        public virtual void DecryptApplicationSecret(ref T settings)
         {
             if (!string.IsNullOrEmpty(settings.ApplicationSecret))
             {
@@ -234,7 +241,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return null;
         }
 
-        public void Validate(IGigyaModuleSettings settings)
+        public void Validate(T settings)
         {
             if (string.IsNullOrEmpty(settings.ApiKey))
             {

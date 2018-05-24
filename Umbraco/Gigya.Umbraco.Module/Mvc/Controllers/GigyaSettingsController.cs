@@ -23,7 +23,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
     {
         private Logger _logger;
         private Helpers.GigyaSettingsHelper _settingsHelper;
-        private IGigyaMembershipHelper _membershipHelper;
+        private IGigyaMembershipHelper<GigyaModuleSettings> _membershipHelper;
         private readonly GigyaAccountHelper _gigyaAccountHelper;
 
         public GigyaSettingsController()

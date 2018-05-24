@@ -41,7 +41,7 @@ namespace Gigya.Module.Core.Connector.Events
     {
         public List<MappingField> MappingFields { get; set; }
         public Logger Logger { get; set; }
-        public IGigyaModuleSettings Settings { get; set; }
+        public GigyaModuleSettings Settings { get; set; }
         public dynamic GigyaModel { get; set; }
         public object CurrentSiteId { get; set; }
     }
@@ -49,7 +49,7 @@ namespace Gigya.Module.Core.Connector.Events
     public class AccountInfoMergeCompletedEventArgs : EventArgs
     {
         public Logger Logger { get; set; }
-        public IGigyaModuleSettings Settings { get; set; }
+        public GigyaModuleSettings Settings { get; set; }
         public dynamic GigyaModel { get; set; }
         public object CurrentSiteId { get; set; }
     }
@@ -57,7 +57,7 @@ namespace Gigya.Module.Core.Connector.Events
     public class FetchDSCompletedEventArgs : EventArgs
     {
         public Logger Logger { get; set; }
-        public IGigyaModuleSettings Settings { get; set; }
+        public GigyaModuleSettings Settings { get; set; }
         public dynamic GigyaModel { get; set; }
     }
 }

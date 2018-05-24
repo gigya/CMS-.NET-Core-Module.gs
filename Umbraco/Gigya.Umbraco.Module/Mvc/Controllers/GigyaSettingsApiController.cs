@@ -74,7 +74,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             return wrappedModel;
         }
 
-        private GigyaSettingsModel GetModel(int id, IGigyaModuleSettings data)
+        private GigyaSettingsModel GetModel(int id, GigyaModuleSettings data)
         {
             var model = Map(data);
 
@@ -95,7 +95,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             return model;
         }
 
-        private void ApplyDefaults(ref GigyaSettingsModel model, IGigyaModuleSettings settings)
+        private void ApplyDefaults(ref GigyaSettingsModel model, GigyaModuleSettings settings)
         {
             if (string.IsNullOrEmpty(model.Language.Code))
             {
@@ -263,7 +263,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             return null;
         }
 
-        private IGigyaModuleSettings Map(GigyaUmbracoModuleSettings settings)
+        private GigyaModuleSettings Map(GigyaUmbracoModuleSettings settings)
         {
             var model = new GigyaModuleSettings
             {
@@ -287,7 +287,7 @@ namespace Gigya.Umbraco.Module.Mvc.Controllers
             return model;
         }
 
-        private GigyaSettingsModel Map(IGigyaModuleSettings settings)
+        private GigyaSettingsModel Map(GigyaModuleSettings settings)
         {
             var user = UmbracoContext.Application.Services.UserService.GetByUsername(User.Identity.Name);
             var language = new GigyaLanguageModel();

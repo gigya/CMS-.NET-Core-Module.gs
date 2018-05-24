@@ -28,7 +28,7 @@ namespace Gigya.UnitTests
             }
         }
 
-        private IGigyaModuleSettings Settings()
+        private GigyaModuleSettings Settings()
         {
             return new GigyaModuleSettings
             {
@@ -43,7 +43,7 @@ namespace Gigya.UnitTests
             };
         }
 
-        //private IGigyaModuleSettings Settings()
+        //private GigyaModuleSettings Settings()
         //{
         //    return new GigyaModuleSettings
         //    {

@@ -14,7 +14,7 @@ namespace Gigya.Sitefinity.Module.DS.Helpers
 {
     public class GigyaSitefinityDsHelper : GigyaDsHelper
     {
-        public GigyaSitefinityDsHelper(IGigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null) : base(settings, logger, dsSettings, apiHelper)
+        public GigyaSitefinityDsHelper(GigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null) : base(settings, logger, dsSettings, apiHelper)
         {
         }
 

@@ -22,7 +22,7 @@ namespace Gigya.UnitTests
         {
             // arrange
             var currentIdentity = new CurrentIdentity();
-            IGigyaModuleSettings settings = new GigyaModuleSettings
+            GigyaModuleSettings settings = new GigyaModuleSettings
             {
                 SessionTimeout = 10,
                 GigyaSessionMode = Module.Core.Connector.Enums.GigyaSessionMode.Fixed,
@@ -51,7 +51,7 @@ namespace Gigya.UnitTests
             Thread.CurrentThread.CurrentUICulture = culture;
 
             var currentIdentity = new CurrentIdentity();
-            IGigyaModuleSettings settings = new GigyaModuleSettings
+            GigyaModuleSettings settings = new GigyaModuleSettings
             {
                 SessionTimeout = 10,
                 Language = "auto"
@@ -75,7 +75,7 @@ namespace Gigya.UnitTests
             Thread.CurrentThread.CurrentUICulture = culture;
 
             var currentIdentity = new CurrentIdentity();
-            IGigyaModuleSettings settings = new GigyaModuleSettings
+            GigyaModuleSettings settings = new GigyaModuleSettings
             {
                 SessionTimeout = 10,
                 Language = "auto",

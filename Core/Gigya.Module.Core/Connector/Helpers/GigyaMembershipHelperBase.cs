@@ -16,13 +16,20 @@ using System.Web;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
-    public abstract class GigyaMembershipHelperBase
+    public abstract class GigyaMembershipHelperBase : GigyaMembershipHelperBase<GigyaModuleSettings>
     {
-        protected readonly GigyaAccountHelperBase _gigyaAccountHelper;
-        protected readonly GigyaApiHelper _gigyaApiHelper;
+        public GigyaMembershipHelperBase(GigyaApiHelper apiHelper, GigyaAccountHelperBase gigyaAccountHelper, Logger logger) : base(apiHelper, gigyaAccountHelper, logger)
+        {
+        }
+    }
+
+    public abstract class GigyaMembershipHelperBase<T> where T : GigyaModuleSettings, new()
+    {
+        protected readonly GigyaAccountHelperBase<T> _gigyaAccountHelper;
+        protected readonly GigyaApiHelper<T> _gigyaApiHelper;
         protected readonly Logger _logger;
 
-        public GigyaMembershipHelperBase(GigyaApiHelper apiHelper, GigyaAccountHelperBase gigyaAccountHelper, Logger logger)
+        public GigyaMembershipHelperBase(GigyaApiHelper<T> apiHelper, GigyaAccountHelperBase<T> gigyaAccountHelper, Logger logger)
         {
             _gigyaApiHelper = apiHelper;
             _logger = logger;
@@ -71,7 +78,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return value;
         }
 
-        protected bool PersistentAuthRequired(IGigyaModuleSettings settings)
+        protected bool PersistentAuthRequired(T settings)
         {
             if (settings.SessionProvider == Enums.GigyaSessionProvider.CMS || settings.SessionProvider != Enums.GigyaSessionProvider.Gigya)
             {
@@ -88,7 +95,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
         }
 
-        protected GSResponse ValidateRequest(LoginModel model, IGigyaModuleSettings settings)
+        protected GSResponse ValidateRequest(LoginModel model, T settings)
         {
             if (!settings.EnableRaas)
             {
@@ -121,7 +128,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return userInfoResponse;
         }
 
-        protected List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
+        protected List<MappingField> GetMappingFields(T settings)
         {
             if (settings.MappedMappingFields != null)
             {
@@ -130,7 +137,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             return !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
         }
 
-        protected void ThrowTestingExceptionIfRequired(IGigyaModuleSettings settings, dynamic userInfo)
+        protected void ThrowTestingExceptionIfRequired(T settings, dynamic userInfo)
         {
             if (settings.DebugMode && DynamicUtils.GetValue<string>(userInfo, "profile.email") == Constants.Testing.EmailWhichThrowsException)
             {
@@ -140,7 +147,7 @@ namespace Gigya.Module.Core.Connector.Helpers
 
         protected abstract object ConvertCurrentSiteId(object currentSiteId);
 
-        protected ExpandoObject GetAccountInfo(object currentSiteId, IGigyaModuleSettings settings, GSResponse userInfoResponse, List<MappingField> mappingFields)
+        protected ExpandoObject GetAccountInfo(object currentSiteId, T settings, GSResponse userInfoResponse, List<MappingField> mappingFields)
         {
             var userInfo = JsonConvert.DeserializeObject<ExpandoObject>(userInfoResponse.GetResponseText());
             ThrowTestingExceptionIfRequired(settings, userInfo);
@@ -181,9 +188,9 @@ namespace Gigya.Module.Core.Connector.Helpers
             return GetGigyaFieldFromCmsAlias(userInfo, CmsUserIdField, userInfo.UID, mappingFields);
         }
 
-        protected abstract bool LoginByUsername(string username, IGigyaModuleSettings settings);
+        protected abstract bool LoginByUsername(string username, T settings);
 
-        public bool Login(string gigyaUid, IGigyaModuleSettings settings)
+        public bool Login(string gigyaUid, T settings)
         {
             var username = gigyaUid;
 
@@ -198,9 +205,9 @@ namespace Gigya.Module.Core.Connector.Helpers
 
         protected abstract bool Exists(string username);
 
-        protected abstract bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields);
+        protected abstract bool CreateUserInternal(string username, dynamic gigyaModel, T settings, List<MappingField> mappingFields);
 
-        protected abstract bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields);
+        protected abstract bool AuthenticateUser(string username, T settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields);
 
         /// <summary>
         /// Login or register a user.
@@ -208,7 +215,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// <param name="model">Details from the client e.g. signature and userId.</param>
         /// <param name="settings">Gigya module settings.</param>
         /// <param name="response">Response model that will be returned to the client.</param>
-        public virtual void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public virtual void LoginOrRegister(LoginModel model, T settings, ref LoginResponseModel response)
         {
             response.Status = ResponseStatus.Error;
 

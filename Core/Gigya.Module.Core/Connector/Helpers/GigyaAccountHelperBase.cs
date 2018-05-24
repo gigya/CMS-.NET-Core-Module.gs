@@ -13,13 +13,20 @@ using System.Web;
 
 namespace Gigya.Module.Core.Connector.Helpers
 {
-    public abstract class GigyaAccountHelperBase
+    public abstract class GigyaAccountHelperBase : GigyaAccountHelperBase<GigyaModuleSettings>
     {
-        protected GigyaSettingsHelper _settingsHelper;
-        protected IGigyaModuleSettings _settings;
+        public GigyaAccountHelperBase(IGigyaSettingsHelper<GigyaModuleSettings> settingsHelper, Logger logger, GigyaModuleSettings settings = null) : base(settingsHelper, logger, settings)
+        {
+        }
+    }
+
+    public abstract class GigyaAccountHelperBase<T> where T: GigyaModuleSettings
+    {
+        protected IGigyaSettingsHelper<T> _settingsHelper;
+        protected T _settings;
         protected Logger _logger;
 
-        public GigyaAccountHelperBase(GigyaSettingsHelper settingsHelper, Logger logger, IGigyaModuleSettings settings = null)
+        public GigyaAccountHelperBase(IGigyaSettingsHelper<T> settingsHelper, Logger logger, T settings = null)
         {
             _settings = settings ?? settingsHelper.GetForCurrentSite(true);
             _logger = logger;
@@ -41,7 +48,7 @@ namespace Gigya.Module.Core.Connector.Helpers
                 return;
             }
 
-            var helper = new GigyaApiHelper(_settingsHelper, _logger);
+            var helper = new GigyaApiHelper<T>(_settingsHelper, _logger);
             var sessionExpiration = _settingsHelper.SessionExpiration(_settings);
             var apiResponse = helper.NotifyLogin(uid, sessionExpiration, _settings);
 

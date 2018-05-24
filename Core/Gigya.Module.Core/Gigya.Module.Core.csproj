@@ -109,7 +109,6 @@
     <Compile Include="Connector\Models\MappingField.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaLanguage.cs" />
-    <Compile Include="Data\IGigyaSettings.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
     <Compile Include="Mvc\Controllers\BaseController.cs" />
     <Compile Include="Mvc\JsonNetResult.cs" />

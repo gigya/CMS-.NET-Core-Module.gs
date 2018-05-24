@@ -14,7 +14,7 @@ namespace Gigya.Umbraco.Module.DS.Helpers
 {
     public class GigyaUmbracoDsHelper : GigyaDsHelper
     {
-        public GigyaUmbracoDsHelper(IGigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null) : base(settings, logger, dsSettings, apiHelper)
+        public GigyaUmbracoDsHelper(GigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null) : base(settings, logger, dsSettings, apiHelper)
         {
         }
 

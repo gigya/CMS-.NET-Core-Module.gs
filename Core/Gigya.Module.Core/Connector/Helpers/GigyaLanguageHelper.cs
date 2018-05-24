@@ -15,7 +15,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         /// Gets the Gigya language to use.
         /// </summary>
         /// <returns>A culture code.</returns>
-        public string Language(IGigyaModuleSettings settings, CultureInfo currentCulture)
+        public string Language(GigyaModuleSettings settings, CultureInfo currentCulture)
         {
             if (settings.Language != "auto")
             {

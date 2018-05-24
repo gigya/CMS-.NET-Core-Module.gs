@@ -3,6 +3,7 @@ using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Data;
 using Gigya.Module.Core.Mvc.Models;
+using Sitecore.Gigya.Module.Models;
 using Sitecore.Gigya.Module.Repositories;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,12 @@ using SC = Sitecore;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
-    public class GigyaAccountHelper : GigyaAccountHelperBase
+    public class GigyaAccountHelper : GigyaAccountHelperBase<SitecoreGigyaModuleSettings>
     {
         private readonly IAccountRepository _accountRepository;
 
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger, GigyaModuleSettings settings, IAccountRepository accountRepository) : base(settingsHelper, logger, settings)
+        public GigyaAccountHelper(IGigyaSettingsHelper<SitecoreGigyaModuleSettings> settingsHelper, Logger logger, SitecoreGigyaModuleSettings settings, IAccountRepository accountRepository)
+            : base(settingsHelper, logger, settings)
         {
             _accountRepository = accountRepository;
         }

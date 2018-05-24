@@ -12,7 +12,7 @@ namespace Gigya.Umbraco.Module.Data
 {
     /// <summary>
     /// Ideally this class wouldn't be required as we could just use GigyaModuleSettings but unfortunately there isn't a way to specify the Db type.
-    /// The IGigyaModuleSettings interface Id property needs to be an object as some CMS' use Guid's as the primary key.
+    /// The GigyaModuleSettings interface Id property needs to be an object as some CMS' use Guid's as the primary key.
     /// </summary>
     [TableName("gigya_settings")]
     public class GigyaUmbracoModuleSettings

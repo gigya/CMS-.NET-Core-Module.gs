@@ -9,10 +9,23 @@ using Gigya.Module.Core.Connector.Enums;
 
 namespace Gigya.Module.Core.Mvc.Controllers
 {
-    public abstract class AccountController : BaseController
+    public abstract class AccountController : AccountController<GigyaModuleSettings>
     {
-        protected IGigyaMembershipHelper MembershipHelper { set; get; }
-        protected GigyaSettingsHelper SettingsHelper { set; get; }
+        public AccountController() : base()
+        {
+
+        }
+
+        public AccountController(IGigyaMembershipHelper<GigyaModuleSettings> membershipHelper, IGigyaSettingsHelper<GigyaModuleSettings> settingsHelper, Logger logger) 
+            : base(membershipHelper, settingsHelper, logger)
+        {
+        }
+    }
+
+    public abstract class AccountController<T> : BaseController where T: GigyaModuleSettings
+    {
+        protected IGigyaMembershipHelper<T> MembershipHelper { set; get; }
+        protected IGigyaSettingsHelper<T> SettingsHelper { set; get; }
         protected Logger Logger { set; get; }
 
         public AccountController()
@@ -20,7 +33,7 @@ namespace Gigya.Module.Core.Mvc.Controllers
 
         }
 
-        public AccountController(IGigyaMembershipHelper membershipHelper, GigyaSettingsHelper settingsHelper, Logger logger)
+        public AccountController(IGigyaMembershipHelper<T> membershipHelper, IGigyaSettingsHelper<T> settingsHelper, Logger logger)
         {
             MembershipHelper = membershipHelper;
             SettingsHelper = settingsHelper;
@@ -98,7 +111,7 @@ namespace Gigya.Module.Core.Mvc.Controllers
         /// <summary>
         /// Logsin or registers a user.
         /// </summary>
-        protected virtual void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        protected virtual void LoginOrRegister(LoginModel model, T settings, ref LoginResponseModel response)
         {
             if (model.LoginSource == LoginSource.GetAccountInfo && settings.SessionProvider == GigyaSessionProvider.CMS)
             {

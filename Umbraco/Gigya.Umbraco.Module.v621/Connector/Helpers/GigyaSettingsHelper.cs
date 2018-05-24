@@ -51,7 +51,7 @@ namespace Gigya.Umbraco.Module.v621.Helpers
             }
         }
 
-        public override IGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
+        public override GigyaModuleSettings GetForCurrentSite(bool decrypt = false)
         {
             // get current page id
             var currentPageId = UmbracoContext.Current.PageId;
@@ -99,12 +99,12 @@ namespace Gigya.Umbraco.Module.v621.Helpers
             db.Delete<GigyaUmbracoModuleSettings>(id);
         }
 
-        protected override IGigyaModuleSettings EmptySettings(object id)
+        protected override GigyaModuleSettings EmptySettings(object id)
         {
             return new GigyaModuleSettings { Id = id, DebugMode = true, EnableRaas = true };
         }
 
-        protected override List<IGigyaModuleSettings> GetForSiteAndDefault(object id)
+        protected override List<GigyaModuleSettings> GetForSiteAndDefault(object id)
         {
             if (id == null)
             {
@@ -123,19 +123,19 @@ namespace Gigya.Umbraco.Module.v621.Helpers
             return data.Select(Map).ToList();
         }
 
-        protected override string Language(IGigyaModuleSettings settings)
+        protected override string Language(GigyaModuleSettings settings)
         {
             var languageHelper = new GigyaLanguageHelper();
             return languageHelper.Language(settings, CultureInfo.CurrentUICulture);
         }
 
-        protected override string ClientScriptPath(IGigyaModuleSettings settings, UrlHelper urlHelper)
+        protected override string ClientScriptPath(GigyaModuleSettings settings, UrlHelper urlHelper)
         {
             var scriptName = settings.DebugMode ? "gigya-cms.js" : "gigya-cms.min.js";
             return string.Concat("~/scripts/", scriptName);
         }
 
-        private IGigyaModuleSettings Map(GigyaUmbracoModuleSettings settings)
+        private GigyaModuleSettings Map(GigyaUmbracoModuleSettings settings)
         {
             return new GigyaModuleSettings
             {

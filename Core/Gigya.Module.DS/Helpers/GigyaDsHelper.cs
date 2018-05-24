@@ -17,12 +17,12 @@ namespace Gigya.Module.DS.Helpers
 {
     public class GigyaDsHelper
     {
-        protected readonly IGigyaModuleSettings _settings;
+        protected readonly GigyaModuleSettings _settings;
         protected readonly Logger _logger;
         protected readonly GigyaDsSettings _dsSettings;
         protected readonly GigyaDsApiHelper _apiHelper;
 
-        public GigyaDsHelper(IGigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null)
+        public GigyaDsHelper(GigyaModuleSettings settings, Logger logger, GigyaDsSettings dsSettings, GigyaDsApiHelper apiHelper = null)
         {
             _settings = settings;
             _logger = logger;

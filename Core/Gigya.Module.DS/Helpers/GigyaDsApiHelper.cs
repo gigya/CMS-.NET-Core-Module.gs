@@ -22,7 +22,7 @@ namespace Gigya.Module.DS.Helpers
             _logger = logger;
         }
 
-        protected virtual GSRequest NewRequest(IGigyaModuleSettings settings, string applicationSecret, string method)
+        protected virtual GSRequest NewRequest(GigyaModuleSettings settings, string applicationSecret, string method)
         {
             var request = new GSRequest(settings.ApiKey, applicationSecret, method, null, true, settings.ApplicationKey);            
             if (!string.IsNullOrEmpty(settings.DataCenter))
@@ -33,7 +33,7 @@ namespace Gigya.Module.DS.Helpers
             return request;
         }
 
-        public GSResponse GetSchema(IGigyaModuleSettings settings, string gigyaType)
+        public GSResponse GetSchema(GigyaModuleSettings settings, string gigyaType)
         {
             var method = "ds.getSchema";
             var request = NewRequest(settings, settings.ApplicationSecret, method);
@@ -51,7 +51,7 @@ namespace Gigya.Module.DS.Helpers
         /// <param name="oid">The oid of the ds field.</param>
         /// <param name="gigyaType">The ds type.</param>
         /// <param name="fields">The fields to retrieve.</param>
-        public GSResponse Get(IGigyaModuleSettings settings, string uid, string oid, string gigyaType, IEnumerable<string> fields = null)
+        public GSResponse Get(GigyaModuleSettings settings, string uid, string oid, string gigyaType, IEnumerable<string> fields = null)
         {
             var request = NewRequest(settings, settings.ApplicationSecret, "ds.get");
             request.SetParam("UID", uid);
@@ -73,7 +73,7 @@ namespace Gigya.Module.DS.Helpers
         /// </summary>
         /// <param name="settings">Current module settings.</param>
         /// <param name="query">The search query.</param>
-        public GSResponse Search(IGigyaModuleSettings settings, string query)
+        public GSResponse Search(GigyaModuleSettings settings, string query)
         {
             var request = NewRequest(settings, settings.ApplicationSecret, "ds.search");
             request.SetParam("query", query);
@@ -81,7 +81,7 @@ namespace Gigya.Module.DS.Helpers
             return response;
         }
 
-        private GSResponse Send(GSRequest request, string apiMethod, IGigyaModuleSettings settings)
+        private GSResponse Send(GSRequest request, string apiMethod, GigyaModuleSettings settings)
         {
             GSResponse response = null;
 

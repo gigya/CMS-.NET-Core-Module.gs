@@ -22,7 +22,7 @@ using Gigya.Socialize.SDK;
 
 namespace Gigya.Umbraco.Module.Connector.Helpers
 {
-    public class GigyaMembershipHelper : GigyaMembershipHelperBase, IGigyaMembershipHelper
+    public class GigyaMembershipHelper : GigyaMembershipHelperBase, IGigyaMembershipHelper<GigyaModuleSettings>
     {
         [Obsolete("Use GigyaEventHub.Instance.GettingGigyaValue instead.")]
         public static event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
@@ -39,7 +39,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="userId">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, GigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var user = memberService.GetByUsername(currentUsername);
@@ -100,7 +100,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="profile">The profile to update.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">The Gigya module settings.</param>
-        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             if (mappingFields == null && string.IsNullOrEmpty(settings.MappingFields))
             {
@@ -158,7 +158,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">Gigya module settings for the site.</param>
         /// <returns></returns>
-        protected virtual IMember CreateUser(string userId, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected virtual IMember CreateUser(string userId, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var email = GetMappedFieldWithFallback(gigyaModel, Constants.CmsFields.Email, Constants.GigyaFields.Email, mappingFields);
@@ -187,7 +187,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <summary>
         /// Updates a user's profile in Umbraco.
         /// </summary>
-        public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public virtual void UpdateProfile(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
         {
             var userInfoResponse = ValidateRequest(model, settings);
             if (userInfoResponse == null)
@@ -244,7 +244,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// </summary>
         /// <param name="settings">Current site settings.</param>
         /// <returns>The UID value.</returns>
-        public string GetUidForCurrentUser(IGigyaModuleSettings settings)
+        public string GetUidForCurrentUser(GigyaModuleSettings settings)
         {
             // check user is logged in
             var currentIdentity = HttpContext.Current.User.Identity;
@@ -274,7 +274,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Umbraco.
         /// </summary>
-        protected override bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected override bool AuthenticateUser(string username, GigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             FormsAuthentication.SetAuthCookie(username, false);
 
@@ -295,7 +295,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             FormsAuthentication.SignOut();
         }
 
-        protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        protected override bool LoginByUsername(string username, GigyaModuleSettings settings)
         {
             FormsAuthentication.SetAuthCookie(username, false);
             return true;
@@ -307,7 +307,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
             return memberService.Exists(username);
         }
 
-        protected override bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected override bool CreateUserInternal(string username, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             var user = CreateUser(username, gigyaModel, settings, mappingFields);
             return user != null;

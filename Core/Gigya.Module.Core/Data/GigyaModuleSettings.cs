@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Gigya.Module.Core.Data
 {
-    public class GigyaModuleSettings : IGigyaModuleSettings
+    public class GigyaModuleSettings
     {
         public object Id { get; set; }
 

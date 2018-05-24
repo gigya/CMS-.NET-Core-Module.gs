@@ -1,6 +1,7 @@
 ﻿using Gigya.Module.Core.Connector.Enums;
 using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
+using Gigya.Module.Core.Data;
 using Gigya.Module.Core.Mvc.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Gigya.Umbraco.Module.Connector.Helpers
 {
     public class GigyaAccountHelper : Gigya.Module.Core.Connector.Helpers.GigyaAccountHelperBase
     {
-        public GigyaAccountHelper(GigyaSettingsHelper settingsHelper, Logger logger) : base(settingsHelper, logger)
+        public GigyaAccountHelper(IGigyaSettingsHelper<GigyaModuleSettings> settingsHelper, Logger logger) : base(settingsHelper, logger)
         {
         }
 

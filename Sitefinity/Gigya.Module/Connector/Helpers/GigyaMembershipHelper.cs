@@ -23,7 +23,7 @@ using Telerik.Sitefinity.Security.Claims;
 
 namespace Gigya.Module.Connector.Helpers
 {
-    public class GigyaMembershipHelper : GigyaMembershipHelperBase, IGigyaMembershipHelper
+    public class GigyaMembershipHelper : GigyaMembershipHelperBase<GigyaModuleSettings>, IGigyaMembershipHelper<GigyaModuleSettings>
     {
         public GigyaMembershipHelper(GigyaApiHelper apiHelper, GigyaAccountHelper gigyaAccountHelper, Logger logger) : base(apiHelper, gigyaAccountHelper, logger)
         {
@@ -37,7 +37,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="username">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected virtual bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected virtual bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, GigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             UserProfileManager profileManager = UserProfileManager.GetManager();
             UserManager userManager = UserManager.GetManager();
@@ -107,7 +107,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="profile">The profile to update.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">The Gigya module settings.</param>
-        protected virtual void MapProfileFields(SitefinityProfile profile, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected virtual void MapProfileFields(SitefinityProfile profile, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         {
 			if (mappingFields == null)
             {
@@ -169,7 +169,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">Gigya module settings for the site.</param>
         /// <returns></returns>
-        protected virtual MembershipCreateStatus CreateUser(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected virtual MembershipCreateStatus CreateUser(string username, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             UserManager userManager = UserManager.GetManager();
             UserProfileManager profileManager = UserProfileManager.GetManager();
@@ -229,7 +229,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="userManager">Sitefinity user manager.</param>
         /// <param name="profileManager">Sitefinity profile manager.</param>
         /// <param name="user">The user that will be associated with the new profile.</param>
-        protected virtual SitefinityProfile CreateProfile(dynamic gigyaModel, IGigyaModuleSettings settings, UserManager userManager, UserProfileManager profileManager, User user, List<MappingField> mappingFields)
+        protected virtual SitefinityProfile CreateProfile(dynamic gigyaModel, GigyaModuleSettings settings, UserManager userManager, UserProfileManager profileManager, User user, List<MappingField> mappingFields)
         {
             SitefinityProfile profile = profileManager.CreateProfile(user, Guid.NewGuid(), typeof(SitefinityProfile)) as SitefinityProfile;
 
@@ -263,7 +263,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <param name="model">Details from the client e.g. signature and userId.</param>
         /// <param name="settings">Gigya module settings.</param>
         /// <param name="response">Response model that will be returned to the client.</param>
-        public override void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public override void LoginOrRegister(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
         {
             response.Status = ResponseStatus.Error;
             
@@ -331,7 +331,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <summary>
         /// Updates a user's profile in Sitefinity.
         /// </summary>
-        public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public virtual void UpdateProfile(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
         {
             var userInfoResponse = ValidateRequest(model, settings);
             if (userInfoResponse == null)
@@ -380,7 +380,7 @@ namespace Gigya.Module.Connector.Helpers
         /// </summary>
         /// <param name="settings">Current site settings.</param>
         /// <returns>The UID value.</returns>
-        public string GetUidForCurrentUser(IGigyaModuleSettings settings)
+        public string GetUidForCurrentUser(GigyaModuleSettings settings)
         {
             // check user is logged in
             var currentIdentity = ClaimsManager.GetCurrentIdentity();
@@ -418,7 +418,7 @@ namespace Gigya.Module.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Sitefinity.
         /// </summary>
-        protected override bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected override bool AuthenticateUser(string username, GigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             User user;
 
@@ -483,7 +483,7 @@ namespace Gigya.Module.Connector.Helpers
             }
         }
 
-        protected override bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        protected override bool LoginByUsername(string username, GigyaModuleSettings settings)
         {
             var persistent = PersistentAuthRequired(settings);
             User user;
@@ -503,7 +503,7 @@ namespace Gigya.Module.Connector.Helpers
             return userExists;
         }
 
-        protected override bool CreateUserInternal(string username, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected override bool CreateUserInternal(string username, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             MembershipCreateStatus status = CreateUser(username, gigyaModel, settings, mappingFields);
             return status == MembershipCreateStatus.Success;

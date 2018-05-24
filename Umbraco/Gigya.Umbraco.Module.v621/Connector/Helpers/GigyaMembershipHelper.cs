@@ -22,7 +22,7 @@ using System.Web;
 
 namespace Gigya.Umbraco.Module.v621.Connector.Helpers
 {
-    public class GigyaMembershipHelper : IGigyaMembershipHelper
+    public class GigyaMembershipHelper : IGigyaMembershipHelper<GigyaModuleSettings>
     {
         public static event EventHandler<MapGigyaFieldEventArgs> GettingGigyaValue;
         private readonly GigyaApiHelper _gigyaApiHelper;
@@ -40,7 +40,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// <param name="userId">Id of the user to update.</param>
         /// <param name="settings">Gigya module settings for this site.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
-        protected bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, IGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected bool MapProfileFieldsAndUpdate(string currentUsername, string updatedUsername, GigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             var memberService = U.Core.ApplicationContext.Current.Services.MemberService;
             var user = memberService.GetByUsername(currentUsername);
@@ -112,7 +112,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// <param name="profile">The profile to update.</param>
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">The Gigya module settings.</param>
-        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, IGigyaModuleSettings settings, List<MappingField> mappingFields)
+        protected virtual void MapProfileFields(IMember user, dynamic gigyaModel, GigyaModuleSettings settings, List<MappingField> mappingFields)
         {
             if (mappingFields == null && string.IsNullOrEmpty(settings.MappingFields))
             {
@@ -170,7 +170,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="settings">Gigya module settings for the site.</param>
         /// <returns></returns>
-        protected virtual IMember CreateUser(string userId, dynamic gigyaModel, IGigyaModuleSettings settings)
+        protected virtual IMember CreateUser(string userId, dynamic gigyaModel, GigyaModuleSettings settings)
         {
             // check if there is a name field for the member name otherwise fallback to email
             List<MappingField> mappingFields = null;
@@ -231,7 +231,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// <param name="model">Details from the client e.g. signature and userId.</param>
         /// <param name="settings">Gigya module settings.</param>
         /// <param name="response">Response model that will be returned to the client.</param>
-        public virtual void LoginOrRegister(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public virtual void LoginOrRegister(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
         {
             response.Status = ResponseStatus.Error;
 
@@ -292,7 +292,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// <summary>
         /// Updates a user's profile in Umbraco.
         /// </summary>
-        public virtual void UpdateProfile(LoginModel model, IGigyaModuleSettings settings, ref LoginResponseModel response)
+        public virtual void UpdateProfile(LoginModel model, GigyaModuleSettings settings, ref LoginResponseModel response)
         {
             var userInfoResponse = ValidateRequest(model, settings);
             if (userInfoResponse == null)
@@ -322,7 +322,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             }
         }
 
-        protected GSResponse ValidateRequest(LoginModel model, IGigyaModuleSettings settings)
+        protected GSResponse ValidateRequest(LoginModel model, GigyaModuleSettings settings)
         {
             if (!settings.EnableRaas)
             {
@@ -355,7 +355,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             return userInfoResponse;
         }
 
-        private static List<MappingField> GetMappingFields(IGigyaModuleSettings settings)
+        private static List<MappingField> GetMappingFields(GigyaModuleSettings settings)
         {
             return !string.IsNullOrEmpty(settings.MappingFields) ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
         }
@@ -370,7 +370,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             return GetGigyaFieldFromCmsAlias(userInfo, Constants.CmsFields.Username, userInfo.UID, mappingFields);
         }
 
-        private void ThrowTestingExceptionIfRequired(IGigyaModuleSettings settings, dynamic userInfo)
+        private void ThrowTestingExceptionIfRequired(GigyaModuleSettings settings, dynamic userInfo)
         {
             if (settings.DebugMode && DynamicUtils.GetValue<string>(userInfo, "profile.email") == Constants.Testing.EmailWhichThrowsException)
             {
@@ -381,7 +381,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
         /// <summary>
         /// Authenticates a user in Umbraco.
         /// </summary>
-        protected virtual bool AuthenticateUser(string username, IGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
+        protected virtual bool AuthenticateUser(string username, GigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             FormsAuthentication.SetAuthCookie(username, false);
 
@@ -397,7 +397,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             return true;
         }
 
-        public bool LoginByUsername(string username, IGigyaModuleSettings settings)
+        public bool LoginByUsername(string username, GigyaModuleSettings settings)
         {
             FormsAuthentication.SetAuthCookie(username, false);
             return true;
@@ -408,7 +408,7 @@ namespace Gigya.Umbraco.Module.v621.Connector.Helpers
             FormsAuthentication.SignOut();
         }
 
-        public bool Login(string gigyaUid, IGigyaModuleSettings settings)
+        public bool Login(string gigyaUid, GigyaModuleSettings settings)
         {
             var username = gigyaUid;
 
