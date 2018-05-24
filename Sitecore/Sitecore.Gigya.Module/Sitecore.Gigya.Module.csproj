@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <Content Include="Views\Gigya\SampleMvcLayout.cshtml" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>
@@ -119,6 +120,7 @@
     <Compile Include="Encryption\SitecoreEncryptionService.cs" />
     <Compile Include="Events\Validation.cs" />
     <Compile Include="Events\EncryptApplicationKey.cs" />
+    <Compile Include="Fields\EncryptedField.cs" />
     <Compile Include="Helpers\GigyaAccountHelper.cs" />
     <Compile Include="Helpers\GigyaMembershipHelper.cs" />
     <Compile Include="Helpers\GigyaSettingsHelper.cs" />

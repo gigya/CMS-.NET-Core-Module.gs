@@ -1,0 +1,32 @@
+﻿@using Sitecore.Mvc
+@* @using Sitecore.Mvc.Analytics.Extensions *@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>@Html.Sitecore().Field("title", new { DisableWebEdit = true })</title>
+        @* @Html.Sitecore().VisitorIdentification() *@
+        <link href="/default.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="CenterColumn">
+            <div id="InnerCenter">
+                <div id="Header">
+                    <a href="/">
+                        <img src="-/media/Default Website/sc_logo.ashx" alt="Sitecore" id="scLogo" />
+                    </a>
+                </div>
+                <div id="Content">
+                    <div id="LeftContent" style="width: auto;">
+                        <h1 class="contentTitle">@Html.Sitecore().Field("title")</h1>
+                        @Html.Sitecore().Placeholder("main")
+                        <div id="gigya-placeholder" style="border: 1px solid #d4d4d4; margin-top: 40px;"></div>
+                    </div>				
+                </div>
+                <div id="Footer"><hr class="divider"/>&#169; @DateTime.Now.Year.ToString() Sitecore</div>
+            </div>
+        </div>
+    </body>
+</html>

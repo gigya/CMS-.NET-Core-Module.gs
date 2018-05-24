@@ -218,7 +218,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
         }
 
-        public string TryDecryptApplicationSecret(string secret, bool throwOnException = true)
+        public virtual string TryDecryptApplicationSecret(string secret, bool throwOnException = true)
         {
             try
             {

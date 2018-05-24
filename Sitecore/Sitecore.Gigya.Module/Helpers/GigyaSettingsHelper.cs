@@ -168,6 +168,21 @@ namespace Sitecore.Gigya.Module.Helpers
             }
         }
 
+        public override string TryDecryptApplicationSecret(string secret, bool throwOnException = true)
+        {
+            if (string.IsNullOrEmpty(secret))
+            {
+                return null;
+            }
+
+            if (secret.StartsWith(Constants.EncryptionPrefix))
+            {
+                secret = secret.Substring(Constants.EncryptionPrefix.Length);
+            }
+
+            return base.TryDecryptApplicationSecret(secret, throwOnException);
+        }
+
         protected override string Language(IGigyaModuleSettings settings)
         {
             var languageHelper = new GigyaLanguageHelper();

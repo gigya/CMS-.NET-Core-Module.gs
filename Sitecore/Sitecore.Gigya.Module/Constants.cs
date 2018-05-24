@@ -14,6 +14,11 @@ namespace Sitecore.Gigya.Module
         public const string EncryptionPrefix = "___ENCRYPTED___";
         public const string StandardValuesName = "__Standard Values";
 
+        public class Security
+        {
+            public const string AdminRole = "sitecore\\Gigya Major Admin";
+        }
+
         public class DefaultSettings
         {
             public const string SessionTimeout = "1800";
