@@ -170,8 +170,11 @@ namespace Gigya.Module.Core.Connector.Helpers
                 settings.ApplicationSecret = _encryptionService.Decrypt(settings.ApplicationSecret);
             }
 
-            settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields)
-                ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
+            if (settings.MappedMappingFields == null)
+            {
+                settings.MappedMappingFields = !string.IsNullOrEmpty(settings.MappingFields)
+                    ? JsonConvert.DeserializeObject<List<MappingField>>(settings.MappingFields) : new List<MappingField>();
+            }
 
             MapOldDataCenter(ref settings);
 

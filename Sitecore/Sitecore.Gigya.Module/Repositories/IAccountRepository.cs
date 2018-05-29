@@ -14,6 +14,7 @@ namespace Sitecore.Gigya.Module.Repositories
         void Register(string username, string email, string password, bool persistent, string profileId);
         bool Exists(string userName);
         void Logout();
+        SC.Security.Accounts.User GetActiveUser();
         SC.Security.Accounts.User Login(string userName, bool persistent);
         CurrentIdentity CurrentIdentity { get; }
     }

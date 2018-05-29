@@ -42,6 +42,12 @@ namespace Sitecore.Gigya.Module.Repositories
             return User.Exists(fullName);
         }
 
+        public User GetActiveUser()
+        {
+            var user = AuthenticationManager.GetActiveUser();
+            return user;
+        }
+
         public User Login(string userName, bool persistent)
         {
             var accountName = string.Empty;

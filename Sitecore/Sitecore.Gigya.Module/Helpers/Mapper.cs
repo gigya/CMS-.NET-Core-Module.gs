@@ -7,6 +7,8 @@ using System.Web;
 using SC = Sitecore.Gigya.Module.Models;
 
 using Core = Gigya.Module.Core;
+using Gigya.Module.Core.Connector.Models;
+using Sitecore.Data.Items;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -29,6 +31,15 @@ namespace Sitecore.Gigya.Module.Helpers
                 RenderScript = source.RenderScript,
                 Settings = source.Settings,
                 SettingsJson = source.SettingsJson
+            };
+        }
+
+        public static MappingField Map(Item item)
+        {
+            return new MappingField
+            {
+                CmsFieldName = item.Fields[Constants.Fields.MappingFields.SitecoreProperty].Value,
+                GigyaFieldName = item.Fields[Constants.Fields.MappingFields.GigyaProperty].Value,
             };
         }
     }

@@ -29,17 +29,28 @@ namespace Sitecore.Gigya.Module
         public class CmsFields
         {
             public const string UserId = "UserId";
+            public const string FullName = "Full Name";
+            public const string Email = "Email";
+            public const string Comment = "Comment";
+        }
+
+        public class Ids
+        {
+            public static readonly ID GlobalSettings = new ID("{2EB49887-39E6-40FC-8EC5-3CBE241B2494}");
+            public static readonly ID UserProperties = new ID("{1578C18A-C918-48EF-A496-4DCE4C5CD450}");
         }
 
         public class Paths
         {
-            public static readonly ID GlobalSettings = new ID("{2EB49887-39E6-40FC-8EC5-3CBE241B2494}");
             public const string SiteSettingsSuffix = "Gigya Settings/Gigya Settings";
         }
 
         public class Templates
         {
             public static readonly ID GigyaSettings = new ID("{CB5000AC-098F-420E-B973-D6AD423F2DAE}");
+            public static readonly ID SitecoreDefaultUserProfile = new ID("{642C9A7E-EE31-4979-86F0-39F338C10AFB}");
+            public static readonly ID MappingFieldFolder = new ID("{6FE4A2F7-B184-463F-A7CA-8471159E579A}");
+            public static readonly ID MappingField = new ID("{A8ECE2D3-757C-4A0E-A184-DFAFC194C973}");
         }
 
         public class Dictionary
@@ -67,6 +78,18 @@ namespace Sitecore.Gigya.Module
             public const string XdbMappingFields = "xDB Mapping Fields";
             public const string GigyaSessionType = "Gigya Session Type";
             public const string GigyaSessionDuration = "Gigya Session Duration";
+            public const string Profile = "Profile";
+
+            public class MappingFields
+            {
+                public const string GigyaProperty = "Gigya Property";
+                public const string SitecoreProperty = "Sitecore Property";
+            }
+
+            public class MappingFieldFolder
+            {
+                public const string Type = "Type";
+            }
         }
     }
 }

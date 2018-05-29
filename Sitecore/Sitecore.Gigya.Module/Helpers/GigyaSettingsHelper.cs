@@ -19,16 +19,23 @@ using System.Web.Mvc;
 using Sitecore.Gigya.Module.Encryption;
 using Sitecore.Data;
 using Sitecore.Gigya.Module.Models;
+using Gigya.Module.Core.Connector.Models;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
     public class GigyaSettingsHelper : Core.Connector.Helpers.GigyaSettingsHelper<SitecoreGigyaModuleSettings>
     {
+        protected readonly IGigyaUserProfileHelper _userProfileHelper;
         private static string _cmsVersion { get; set; }
         private static string _cmsMajorVersion { get; set; }
 
-        public GigyaSettingsHelper() : base(SitecoreEncryptionService.Instance)
+        public GigyaSettingsHelper() : this(new GigyaUserProfileHelper())
         {
+        }
+
+        public GigyaSettingsHelper(IGigyaUserProfileHelper gigyaUserProfileHelper) : base(SitecoreEncryptionService.Instance)
+        {
+            _userProfileHelper = gigyaUserProfileHelper;
         }
 
         public override string CmsName
@@ -88,7 +95,7 @@ namespace Sitecore.Gigya.Module.Helpers
 
             using (SecurityModel.SecurityDisabler disabler = new SecurityModel.SecurityDisabler())
             {
-                var globalSettings = Context.Database.GetItem(Constants.Paths.GlobalSettings);
+                var globalSettings = Context.Database.GetItem(Constants.Ids.GlobalSettings);
                 if (globalSettings != null)
                 {
                     result.Add(Map(globalSettings, Constants.GlobalSettingsId));
@@ -127,12 +134,15 @@ namespace Sitecore.Gigya.Module.Helpers
                 EnableXdb = ((CheckboxField)settings.Fields[Constants.Fields.EnableXdbSync]).Checked,
                 RedirectUrl = ((LinkField)settings.Fields[Constants.Fields.RedirectUrl]).GetFriendlyUrl(),
                 LogoutUrl = ((LinkField)settings.Fields[Constants.Fields.LogoutUrl]).GetFriendlyUrl(),
-                //MappingFields = settings.Fields[Constants.Fields.MembershipMappingFields].Value,
                 GlobalParameters = settings.Fields[Constants.Fields.GlobalParameters].Value.Trim(),
                 SessionTimeout = int.Parse(StringHelper.FirstNotNullOrEmpty(settings.Fields[Constants.Fields.GigyaSessionDuration].Value, Constants.DefaultSettings.SessionTimeout)),
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
-                GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding
+                GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding,
+                ProfileId = _userProfileHelper.GetSelectedProfile(settings).ID.ToString()
             };
+
+            mapped.MappedMappingFields = ExtractMappingFields(settings, MappingFieldType.Membership);
+            mapped.MappedXdbMappingFields = ExtractMappingFields(settings, MappingFieldType.xDB);
 
             ExtractDataCenter(settings, mapped, database);
 
@@ -148,6 +158,19 @@ namespace Sitecore.Gigya.Module.Helpers
             }
 
             return mapped;
+        }
+
+        private List<MappingField> ExtractMappingFields(Item settings, MappingFieldType fieldType)
+        {
+            var fieldTypeString = fieldType.ToString();
+            var folder = settings.Children.FirstOrDefault(i => i.TemplateID == Constants.Templates.MappingFieldFolder && i.Fields[Constants.Fields.MappingFieldFolder.Type].Value == fieldTypeString);
+            if (folder == null)
+            {
+                return new List<MappingField>();
+            }
+
+            var fields = folder.Children.Where(i => i.TemplateID == Constants.Templates.MappingField).Select(Mapper.Map).ToList();
+            return fields;
         }
 
         private void ExtractDataCenter(Item settings, GigyaModuleSettings mapped, Database database)
