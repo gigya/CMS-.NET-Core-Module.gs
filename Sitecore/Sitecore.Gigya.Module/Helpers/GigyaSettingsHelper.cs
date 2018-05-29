@@ -35,6 +35,7 @@ namespace Sitecore.Gigya.Module.Helpers
 
         public GigyaSettingsHelper(IGigyaUserProfileHelper gigyaUserProfileHelper) : base(SitecoreEncryptionService.Instance)
         {
+            LoadCmsVersion();
             _userProfileHelper = gigyaUserProfileHelper;
         }
 
@@ -62,22 +63,28 @@ namespace Sitecore.Gigya.Module.Helpers
             {
                 return Constants.ModuleVersion;
             }
-        }        
-
-        private static void LoadCmsVersion()
+        }
+        
+        protected virtual string ReadVersionFile()
         {
             var versionInfo = File.ReadAllText(HostingEnvironment.MapPath("~/sitecore/shell/sitecore.version.xml"));
+            return versionInfo;
+        }
+
+        private void LoadCmsVersion()
+        {
+            if (!string.IsNullOrEmpty(_cmsVersion))
+            {
+                return;
+            }
+
+            var versionInfo = ReadVersionFile();
             XDocument doc = XDocument.Parse(versionInfo);
             _cmsMajorVersion = doc.XPathSelectElement("//information/version/major")?.Value;
             var minorVersion = doc.XPathSelectElement("//information/version/minor")?.Value;
             var revision = doc.XPathSelectElement("//information/version/revision")?.Value;
 
             _cmsVersion = string.Format("{0}.{1}.{2}", _cmsMajorVersion, minorVersion, revision);
-        }
-
-        static GigyaSettingsHelper()
-        {
-            LoadCmsVersion();
         }
 
         public override SitecoreGigyaModuleSettings GetForCurrentSite(bool decrypt = false)
