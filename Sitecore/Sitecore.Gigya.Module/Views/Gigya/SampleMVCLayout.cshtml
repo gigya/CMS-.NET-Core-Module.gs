@@ -9,6 +9,15 @@
         <title>@Html.Sitecore().Field("title", new { DisableWebEdit = true })</title>
         @* @Html.Sitecore().VisitorIdentification() *@
         <link href="/default.css" rel="stylesheet" />
+        <style type="text/css">
+            body.gigya-cms-logging-in .gigya-loading-example {
+                position: fixed;
+                bottom: 10%;
+                left: 50%;
+                display: block !important;
+                transform: translate(-50%, -50%);
+            }
+        </style>
     </head>
     <body>
         <div id="CenterColumn">
@@ -28,5 +37,6 @@
                 <div id="Footer"><hr class="divider"/>&#169; @DateTime.Now.Year.ToString() Sitecore</div>
             </div>
         </div>
+        <img class="gigya-loading-example" style="display: none;" src="https://cdns.us1.gigya.com/gs/i//accounts/bigLoader.gif" alt="loading" />
     </body>
 </html>
