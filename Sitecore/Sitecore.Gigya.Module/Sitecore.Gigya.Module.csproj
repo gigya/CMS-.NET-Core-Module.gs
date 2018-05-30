@@ -150,6 +150,7 @@
     <Compile Include="Pipelines\GetAccountInfoCompletedPipelineArgs.cs" />
     <Compile Include="Pipelines\GigyaGetFieldEventArgs.cs" />
     <Compile Include="Pipelines\PipelineService.cs" />
+    <Compile Include="Pipelines\RequestPipeline.cs" />
     <Compile Include="Pipelines\RegisterPipelines.cs" />
     <Compile Include="Pipelines\RegisterWebApiRoutes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

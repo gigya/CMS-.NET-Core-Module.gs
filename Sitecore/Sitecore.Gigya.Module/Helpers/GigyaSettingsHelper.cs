@@ -99,6 +99,10 @@ namespace Sitecore.Gigya.Module.Helpers
         protected override List<SitecoreGigyaModuleSettings> GetForSiteAndDefault(object id)
         {
             var result = new List<SitecoreGigyaModuleSettings>();
+            if (Context.Database == null)
+            {
+                return result;
+            }
 
             using (SecurityModel.SecurityDisabler disabler = new SecurityModel.SecurityDisabler())
             {

@@ -49,12 +49,8 @@ namespace Sitecore.Gigya.Module.Controllers
 
             var renderingModel = _renderingPropertiesRepository.Get<GigyaEditProfileRenderingModel>(RenderingContext.Current.Rendering);
 
-            // check if Sitefinity is the session leader and sign in if required
-            //GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current);
-
             if (renderingModel.RenderMethod != GigyaRenderingMethod.Embedded)
             {
-                //renderingModel.GenerateContainer = false;
                 renderingModel.ContainerId = null;
             }
 
@@ -80,15 +76,12 @@ namespace Sitecore.Gigya.Module.Controllers
             var currentIdentity = _accountRepository.CurrentIdentity;
             if (currentIdentity.IsAuthenticated)
             {
-                // check if Sitefinity is the session leader and sign in if required
-                //GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current);
                 return new EmptyResult();
             }
 
             var renderingModel = _renderingPropertiesRepository.Get<GigyaLoginRenderingModel>(RenderingContext.Current.Rendering);
             if (renderingModel.RenderMethod != GigyaRenderingMethod.Embedded)
             {
-                //renderingModel.GenerateContainer = false;
                 renderingModel.ContainerId = null;
             }
 
@@ -118,9 +111,6 @@ namespace Sitecore.Gigya.Module.Controllers
                 return new EmptyResult();
             }
 
-            // check if Sitefinity is the session leader and sign in if required
-            //GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current);
-            
             var renderingModel = _renderingPropertiesRepository.Get<GigyaLogoutRenderingModel>(RenderingContext.Current.Rendering);
             var model = new GigyaLogoutViewModel
             {
@@ -136,15 +126,12 @@ namespace Sitecore.Gigya.Module.Controllers
             var currentIdentity = _accountRepository.CurrentIdentity;
             if (currentIdentity.IsAuthenticated)
             {
-                // check if Sitefinity is the session leader and sign in if required
-                //GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current);
                 return new EmptyResult();
             }
 
             var renderingModel = _renderingPropertiesRepository.Get<GigyaRegisterRenderingModel>(RenderingContext.Current.Rendering);
             if (renderingModel.RenderMethod != GigyaRenderingMethod.Embedded)
             {
-                //renderingModel.GenerateContainer = false;
                 renderingModel.ContainerId = null;
             }
 
@@ -183,9 +170,6 @@ namespace Sitecore.Gigya.Module.Controllers
                 _logger.Error("Gigya API key not specified. Check settings on Administration -> Settings -> Gigya");
                 return new EmptyResult();
             }
-
-            // check if Sitefinity is the session leader and sign in if required
-            //GigyaAccountHelper.ProcessRequestChecks(System.Web.HttpContext.Current, settings);
 
             var identity = _accountRepository.CurrentIdentity;
             var currentIdentity = new CurrentIdentity
