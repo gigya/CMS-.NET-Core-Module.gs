@@ -11,6 +11,10 @@ namespace Sitecore.Gigya.Module.Fields
 {
     public class EncryptedField : Edit
     {
+        private const string _originalValueKey = "OriginalValue";
+        private const string _plainTextValueKey = "PlainTextValue";
+        private const string _valueKey = "Value";
+
         public EncryptedField()
         {
             this.Class = "scContentControl";
@@ -31,15 +35,15 @@ namespace Sitecore.Gigya.Module.Fields
         {
             base.OnPreRender(e);
 
-            var value = this.ServerProperties["Value"] as string;
+            var value = this.ServerProperties[_valueKey] as string;
 
             // save a copy of the original value on the server
-            this.ServerProperties["OriginalValue"] = value;
+            this.ServerProperties[_originalValueKey] = value;
 
             if (!IsCurrentUserAllowedToEditAndView())
             {
                 // not allowed to view or edit so clear the value that is displayed
-                this.ServerProperties["Value"] = this.Value = string.Empty;
+                this.ServerProperties[_valueKey] = this.Value = string.Empty;
                 this.ReadOnly = true;
                 return;
             }
@@ -57,7 +61,7 @@ namespace Sitecore.Gigya.Module.Fields
             }
 
             value = StringHelper.MaskInput(plainTextApplicationSecret, "*", 2, 2);
-            this.ServerProperties["PlainTextValue"] = value;
+            this.ServerProperties[_plainTextValueKey] = value;
             this.Value = value;
         }
 
@@ -68,11 +72,11 @@ namespace Sitecore.Gigya.Module.Fields
                 value
             });
 
-            var plainTextValue = this.ServerProperties["PlainTextValue"] as string;
+            var plainTextValue = this.ServerProperties[_plainTextValueKey] as string;
             if (this.ReadOnly || value == plainTextValue)
             {
                 // field is read only or value is unchanged
-                var originalValue = this.ServerProperties["OriginalValue"] as string;
+                var originalValue = this.ServerProperties[_originalValueKey] as string;
                 if (!string.IsNullOrEmpty(originalValue))
                 {
                     this.Value = originalValue;
