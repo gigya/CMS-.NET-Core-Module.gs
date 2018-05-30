@@ -42,7 +42,7 @@ namespace Sitecore.Gigya.Module
 
         public class Paths
         {
-            public const string SiteSettingsSuffix = "Gigya Settings/Gigya Settings";
+            public const string SiteSettingsSuffix = "Gigya Settings";
         }
 
         public class Templates
