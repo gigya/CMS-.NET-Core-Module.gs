@@ -25,7 +25,7 @@ namespace Gigya.UnitTests.Selenium
             _driver.Navigate().Refresh();
 
             // should still be logged in
-            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            var logoutButton = _driver.FindElement(By.CssSelector("gigya-logout, .gigya-cms-logout"), 10);
             Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
         }
 
@@ -50,7 +50,7 @@ namespace Gigya.UnitTests.Selenium
             _driver.Navigate().GoToUrl(Config.Site1BaseURL);
 
             // should still be logged in
-            var logoutButton = _driver.FindElement(By.ClassName("gigya-logout"), 10);
+            var logoutButton = _driver.FindElement(By.CssSelector(".gigya-logout, .gigya-cms-logout"), 10);
             Assert.IsNotNull(logoutButton, "Logout button not found. User should be logged in.");
 
             // should also be logged into second site as well
