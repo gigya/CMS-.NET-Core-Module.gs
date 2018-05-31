@@ -70,7 +70,7 @@ namespace Sitecore.Gigya.Module.Events
             catch (Exception e)
             {
                 CancelAndReturnError(eventArgs, e.Message);
-                logger.Error("Validation error", e);
+                logger.Error("Settings validation error", e);
                 return;
             }
 
@@ -93,15 +93,23 @@ namespace Sitecore.Gigya.Module.Events
                 }
 
                 CancelAndReturnError(eventArgs, message);
-                logger.Error("Validation error");
+                logger.Error("Settings validation error");
                 return;
+            }
+
+            // validate session settings
+            var sessionValidationStatus = settingsHelper.IsSessionSettingsValid(mappedSettings);
+            if (!sessionValidationStatus.IsValid)
+            {
+                CancelAndReturnError(eventArgs, sessionValidationStatus.Message, false);
+                logger.Debug("Settings validation error");
             }
         }
 
-        private static void CancelAndReturnError(Sitecore.Events.SitecoreEventArgs eventArgs, string message)
+        private static void CancelAndReturnError(Sitecore.Events.SitecoreEventArgs eventArgs, string message, bool cancel = true)
         {
             eventArgs.Result.Messages.Add(message);
-            eventArgs.Result.Cancel = true;
+            eventArgs.Result.Cancel = cancel;
             Context.ClientPage.ClientResponse.Alert(message);
         }
     }

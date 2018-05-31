@@ -20,6 +20,8 @@ using Sitecore.Gigya.Module.Encryption;
 using Sitecore.Data;
 using Sitecore.Gigya.Module.Models;
 using Gigya.Module.Core.Connector.Models;
+using System.Web.Security;
+using System.Web;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -240,6 +242,34 @@ namespace Sitecore.Gigya.Module.Helpers
         protected override SitecoreGigyaModuleSettings EmptySettings(object id)
         {
             return new SitecoreGigyaModuleSettings { Id = id, DebugMode = true, EnableRaas = true };
+        }
+
+        public SessionValidationModel IsSessionSettingsValid(SitecoreGigyaModuleSettings settings)
+        {
+            var response = new SessionValidationModel();
+            var sessionTimeoutSeconds = HttpContext.Current.Session.Timeout * 60;
+            var formsTimeoutSeconds = FormsAuthentication.Timeout.TotalSeconds;
+
+            if (sessionTimeoutSeconds != formsTimeoutSeconds)
+            {
+                response.Message = string.Format("Forms authentication timeout value of {0} doesn't match the session timeout value of {1}. Check the values in web.config.", FormsAuthentication.Timeout.TotalMinutes, HttpContext.Current.Session.Timeout);
+                return response;
+            }
+
+            switch (settings.GigyaSessionMode)
+            {
+                case Core.Connector.Enums.GigyaSessionMode.Fixed:
+                case Core.Connector.Enums.GigyaSessionMode.Sliding:
+                    if (settings.SessionTimeout != sessionTimeoutSeconds)
+                    {
+                        response.Message = string.Format("Gigya session timeout of {0} seconds doesn't match Sitecore's timeout of {1} seconds set in web.config.", settings.SessionTimeout, sessionTimeoutSeconds);
+                        return response;
+                    }
+                    break;
+            }
+
+            response.IsValid = true;
+            return response;
         }
     }
 }

@@ -38,7 +38,11 @@ namespace Sitecore.Gigya.Module.Fields
             var value = this.ServerProperties[_valueKey] as string;
 
             // save a copy of the original value on the server
-            this.ServerProperties[_originalValueKey] = value;
+            var plainTextValue = this.ServerProperties[_plainTextValueKey] as string;
+            if (value != plainTextValue)
+            {
+                this.ServerProperties[_originalValueKey] = value;
+            }
 
             if (!IsCurrentUserAllowedToEditAndView())
             {
