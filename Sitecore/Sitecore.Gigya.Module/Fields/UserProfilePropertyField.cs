@@ -9,7 +9,18 @@ namespace Sitecore.Gigya.Module.Fields
 {
     public class UserProfilePropertyField : ValueLookupEx
     {
-        private readonly GigyaUserProfileHelper _profileHelper = new GigyaUserProfileHelper();
+        private readonly GigyaUserProfileHelper _profileHelper;
+        private readonly ISitecoreContentHelper _sitecoreContentHelper;
+
+        public UserProfilePropertyField() : this(new SitecoreContentHelper(), new GigyaUserProfileHelper())
+        {
+        }
+
+        public UserProfilePropertyField(ISitecoreContentHelper sitecoreContentHelper, GigyaUserProfileHelper gigyaUserProfileHelper)
+        {
+            _sitecoreContentHelper = sitecoreContentHelper;
+            _profileHelper = gigyaUserProfileHelper;
+        }
 
         protected override Item[] GetItems(Item current)
         {
@@ -18,7 +29,7 @@ namespace Sitecore.Gigya.Module.Fields
                 var userProperties = _profileHelper.GetDefaultUserProperties();
 
                 // find nearest parent that has a template of Gigya Settings
-                var settings = GetSettingsParent(current);
+                var settings = _sitecoreContentHelper.GetSettingsParent(current);
                 if (settings == null)
                 {
                     return userProperties.ToArray();
@@ -36,21 +47,6 @@ namespace Sitecore.Gigya.Module.Fields
                 
                 return userProperties.ToArray();
             }
-        }
-
-        private Item GetSettingsParent(Item current)
-        {
-            if (current == null || current.ID.IsNull)
-            {
-                return null;
-            }
-
-            if (current.TemplateID == Constants.Templates.GigyaSettings)
-            {
-                return current;
-            }
-
-            return GetSettingsParent(current.Parent);
         }
     }
 }

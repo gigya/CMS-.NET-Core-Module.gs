@@ -190,6 +190,7 @@
     <Compile Include="Commands\GenericCommand.cs" />
     <Compile Include="Builders\RegisterViewToEngineBuilder.cs" />
     <Compile Include="HttpContextMockFactory.cs" />
+    <Compile Include="Logging\FakeCmsLogger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -208,6 +209,15 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Gigya.Module.Core\Gigya.Module.Core.csproj">
+      <Project>{7610AF03-891B-4AB2-A619-549BC9657CCE}</Project>
+      <Name>Gigya.Module.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Settings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

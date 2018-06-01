@@ -207,7 +207,9 @@
   <ItemGroup>
     <Compile Include="Controllers\AccountControllerTests.cs" />
     <Compile Include="Helpers\FakeGigyaSettingsHelper.cs" />
+    <Compile Include="Helpers\GigyaAccountSchemaHelperTests.cs" />
     <Compile Include="Helpers\GigyaSettingsHelperTests.cs" />
+    <Compile Include="Logging\FakeCmsLogger.cs" />
     <Compile Include="Pipelines\GetGigyaValueTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

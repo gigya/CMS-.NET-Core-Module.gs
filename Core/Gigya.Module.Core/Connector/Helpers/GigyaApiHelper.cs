@@ -50,6 +50,14 @@ namespace Gigya.Module.Core.Connector.Helpers
             return response;
         }
 
+        public GSResponse GetAccountSchema(GigyaModuleSettings settings)
+        {
+            var method = "accounts.getSchema";
+            var request = NewRequest(settings, settings.ApplicationSecret, method);
+            var response = Send(request, method, settings, false);
+            return response;
+        }
+
         public GSResponse ExchangeSignature(string userId, GigyaModuleSettings settings, string userIdSignature, string signatureTimestamp, string userKey)
         {
             var method = "accounts.exchangeUIDSignature";

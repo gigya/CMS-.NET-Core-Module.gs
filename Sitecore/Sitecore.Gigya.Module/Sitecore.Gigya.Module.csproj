@@ -51,6 +51,10 @@
       <HintPath>..\..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Sitecore.Kernel, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.2.180406\lib\NET452\Sitecore.Kernel.dll</HintPath>
       <Private>False</Private>
@@ -108,6 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <Content Include="Scripts\Gigya\jQuery-Autocomplete\jquery.autocomplete.min.js" />
+    <Content Include="Scripts\Gigya\jQuery-Autocomplete\license.txt" />
+    <Content Include="sitecore modules\Gigya\css\gigya-content-editor.css" />
     <Content Include="Views\Gigya\SampleMvcLayout.cshtml" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
@@ -116,10 +123,12 @@
   <ItemGroup>
     <Compile Include="Constants.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ContentEditorController.cs" />
     <Compile Include="Controllers\GigyaController.cs" />
     <Compile Include="Encryption\SitecoreEncryptionService.cs" />
     <Compile Include="Events\Validation.cs" />
     <Compile Include="Events\EncryptApplicationKey.cs" />
+    <Compile Include="Fields\AutocompleteField.cs" />
     <Compile Include="Fields\UserProfilePropertyField.cs" />
     <Compile Include="Fields\EncryptedField.cs" />
     <Compile Include="Helpers\GigyaAccountHelper.cs" />
@@ -127,9 +136,12 @@
     <Compile Include="Helpers\GigyaSettingsHelper.cs" />
     <Compile Include="Helpers\GigyaUserProfileHelper.cs" />
     <Compile Include="Helpers\IGigyaUserProfileHelper.cs" />
+    <Compile Include="Helpers\ISitecoreContentHelper.cs" />
     <Compile Include="Helpers\Mapper.cs" />
+    <Compile Include="Helpers\SitecoreContentHelper.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Logging\SitecoreLogger.cs" />
+    <Compile Include="Models\AutocompleteModels.cs" />
     <Compile Include="Models\GigyaBaseRenderingModel.cs" />
     <Compile Include="Models\GigyaBaseViewModel.cs" />
     <Compile Include="Models\GigyaEditProfileRenderingModel.cs" />
@@ -149,6 +161,7 @@
     <Compile Include="Pipelines\AccountPipelineArgs.cs" />
     <Compile Include="Pipelines\AccountInfoMergedCompletedPipelineArgs.cs" />
     <Compile Include="Pipelines\GetAccountInfoCompletedPipelineArgs.cs" />
+    <Compile Include="Pipelines\GigyaContentEditorPipeline.cs" />
     <Compile Include="Pipelines\GigyaGetFieldEventArgs.cs" />
     <Compile Include="Pipelines\PipelineService.cs" />
     <Compile Include="Pipelines\RequestPipeline.cs" />
@@ -183,7 +196,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\GigyaContentEditor\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Gigya.Module.Core\Gigya.Module.Core.csproj">
       <Project>{7610af03-891b-4ab2-a619-549bc9657cce}</Project>

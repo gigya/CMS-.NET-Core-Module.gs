@@ -9,6 +9,8 @@ using SC = Sitecore.Gigya.Module.Models;
 using Core = Gigya.Module.Core;
 using Gigya.Module.Core.Connector.Models;
 using Sitecore.Data.Items;
+using Sitecore.Gigya.Module.Controllers;
+using Sitecore.Gigya.Module.Models;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -40,6 +42,15 @@ namespace Sitecore.Gigya.Module.Helpers
             {
                 CmsFieldName = item.Fields[Constants.Fields.MappingFields.SitecoreProperty].Value,
                 GigyaFieldName = item.Fields[Constants.Fields.MappingFields.GigyaProperty].Value,
+            };
+        }
+
+        public static AutocompleteSuggestion Map(AccountSchemaProperty item)
+        {
+            return new AutocompleteSuggestion
+            {
+                Data = item.Name,
+                Value = item.Name
             };
         }
     }

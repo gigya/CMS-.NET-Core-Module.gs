@@ -4,6 +4,8 @@ using Gigya.Module.Core.Connector.Helpers;
 using Gigya.UnitTests.Logging;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Data;
+using SCG = Sitecore.Gigya.Module;
+using System.Linq;
 
 namespace Gigya.UnitTests
 {
@@ -20,7 +22,7 @@ namespace Gigya.UnitTests
             var logger = new Logger(new FakeCmsLogger());
             var apiHelper = new GigyaApiHelper(settingsHelper, logger);
 
-            var settings = Settings();
+            var settings = Settings<GigyaModuleSettings>();
             var response = apiHelper.GetAccountInfo(userId, settings);
             if (response == null || response.GetErrorCode() != 0)
             {
@@ -28,9 +30,9 @@ namespace Gigya.UnitTests
             }
         }
 
-        private GigyaModuleSettings Settings()
+        private T Settings<T>() where T: GigyaModuleSettings, new()
         {
-            return new GigyaModuleSettings
+            return new T
             {
                 ApiKey = "3_qkAT5OcGyvYpkjc_VF6-OfoeTKGk4T_jVwjFF9f5TQzoAg-mH8SBsjQi1srdsOm6",
                 ApplicationKey = "ABPcVRLxt+1u",

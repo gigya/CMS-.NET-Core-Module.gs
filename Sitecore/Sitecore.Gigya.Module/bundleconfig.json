@@ -4,5 +4,11 @@
     "inputFiles": [
       "Scripts/Gigya/gigya-cms.js"
     ]
+  },
+  {
+    "outputFileName": "Scripts/Gigya/gigya-content-editor.min.js",
+    "inputFiles": [
+      "Scripts/Gigya/gigya-content-editor.js"
+    ]
   }
 ]

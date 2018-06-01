@@ -12,9 +12,16 @@ namespace Sitecore.Gigya.Module.Pipelines
     {
         public void Process(PipelineArgs args)
         {
-            RouteTable.Routes.MapRoute("Gigya.Module.Account.Api", "api/gigya/account/{action}", new
+            RouteTable.Routes.MapRoute("Gigya.Module.Account.Api", "api/gigya/{controller}/{action}/{id}", new
             {
-                controller = "Account"
+                controller = "Account",
+                id = UrlParameter.Optional
+            });
+
+            RouteTable.Routes.MapRoute("Gigya.Module.ContentEditor.Api", "sitecore/shell/gigya/contenteditor/{action}/{id}", new
+            {
+                controller = "ContentEditor",
+                id = UrlParameter.Optional
             });
         }
     }

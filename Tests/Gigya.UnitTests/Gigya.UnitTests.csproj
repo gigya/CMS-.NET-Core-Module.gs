@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Gigya.UnitTests</RootNamespace>
     <AssemblyName>Gigya.UnitTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,6 +16,7 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -327,6 +328,10 @@
     <ProjectReference Include="..\..\Core\Gigya.Module.DS\Gigya.Module.DS.csproj">
       <Project>{a35a7bc3-5d80-4030-ba94-0585bf825d00}</Project>
       <Name>Gigya.Module.DS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Sitecore\Sitecore.Gigya.Module\Sitecore.Gigya.Module.csproj">
+      <Project>{79efa8af-e543-4ad4-b363-e327093468b8}</Project>
+      <Name>Sitecore.Gigya.Module</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Umbraco\Gigya.Umbraco.Module\Gigya.Umbraco.Module.csproj">
       <Project>{a3f56e14-a510-4ba4-89be-9afeda162041}</Project>

@@ -92,6 +92,7 @@
     <Compile Include="Connector\Extensions\DateTimeExtensions.cs" />
     <Compile Include="Connector\Helpers\FileHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaAccountHelperBase.cs" />
+    <Compile Include="Connector\Helpers\GigyaAccountSchemaHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaApiHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaLanguageHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaMembershipHelperBase.cs" />
@@ -105,10 +106,12 @@
     <Compile Include="Connector\Logging\ICmsLogger.cs" />
     <Compile Include="Connector\Logging\LogCategory.cs" />
     <Compile Include="Connector\Logging\Logger.cs" />
+    <Compile Include="Connector\Models\AccountSchemaModels.cs" />
     <Compile Include="Data\GigyaModuleSettings.cs" />
     <Compile Include="Connector\Models\MappingField.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaLanguage.cs" />
+    <Compile Include="Mvc\Attributes\NoCacheAttribute.cs" />
     <Compile Include="Mvc\Controllers\AccountController.cs" />
     <Compile Include="Mvc\Controllers\BaseController.cs" />
     <Compile Include="Mvc\JsonNetResult.cs" />
