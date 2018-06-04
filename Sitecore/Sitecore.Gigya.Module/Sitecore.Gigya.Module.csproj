@@ -208,6 +208,10 @@
       <Project>{2dae103e-11a8-46ad-86bd-da40dd729411}</Project>
       <Name>Sitecore.Gigya.DependencyInjection</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sitecore.Gigya.Extensions.Abstractions\Sitecore.Gigya.Extensions.Abstractions.csproj">
+      <Project>{8EEEB107-3691-4259-B39A-9F1820CBA5CB}</Project>
+      <Name>Sitecore.Gigya.Extensions.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sitecore.Gigya.Extensions\Sitecore.Gigya.Extensions.csproj">
       <Project>{9bc95c63-5c43-4bd5-b733-ca1ed5424a09}</Project>
       <Name>Sitecore.Gigya.Extensions</Name>

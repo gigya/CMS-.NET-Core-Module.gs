@@ -6,13 +6,16 @@ using Sitecore.Gigya.Extensions.Abstractions.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Sitecore.Gigya.Extensions.Services
+namespace Sitecore.Gigya.Extensions.v9.Services
 {
     [Service(typeof(ITrackerService))]
     public class TrackerService : ITrackerService
     {
+        private const string _identifierSource = "gigya";
+
         public bool IsActive => Tracker.Current != null && Tracker.Current.IsActive;
 
         public void IdentifyContact(string identifier)
@@ -21,7 +24,7 @@ namespace Sitecore.Gigya.Extensions.Services
             {
                 if (this.IsActive)
                 {
-                    Tracker.Current.Session.Identify(identifier);
+                    Tracker.Current.Session.IdentifyAs(_identifierSource, identifier);
                 }
             }
             catch (ItemNotFoundException ex)

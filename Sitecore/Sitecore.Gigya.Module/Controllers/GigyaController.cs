@@ -2,6 +2,7 @@
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Core.Mvc.Models;
 using Sitecore.Data.Fields;
+using Sitecore.Gigya.Extensions.Abstractions.Repositories;
 using Sitecore.Gigya.Extensions.Fields;
 using Sitecore.Gigya.Extensions.Repositories;
 using Sitecore.Gigya.Module.Helpers;

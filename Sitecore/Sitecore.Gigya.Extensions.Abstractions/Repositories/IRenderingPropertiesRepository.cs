@@ -1,4 +1,4 @@
-﻿namespace Sitecore.Gigya.Extensions.Repositories
+﻿namespace Sitecore.Gigya.Extensions.Abstractions.Repositories
 {
     using Sitecore.Mvc.Presentation;
 

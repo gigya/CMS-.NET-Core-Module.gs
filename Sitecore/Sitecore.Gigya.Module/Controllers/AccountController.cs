@@ -13,6 +13,9 @@ using SC = Sitecore;
 using Core = Gigya.Module.Core;
 using Sitecore.Gigya.Module.Repositories;
 using Sitecore.Gigya.Module.Models;
+using Sitecore.Gigya.Extensions.Abstractions.Services;
+using Sitecore.DependencyInjection;
+using Sitecore.Configuration;
 
 namespace Sitecore.Gigya.Module.Controllers
 {
@@ -39,6 +42,18 @@ namespace Sitecore.Gigya.Module.Controllers
         protected override CurrentIdentity GetCurrentIdentity()
         {
             return _accountRepository.CurrentIdentity;
+        }
+
+        protected override void LoginOrRegister(LoginModel model, SitecoreGigyaModuleSettings settings, ref LoginResponseModel response)
+        {
+            base.LoginOrRegister(model, settings, ref response);
+
+            if (response.Status == ResponseStatus.Success)
+            {
+                // identify contact
+                var trackerService = ServiceLocator.ServiceProvider.GetService(typeof(ITrackerService)) as ITrackerService;
+                trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
+            }
         }
 
         protected override void Signout()

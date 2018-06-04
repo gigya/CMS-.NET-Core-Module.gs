@@ -7,6 +7,7 @@
     using Sitecore.Reflection;
     using Sitecore.Gigya.DependencyInjection;
     using System.Web;
+    using Sitecore.Gigya.Extensions.Abstractions.Repositories;
 
     [Service(typeof(IRenderingPropertiesRepository))]
     public class RenderingPropertiesRepository : IRenderingPropertiesRepository

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sitecore.Gigya.Extensions.Services
+namespace Sitecore.Gigya.Extensions.Abstractions.Services
 {
     public interface ITrackerService
     {
