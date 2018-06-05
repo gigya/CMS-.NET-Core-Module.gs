@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,6 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Services
     {
         bool IsActive { get; }
         void IdentifyContact(string identifier);
+        void UpdateFacets(dynamic gigyaModel, List<MappingFieldGroup> mappingFields);
     }
 }

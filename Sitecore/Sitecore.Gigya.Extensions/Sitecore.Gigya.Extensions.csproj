@@ -54,6 +54,9 @@
     <Reference Include="Sitecore.Analytics, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Analytics.NoReferences.8.2.180406\lib\NET452\Sitecore.Analytics.dll</HintPath>
     </Reference>
+    <Reference Include="Sitecore.Analytics.Model, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Analytics.Model.NoReferences.8.2.180406\lib\NET452\Sitecore.Analytics.Model.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Kernel, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.2.180406\lib\NET452\Sitecore.Kernel.dll</HintPath>
     </Reference>
@@ -108,6 +111,8 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Analytics\Facets\GigyaElement.cs" />
+    <Compile Include="Analytics\Facets\GigyaFacet.cs" />
     <Compile Include="Attributes\SitecoreUserAuthorizeAttribute.cs" />
     <Compile Include="Extensions\SitecoreContextExtensions.cs" />
     <Compile Include="Fields\ExtendedLinkUrl.cs" />
@@ -116,6 +121,10 @@
     <Compile Include="Services\TrackerService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Gigya.Module.Core\Gigya.Module.Core.csproj">
+      <Project>{7610AF03-891B-4AB2-A619-549BC9657CCE}</Project>
+      <Name>Gigya.Module.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sitecore.Gigya.DependencyInjection\Sitecore.Gigya.DependencyInjection.csproj">
       <Project>{2dae103e-11a8-46ad-86bd-da40dd729411}</Project>
       <Name>Sitecore.Gigya.DependencyInjection</Name>

@@ -208,6 +208,7 @@
     <Compile Include="AutoDbMvcDataAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\RenderingPropertiesRepositoryTests.cs" />
+    <Compile Include="Services\TrackerServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -219,6 +220,10 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Sitecore.Gigya.Extensions.Abstractions\Sitecore.Gigya.Extensions.Abstractions.csproj">
+      <Project>{8EEEB107-3691-4259-B39A-9F1820CBA5CB}</Project>
+      <Name>Sitecore.Gigya.Extensions.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sitecore.Gigya.Extensions\Sitecore.Gigya.Extensions.csproj">
       <Project>{9bc95c63-5c43-4bd5-b733-ca1ed5424a09}</Project>
       <Name>Sitecore.Gigya.Extensions</Name>
@@ -231,7 +236,6 @@
   <ItemGroup>
     <Folder Include="Attributes\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
