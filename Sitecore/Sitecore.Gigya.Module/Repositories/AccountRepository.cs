@@ -78,7 +78,7 @@ namespace Sitecore.Gigya.Module.Repositories
             }
         }
 
-        public void Register(string username, string email, string password, bool persistent, string profileId)
+        public User Register(string username, string email, string password, bool persistent, string profileId)
         {
             Assert.ArgumentNotNullOrEmpty(email, nameof(email));
 
@@ -94,6 +94,8 @@ namespace Sitecore.Gigya.Module.Repositories
 
             user.Profile.Save();
             _pipelineService.RunRegistered(user);
+
+            return user;
         }
     }
 }

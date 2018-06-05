@@ -18,6 +18,7 @@ using Core = Gigya.Module.Core;
 using Sitecore.Gigya.Module.Models;
 using System.Configuration;
 using System.Reflection;
+using Sitecore.Security.Accounts;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -75,6 +76,19 @@ namespace Sitecore.Gigya.Module.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         protected virtual bool MapProfileFieldsAndUpdate(SitecoreGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
+            var user = _accountRepository.GetActiveUser();
+            return MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
+        }
+
+        /// <summary>
+        /// Updates the users Sitecore profile.
+        /// </summary>
+        /// <param name="username">Id of the user to update.</param>
+        /// <param name="settings">Gigya module settings for this site.</param>
+        /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
+        /// <param name="user">The user to update.</param>
+        protected virtual bool MapProfileFieldsAndUpdate(SitecoreGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields, User user)
+        {
             if (!settings.EnableMembershipSync)
             {
                 return false;
@@ -85,7 +99,6 @@ namespace Sitecore.Gigya.Module.Helpers
                 return false;
             }
 
-            var user = _accountRepository.GetActiveUser();
             var profileTypeProperties = user.Profile.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(i => i.CanWrite).ToList();
 
             foreach (var field in mappingFields)
@@ -220,8 +233,9 @@ namespace Sitecore.Gigya.Module.Helpers
             var persistent = PersistentAuthRequired(settings);
             var email = DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.Email);
             var password = SecurityUtils.CreateCryptographicallySecureGuid().ToString();
+            var user = _accountRepository.Register(username, email, password, persistent, settings.ProfileId);
 
-            _accountRepository.Register(username, email, password, persistent, settings.ProfileId);
+            MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
             return true;
         }
 

@@ -11,7 +11,7 @@ namespace Sitecore.Gigya.Module.Repositories
 {
     public interface IAccountRepository
     {
-        void Register(string username, string email, string password, bool persistent, string profileId);
+        SC.Security.Accounts.User Register(string username, string email, string password, bool persistent, string profileId);
         bool Exists(string userName);
         void Logout();
         SC.Security.Accounts.User GetActiveUser();
