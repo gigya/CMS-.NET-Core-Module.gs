@@ -76,6 +76,7 @@ namespace Sitecore.Gigya.Module
             public const string LogoutUrl = "Logout URL";
             public const string MembershipMappingFields = "Membership Mapping Fields";
             public const string XdbMappingFields = "xDB Mapping Fields";
+            public const string SessionCookieMode = "Session Cookie Mode";
             public const string GigyaSessionType = "Gigya Session Type";
             public const string GigyaSessionDuration = "Gigya Session Duration";
             public const string Profile = "Profile";

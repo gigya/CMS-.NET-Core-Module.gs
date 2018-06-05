@@ -148,7 +148,7 @@ namespace Sitecore.Gigya.Module.Helpers
                 RedirectUrl = ((LinkField)settings.Fields[Constants.Fields.RedirectUrl]).GetFriendlyUrl(),
                 LogoutUrl = ((LinkField)settings.Fields[Constants.Fields.LogoutUrl]).GetFriendlyUrl(),
                 GlobalParameters = settings.Fields[Constants.Fields.GlobalParameters].Value.Trim(),
-                SessionTimeout = int.Parse(StringHelper.FirstNotNullOrEmpty(settings.Fields[Constants.Fields.GigyaSessionDuration].Value, Constants.DefaultSettings.SessionTimeout)),
+                SessionTimeout = System.Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds),
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
                 GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding,
                 ProfileId = _userProfileHelper.GetSelectedProfile(settings).ID.ToString()
@@ -164,10 +164,18 @@ namespace Sitecore.Gigya.Module.Helpers
                 mapped.ApplicationSecret = mapped.ApplicationSecret.Substring(Constants.EncryptionPrefix.Length);
             }
 
-            Core.Connector.Enums.GigyaSessionMode sessionMode;
-            if (Enum.TryParse(settings.Fields[Constants.Fields.GigyaSessionType].Value, out sessionMode))
+            // map session mode
+            if (((CheckboxField)settings.Fields[Constants.Fields.SessionCookieMode]).Checked)
             {
-                mapped.GigyaSessionMode = sessionMode;
+                mapped.GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Session;
+            }
+            else if (FormsAuthentication.SlidingExpiration)
+            {
+                mapped.GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding;
+            }
+            else
+            {
+                mapped.GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Fixed;
             }
 
             return mapped;

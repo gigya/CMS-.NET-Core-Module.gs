@@ -129,6 +129,8 @@
     <Compile Include="Events\Validation.cs" />
     <Compile Include="Events\EncryptApplicationKey.cs" />
     <Compile Include="Fields\AutocompleteField.cs" />
+    <Compile Include="Fields\FormsSlidingAuthModeField.cs" />
+    <Compile Include="Fields\FormsTimeoutField.cs" />
     <Compile Include="Fields\UserProfilePropertyField.cs" />
     <Compile Include="Fields\EncryptedField.cs" />
     <Compile Include="Helpers\GigyaAccountHelper.cs" />
