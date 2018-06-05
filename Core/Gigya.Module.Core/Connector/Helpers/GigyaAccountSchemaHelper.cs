@@ -35,26 +35,29 @@ namespace Gigya.Module.Core.Connector.Helpers
                 return response;
             }
 
-            var schemaData = _apiHelper.GetAccountSchema(_gigyaModuleSettings);
-            if (schemaData == null || schemaData.GetErrorCode() != 0)
-            {
-                return null;
-            }
-
             response = new AccountSchemaModel { Properties = new List<AccountSchemaProperty>() };
-            var model = JsonConvert.DeserializeObject<ExpandoObject>(schemaData.GetResponseText());
 
-            AddProperties(ref response, model, "profileSchema.fields", "profile");
-            AddProperties(ref response, model, "dataSchema.fields", "data");
-            AddProperties(ref response, model, "subscriptionsSchema.fields", "subscriptions");
-            AddProperties(ref response, model, "preferencesSchema.fields", "preferences");
+            AddProperties(ref response, "systemSchema", null);
+            AddProperties(ref response, "profileSchema", "profile");
+            AddProperties(ref response, "dataSchema", "data");
+            AddProperties(ref response, "subscriptionsSchema", "subscriptions");
+            AddProperties(ref response, "preferencesSchema", "preferences");
 
             HttpContext.Current.Cache.Insert(_cacheKey, response, null, DateTime.UtcNow.AddMinutes(_cacheMins), Cache.NoSlidingExpiration);
             return response;
         }
 
-        private void AddProperties(ref AccountSchemaModel results, ExpandoObject model, string propertyPath, string propertyPrefix)
+        private void AddProperties(ref AccountSchemaModel results, string schema, string propertyPrefix)
         {
+            var schemaData = _apiHelper.GetAccountSchema(_gigyaModuleSettings, schema);
+            if (schemaData == null || schemaData.GetErrorCode() != 0)
+            {
+                return;
+            }
+
+            var model = JsonConvert.DeserializeObject<ExpandoObject>(schemaData.GetResponseText());
+            var propertyPath = string.Concat(schema, ".fields");
+
             var fields = DynamicUtils.GetValue<IDictionary<string, object>>(model, propertyPath);
             if (fields == null || !fields.Any())
             {
@@ -63,7 +66,7 @@ namespace Gigya.Module.Core.Connector.Helpers
 
             results.Properties.AddRange(fields.Keys.Select(i => new AccountSchemaProperty
             {
-                Name = string.Join(".", propertyPrefix, i)
+                Name = !string.IsNullOrEmpty(propertyPrefix) ? string.Join(".", propertyPrefix, i) : i
             }));
         }
     }

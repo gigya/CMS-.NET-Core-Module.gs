@@ -50,10 +50,16 @@ namespace Gigya.Module.Core.Connector.Helpers
             return response;
         }
 
-        public GSResponse GetAccountSchema(GigyaModuleSettings settings)
+        public GSResponse GetAccountSchema(GigyaModuleSettings settings, string include = null)
         {
             var method = "accounts.getSchema";
             var request = NewRequest(settings, settings.ApplicationSecret, method);
+
+            if (!string.IsNullOrEmpty(include))
+            {
+                request.SetParam("include", include);
+            }
+
             var response = Send(request, method, settings, false);
             return response;
         }
