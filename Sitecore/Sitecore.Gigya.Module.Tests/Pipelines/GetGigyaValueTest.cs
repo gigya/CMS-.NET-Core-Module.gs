@@ -21,20 +21,5 @@ namespace Sitecore.Gigya.Module.Tests.Pipelines
                 args.GigyaValue = new Random().Next(int.MaxValue).ToString();
             }
         }
-
-        //[Theory]
-        //public void ShouldBeAbleToChangeGigyaFieldValue(GigyaMembershipHelper gigyaMembershipHelper)
-        //{
-            
-        //    //var accountRepository = new AccountRepository();
-        //    //Logger = new Logger(new SitecoreLogger());
-        //    //SettingsHelper = new Helpers.GigyaSettingsHelper();
-
-        //    //_gigyaAccountHelper = new GigyaAccountHelper(SettingsHelper, Logger, null, _accountRepository);
-        //    //var apiHelper = new GigyaApiHelper<SitecoreGigyaModuleSettings>(SettingsHelper, Logger);
-        //    //MembershipHelper = new GigyaMembershipHelper(apiHelper, Logger, _gigyaAccountHelper, _accountRepository);
-        //    //var helper = new GigyaMembershipHelper()
-
-        //}
     }
 }

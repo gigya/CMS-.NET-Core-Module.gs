@@ -11,6 +11,5 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Services
     {
         bool IsActive { get; }
         void IdentifyContact(string identifier);
-        void UpdateFacets(dynamic gigyaModel, List<MappingFieldGroup> mappingFields);
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Facets
 {
-    public interface IGigyaFacet
+    public interface IGigyaFacet : IFacet, IElement
     {
         IElementCollection<IGigyaElement> Fields { get; }
     }

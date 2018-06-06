@@ -12,11 +12,18 @@ using Gigya.Module.Core.Connector.Logging;
 using Sitecore.Gigya.Testing.Logging;
 using Gigya.Module.Core.Connector.Helpers;
 using Sitecore.Gigya.Module.Models;
+using Sitecore.Gigya.Testing;
+using System.Web;
 
 namespace Sitecore.Gigya.Module.Tests.Helpers
 {
     public class GigyaAccountSchemaHelperTests
     {
+        public GigyaAccountSchemaHelperTests()
+        {
+            HttpContext.Current = HttpContextMockFactory.Create();
+        }
+
         [Theory]
         [AutoDbData]
         public void CanGetAccountSchema(FakeGigyaSettingsHelper settingsHelper)

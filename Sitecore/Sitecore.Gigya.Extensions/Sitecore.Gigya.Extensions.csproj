@@ -117,7 +117,9 @@
     <Compile Include="Extensions\SitecoreContextExtensions.cs" />
     <Compile Include="Fields\ExtendedLinkUrl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\ContactProfileProvider.cs" />
     <Compile Include="Repositories\RenderingPropertiesRepository.cs" />
+    <Compile Include="Services\ContactProfileService.cs" />
     <Compile Include="Services\TrackerService.cs" />
   </ItemGroup>
   <ItemGroup>

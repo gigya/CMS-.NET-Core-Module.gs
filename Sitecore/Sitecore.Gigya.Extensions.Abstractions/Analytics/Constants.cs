@@ -10,8 +10,14 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics
     {
         public class FacetKeys
         {
-            public const string PersonalFacetKey = "Personal";
-            public const string AddressesFacetKey = "Addresses";
+            public const string Gigya = "Gigya";
+            public const string Personal = "Personal";
+            public const string Addresses = "Addresses";
+            public const string PhoneNumbers = "Phone Numbers";
+            public const string CommunicationProfile = "Communication Profile";
+            public const string Emails = "Emails";
+            public const string Preferences = "Preferences";
+            public const string Picture = "Picture";
         }
     }
 }
