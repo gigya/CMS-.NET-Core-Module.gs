@@ -22,7 +22,7 @@ namespace Sitecore.Gigya.Module.Fields
             base.OnPreRender(e);
 
             this.ReadOnly = true;
-            this.Value = FormsAuthentication.Timeout.TotalSeconds.ToString();
+            this.Value = FormsAuthentication.Timeout.TotalMinutes.ToString();
         }
     }
 }
