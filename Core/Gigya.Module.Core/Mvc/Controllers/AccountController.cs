@@ -81,7 +81,7 @@ namespace Gigya.Module.Core.Mvc.Controllers
             var response = new LoginResponseModel();
             var currentIdentity = GetCurrentIdentity();
 
-            if (currentIdentity.IsAuthenticated)
+            if (currentIdentity.IsAuthenticated && model.UserId == currentIdentity.UID)
             {
                 // already logged in
                 response.Status = ResponseStatus.AlreadyLoggedIn;

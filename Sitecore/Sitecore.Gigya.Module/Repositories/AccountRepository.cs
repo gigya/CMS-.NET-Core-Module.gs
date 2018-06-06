@@ -29,7 +29,7 @@ namespace Sitecore.Gigya.Module.Repositories
                 {
                     IsAuthenticated = user.IsAuthenticated,
                     Name = user.Name,
-                    UID = user.Name
+                    UID = user.LocalName
                 };
                 return currentIdentity;
             }
