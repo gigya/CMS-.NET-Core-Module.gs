@@ -79,7 +79,7 @@ namespace Sitecore.Gigya.Extensions.Providers
             return _contactManager?.FlushContactToXdb2(Contact);
         }
 
-        protected T GetFacet<T>(string facetName) where T : class, IFacet
+        protected virtual T GetFacet<T>(string facetName) where T : class, IFacet
         {
             return Contact?.GetFacet<T>(facetName);
         }

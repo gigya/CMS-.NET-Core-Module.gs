@@ -90,16 +90,12 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                //for (int i = 0; i < 10000; i++)
-                {
-                    contactProfileService.UpdateFacets(gigyaModel, mappingFields);
-                }
+                contactProfileService.UpdateFacets(gigyaModel, mappingFields);
 
                 //var elapsed = "Took " + stopwatch.ElapsedMilliseconds;
                 //elapsed.ShouldBeEquivalentTo("");
 
                 // assert
-                var contact = contactProfileService.ContactProfileProvider.Contact;
                 var facet = contactProfileService.ContactProfileProvider.PersonalInfo;
 
                 facet.FirstName.ShouldBeEquivalentTo((string)gigyaModel.profile.firstName);

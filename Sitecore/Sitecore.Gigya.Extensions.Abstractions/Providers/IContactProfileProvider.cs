@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Sitecore.Analytics.Model.Entities;
+using Sitecore.Analytics.Model.Framework;
 using Sitecore.Analytics.Tracking;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Facets;
 
