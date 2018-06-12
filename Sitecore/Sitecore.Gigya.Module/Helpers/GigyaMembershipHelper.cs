@@ -19,17 +19,24 @@ using Sitecore.Gigya.Module.Models;
 using System.Configuration;
 using System.Reflection;
 using Sitecore.Security.Accounts;
+using Sitecore.DependencyInjection;
+using Sitecore.Gigya.Extensions.Abstractions.Services;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
     public class GigyaMembershipHelper : GigyaMembershipHelperBase<SitecoreGigyaModuleSettings>, IGigyaMembershipHelper<SitecoreGigyaModuleSettings>
     {
-        private readonly IAccountRepository _accountRepository;
+        protected readonly IAccountRepository _accountRepository;
+        protected readonly ITrackerService _trackerService;
+        protected readonly IContactProfileService _contactProfileService;
 
-        public GigyaMembershipHelper(GigyaApiHelper<SitecoreGigyaModuleSettings> apiHelper, Logger logger, GigyaAccountHelper gigyaAccountHelper, IAccountRepository accountRepository)
+        public GigyaMembershipHelper(GigyaApiHelper<SitecoreGigyaModuleSettings> apiHelper, Logger logger, GigyaAccountHelper gigyaAccountHelper, 
+            IAccountRepository accountRepository, ITrackerService trackerService, IContactProfileService contactProfileService)
             : base(apiHelper, gigyaAccountHelper, logger)
         {
             _accountRepository = accountRepository;
+            _trackerService = trackerService;
+            _contactProfileService = contactProfileService;
         }
 
         protected override string CmsUserIdField => Constants.CmsFields.UserId;
@@ -247,12 +254,22 @@ namespace Sitecore.Gigya.Module.Helpers
                 return false;
             }
 
+            var success = isLoggedIn;
             if (updateProfile)
             {
-                return MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields);
+                success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields);
             }
 
-            return true;
+            if (success)
+            {
+                // identify contact                
+                _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
+
+                // update the contacts facets
+                _contactProfileService.UpdateFacets(gigyaModel, settings.MappedXdbMappingFields);
+            }
+
+            return success;
         }
     }
 }

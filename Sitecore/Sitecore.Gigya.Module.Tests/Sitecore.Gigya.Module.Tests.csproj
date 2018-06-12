@@ -231,6 +231,10 @@
       <Project>{7610af03-891b-4ab2-a619-549bc9657cce}</Project>
       <Name>Gigya.Module.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sitecore.Gigya.Extensions.Abstractions\Sitecore.Gigya.Extensions.Abstractions.csproj">
+      <Project>{8eeeb107-3691-4259-b39a-9f1820cba5cb}</Project>
+      <Name>Sitecore.Gigya.Extensions.Abstractions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sitecore.Gigya.Extensions\Sitecore.Gigya.Extensions.csproj">
       <Project>{9bc95c63-5c43-4bd5-b733-ca1ed5424a09}</Project>
       <Name>Sitecore.Gigya.Extensions</Name>

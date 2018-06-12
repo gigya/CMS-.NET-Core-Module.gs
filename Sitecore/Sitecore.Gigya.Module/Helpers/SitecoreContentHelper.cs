@@ -10,17 +10,27 @@ namespace Sitecore.Gigya.Module.Helpers
     {
         public Item GetSettingsParent(Item current)
         {
+            return GetClosestTemplate(current, Constants.Templates.GigyaSettings);
+        }
+
+        public Item GetFacetFolderParent(Item current)
+        {
+            return GetClosestTemplate(current, Constants.Templates.SitecoreXdbFacetFolder);
+        }
+
+        protected virtual Item GetClosestTemplate(Item current, Data.ID templateId)
+        {
             if (current == null || current.ID.IsNull)
             {
                 return null;
             }
 
-            if (current.TemplateID == Constants.Templates.GigyaSettings)
+            if (current.TemplateID == templateId)
             {
                 return current;
             }
 
-            return GetSettingsParent(current.Parent);
+            return GetClosestTemplate(current.Parent, templateId);
         }
     }
 }

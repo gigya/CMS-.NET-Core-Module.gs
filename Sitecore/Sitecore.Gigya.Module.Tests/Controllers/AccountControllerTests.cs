@@ -46,7 +46,7 @@ namespace Sitecore.Gigya.Module.Tests.Controllers
 
             using (new SiteContextSwitcher(fakeSite))
             {
-                var ctrl = new AccountController(repo);
+                var ctrl = new AccountController(repo, null, null);
                 ctrl.Logout();
                 repo.Received(1).Logout();
             }

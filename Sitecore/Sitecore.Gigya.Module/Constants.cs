@@ -51,6 +51,8 @@ namespace Sitecore.Gigya.Module
             public static readonly ID SitecoreDefaultUserProfile = new ID("{642C9A7E-EE31-4979-86F0-39F338C10AFB}");
             public static readonly ID MappingFieldFolder = new ID("{6FE4A2F7-B184-463F-A7CA-8471159E579A}");
             public static readonly ID MappingField = new ID("{A8ECE2D3-757C-4A0E-A184-DFAFC194C973}");
+            public static readonly ID SitecoreXdbFacetFolder = new ID("{DD6899B5-2D80-44FA-9F5B-4BBC4F14AA11}");
+            public static readonly ID GigyaCustomXdbFacetFolder = new ID("{5505EBBB-4594-4B5E-97DC-7476A8869524}");
         }
 
         public class Dictionary
@@ -90,6 +92,11 @@ namespace Sitecore.Gigya.Module
             public class MappingFieldFolder
             {
                 public const string Type = "Type";
+            }
+
+            public class FacetFolder
+            {
+                public const string Name = "Facet Name";
             }
         }
     }

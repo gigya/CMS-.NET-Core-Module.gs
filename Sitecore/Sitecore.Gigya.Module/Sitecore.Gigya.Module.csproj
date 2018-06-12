@@ -55,6 +55,9 @@
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Sitecore.Analytics.Model, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Analytics.Model.NoReferences.8.2.180406\lib\NET452\Sitecore.Analytics.Model.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Kernel, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.2.180406\lib\NET452\Sitecore.Kernel.dll</HintPath>
       <Private>False</Private>
@@ -131,6 +134,7 @@
     <Compile Include="Fields\AutocompleteField.cs" />
     <Compile Include="Fields\FormsSlidingAuthModeField.cs" />
     <Compile Include="Fields\FormsTimeoutField.cs" />
+    <Compile Include="Fields\FacetPropertyField.cs" />
     <Compile Include="Fields\UserProfilePropertyField.cs" />
     <Compile Include="Fields\EncryptedField.cs" />
     <Compile Include="Helpers\GigyaAccountHelper.cs" />

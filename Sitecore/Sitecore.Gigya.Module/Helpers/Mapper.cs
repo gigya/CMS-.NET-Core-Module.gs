@@ -11,6 +11,7 @@ using Gigya.Module.Core.Connector.Models;
 using Sitecore.Data.Items;
 using Sitecore.Gigya.Module.Controllers;
 using Sitecore.Gigya.Module.Models;
+using A = Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -32,7 +33,8 @@ namespace Sitecore.Gigya.Module.Helpers
                 LogoutUrl = source.LogoutUrl,
                 RenderScript = source.RenderScript,
                 Settings = source.Settings,
-                SettingsJson = source.SettingsJson
+                SettingsJson = source.SettingsJson,
+                EnableSSOToken = source.EnableSSOToken
             };
         }
 
@@ -42,6 +44,22 @@ namespace Sitecore.Gigya.Module.Helpers
             {
                 CmsFieldName = item.Fields[Constants.Fields.MappingFields.SitecoreProperty].Value,
                 GigyaFieldName = item.Fields[Constants.Fields.MappingFields.GigyaProperty].Value,
+            };
+        }
+
+        public static A.MappingFieldGroup MapMappingFieldGroup(Item item)
+        {
+            var facet = new A.MappingFieldGroup { FacetName = item.Fields[Constants.Fields.FacetFolder.Name]?.Value };
+            facet.Fields = item.Children.Select(MapMappingField).ToList();
+            return facet;
+        }
+
+        public static A.MappingField MapMappingField(Item item)
+        {
+            return new A.MappingField
+            {
+                CmsFieldName = item.Fields[Constants.Fields.MappingFields.SitecoreProperty]?.Value,
+                GigyaFieldName = item.Fields[Constants.Fields.MappingFields.GigyaProperty]?.Value,
             };
         }
 

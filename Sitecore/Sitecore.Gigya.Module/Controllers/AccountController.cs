@@ -16,6 +16,8 @@ using Sitecore.Gigya.Module.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
 using Sitecore.DependencyInjection;
 using Sitecore.Configuration;
+using Sitecore.Gigya.Extensions.Services;
+using Sitecore.Gigya.Extensions.Providers;
 
 namespace Sitecore.Gigya.Module.Controllers
 {
@@ -24,11 +26,11 @@ namespace Sitecore.Gigya.Module.Controllers
         protected readonly IAccountRepository _accountRepository;
         protected readonly GigyaAccountHelper _gigyaAccountHelper;
 
-        public AccountController() : this(new AccountRepository(new Pipelines.PipelineService()))
+        public AccountController() : this(new AccountRepository(new Pipelines.PipelineService()), new TrackerService(), new ContactProfileService(new ContactProfileProvider()))
         {
         }
 
-        public AccountController(IAccountRepository accountRepository) : base()
+        public AccountController(IAccountRepository accountRepository, ITrackerService trackerService, IContactProfileService contactProfileService) : base()
         {
             _accountRepository = accountRepository;
             Logger = new Logger(new SitecoreLogger());
@@ -36,24 +38,12 @@ namespace Sitecore.Gigya.Module.Controllers
 
             _gigyaAccountHelper = new GigyaAccountHelper(SettingsHelper, Logger, null, _accountRepository);
             var apiHelper = new GigyaApiHelper<SitecoreGigyaModuleSettings>(SettingsHelper, Logger);
-            MembershipHelper = new GigyaMembershipHelper(apiHelper, Logger, _gigyaAccountHelper, _accountRepository);
+            MembershipHelper = new GigyaMembershipHelper(apiHelper, Logger, _gigyaAccountHelper, _accountRepository, trackerService, contactProfileService);
         }
 
         protected override CurrentIdentity GetCurrentIdentity()
         {
             return _accountRepository.CurrentIdentity;
-        }
-
-        protected override void LoginOrRegister(LoginModel model, SitecoreGigyaModuleSettings settings, ref LoginResponseModel response)
-        {
-            base.LoginOrRegister(model, settings, ref response);
-
-            if (response.Status == ResponseStatus.Success)
-            {
-                // identify contact
-                var trackerService = ServiceLocator.ServiceProvider.GetService(typeof(ITrackerService)) as ITrackerService;
-                trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
-            }
         }
 
         protected override void Signout()

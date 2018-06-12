@@ -90,6 +90,7 @@
     <Compile Include="Connector\Events\GigyaEventHub.cs" />
     <Compile Include="Connector\Events\GigyaMembershipEvents.cs" />
     <Compile Include="Connector\Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Connector\Extensions\StringExtensions.cs" />
     <Compile Include="Connector\Helpers\FileHelper.cs" />
     <Compile Include="Connector\Helpers\GigyaAccountHelperBase.cs" />
     <Compile Include="Connector\Helpers\GigyaAccountSchemaHelper.cs" />

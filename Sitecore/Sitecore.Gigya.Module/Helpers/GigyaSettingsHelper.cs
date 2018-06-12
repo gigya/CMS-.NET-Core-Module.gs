@@ -23,6 +23,9 @@ using Gigya.Module.Core.Connector.Models;
 using System.Web.Security;
 using System.Web;
 
+using A = Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
+using Gigya.Module.Core.Connector.Extensions;
+
 namespace Sitecore.Gigya.Module.Helpers
 {
     public class GigyaSettingsHelper : Core.Connector.Helpers.GigyaSettingsHelper<SitecoreGigyaModuleSettings>
@@ -145,8 +148,8 @@ namespace Sitecore.Gigya.Module.Helpers
                 EnableRaas = ((CheckboxField)settings.Fields[Constants.Fields.EnableRaaS]).Checked,
                 EnableMembershipSync = ((CheckboxField)settings.Fields[Constants.Fields.EnableMembershipProviderSync]).Checked,
                 EnableXdb = ((CheckboxField)settings.Fields[Constants.Fields.EnableXdbSync]).Checked,
-                RedirectUrl = ((LinkField)settings.Fields[Constants.Fields.RedirectUrl]).GetFriendlyUrl(),
-                LogoutUrl = ((LinkField)settings.Fields[Constants.Fields.LogoutUrl]).GetFriendlyUrl(),
+                RedirectUrl = ((LinkField)settings.Fields[Constants.Fields.RedirectUrl]).GetFriendlyUrl().ToAbsoluteUrl(),
+                LogoutUrl = ((LinkField)settings.Fields[Constants.Fields.LogoutUrl]).GetFriendlyUrl().ToAbsoluteUrl(),
                 GlobalParameters = settings.Fields[Constants.Fields.GlobalParameters].Value.Trim(),
                 SessionTimeout = System.Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds),
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
@@ -155,7 +158,7 @@ namespace Sitecore.Gigya.Module.Helpers
             };
 
             mapped.MappedMappingFields = ExtractMappingFields(settings, MappingFieldType.Membership);
-            mapped.MappedXdbMappingFields = ExtractMappingFields(settings, MappingFieldType.xDB);
+            mapped.MappedXdbMappingFields = ExtractXdbMappingFields(settings);
 
             ExtractDataCenter(settings, mapped, database);
 
@@ -179,6 +182,22 @@ namespace Sitecore.Gigya.Module.Helpers
             }
 
             return mapped;
+        }
+
+        private List<A.MappingFieldGroup> ExtractXdbMappingFields(Item settings)
+        {
+            var fieldTypeString = MappingFieldType.xDB.ToString();
+            var folder = settings.Children.FirstOrDefault(i => i.TemplateID == Constants.Templates.MappingFieldFolder && i.Fields[Constants.Fields.MappingFieldFolder.Type].Value == fieldTypeString);
+            if (folder == null)
+            {
+                return new List<A.MappingFieldGroup>();
+            }
+
+            var fields = folder.Children
+                .Select(Mapper.MapMappingFieldGroup)
+                .ToList();
+
+            return fields;
         }
 
         private List<MappingField> ExtractMappingFields(Item settings, MappingFieldType fieldType)

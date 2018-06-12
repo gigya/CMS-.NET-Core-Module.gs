@@ -103,6 +103,11 @@ namespace Gigya.Module.Core.Connector.Helpers
                 model.Settings.lang = Language(settings);
             }
 
+            if (settingsProperties.ContainsKey("enableSSOToken"))
+            {
+                model.EnableSSOToken = model.Settings.enableSSOToken;
+            }
+
             if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Sliding)
             {
                 // client needs -1 to specify a sliding session

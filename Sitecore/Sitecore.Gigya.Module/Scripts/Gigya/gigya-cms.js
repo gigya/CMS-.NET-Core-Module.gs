@@ -561,14 +561,22 @@ var gigyaCms = {
                     case gigyaCms.responseCodes.Success:
                         gigyaCms.authenticated = true;
                         gigyaCms.authenticatedOnServerByCurrentPage = true;
-                        if (redirectAfterLogin === true || gigyaCms.loginEventFired) {
-                            if (eventObj.newUser) {
-                                gigyaCms.redirectAfterRegister(response.redirectUrl);
-                            } else {
-                                gigyaCms.redirectAfterLogin(response.redirectUrl);
-                            }
+
+                        if (window.gigyaConfig.enableSSOToken) {
+                            var params = {
+                                redirectURL: response.redirectUrl
+                            };
+                            gigya.accounts.setSSOToken(params);
                         } else {
-                            bodyElem.classList.remove(gigyaCms.loggingInClassName);
+                            if (redirectAfterLogin === true || gigyaCms.loginEventFired) {
+                                if (eventObj.newUser) {
+                                    gigyaCms.redirectAfterRegister(response.redirectUrl);
+                                } else {
+                                    gigyaCms.redirectAfterLogin(response.redirectUrl);
+                                }
+                            } else {
+                                bodyElem.classList.remove(gigyaCms.loggingInClassName);
+                            }
                         }
                         return;
                     case gigyaCms.responseCodes.Error:

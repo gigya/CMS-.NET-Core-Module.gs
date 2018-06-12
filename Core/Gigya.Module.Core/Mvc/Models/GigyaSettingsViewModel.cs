@@ -21,5 +21,6 @@ namespace Gigya.Module.Core.Mvc.Models
         public string LogoutUrl { get; set; }
         public bool IsLoggedIn { get; set; }
         public bool IsGetInfoRequired { get; set; }
+        public bool EnableSSOToken { get; set; }
     }
 }
