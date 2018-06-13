@@ -27,131 +27,147 @@ namespace Sitecore.Gigya.Extensions.Services
             ContactProfileProvider = contactProfileProvider;
         }
 
-        public void UpdateFacets(dynamic gigyaModel, List<MappingFieldGroup> mappingFields)
+        public void UpdateFacets(dynamic gigyaModel, MappingFieldGroup mappingFields)
         {
-            foreach (var group in mappingFields)
-            {
-                UpdateFacet(gigyaModel, group);
-            }
+            UpdatePersonalFacet(gigyaModel, mappingFields.PersonalInfoMapping);
+            UpdatePhoneNumbersFacet(gigyaModel, mappingFields.PhoneNumbersMapping);
+            UpdateEmailAddressesFacet(gigyaModel, mappingFields.EmailAddressesMapping);
 
             ContactProfileProvider.Flush();
         }
 
-        private void UpdateFacet(dynamic gigyaModel, MappingFieldGroup group)
-        {
-            if (group.Fields == null || !group.Fields.Any())
-            {
-                return;
-            }
-
-            switch (group.FacetName)
-            {
-                case C.FacetKeys.Personal:
-                    UpdateFacet(ContactProfileProvider.PersonalInfo, gigyaModel, group.Fields);
-                    break;
-                case C.FacetKeys.Addresses:
-                    UpdateFacet(ContactProfileProvider.Addresses, gigyaModel, group.Fields);
-                    break;
-                case C.FacetKeys.CommunicationProfile:
-                    UpdateFacet(ContactProfileProvider.CommunicationProfile, gigyaModel, group.Fields);
-                    break;
-                case C.FacetKeys.Emails:
-                    UpdateFacet(ContactProfileProvider.Emails, gigyaModel, group.Fields);
-                    break;
-                case C.FacetKeys.PhoneNumbers:
-                    UpdateFacet(ContactProfileProvider.PhoneNumbers, gigyaModel, group.Fields);
-                    break;
-                case C.FacetKeys.Picture:
-                    UpdateFacet(ContactProfileProvider.Picture, gigyaModel, group.Fields);
-                    break;
-                case C.FacetKeys.Preferences:
-                    UpdateFacet(ContactProfileProvider.Preferences, gigyaModel, group.Fields);
-                    break;
-                case C.FacetKeys.Gigya:
-                    UpdateFacet(ContactProfileProvider.Gigya, gigyaModel, group.Fields);
-                    break;
-            }
-        }
-
-        private void UpdateFacet(IFacet facet, dynamic gigyaModel, List<MappingField> mappingFields)
-        {
-            try
-            {
-                if (facet == null)
-                {
-                    return;
-                }
-
-                var properties = facet.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(i => i.CanWrite).ToList();
-
-                foreach (var mappingField in mappingFields)
-                {
-                    var property = properties.FirstOrDefault(i => i.Name == mappingField.CmsFieldName);
-                    if (property == null)
-                    {
-                        Log.Warn(string.Format("[Gigya]: The '{0}' facet property is not available.", mappingField.CmsFieldName), this);
-                        continue;
-                    }
-
-                    var value = DynamicUtils.GetValue<object>(gigyaModel, mappingField.GigyaFieldName);
-                    property.SetValue(facet, value);
-                }
-            }
-            catch (FacetNotAvailableException ex)
-            {
-                Log.Warn(string.Join("[Gigya]: The '{0}' facet is not available.", facet.GetType()), ex);
-            }
-        }
-
-        //private void UpdatePersonalFacet(dynamic gigyaModel, List<MappingField> mappingFields)
+        //private void UpdateFacet(IFacet facet, dynamic gigyaModel, List<MappingField> mappingFields)
         //{
-        //    if (mappingFields == null || !mappingFields.Any())
-        //    {
-        //        return;
-        //    }
-
         //    try
         //    {
-        //        var facet = ContactProfileProvider.PersonalInfo;
+        //        if (facet == null)
+        //        {
+        //            return;
+        //        }
+
+        //        var properties = facet.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(i => i.CanWrite).ToList();
 
         //        foreach (var mappingField in mappingFields)
         //        {
-        //            switch (mappingField.CmsFieldName)
+        //            var property = properties.FirstOrDefault(i => i.Name == mappingField.CmsFieldName);
+        //            if (property == null)
         //            {
-        //                case nameof(IContactPersonalInfo.BirthDate):
-        //                    facet.BirthDate = DynamicUtils.GetValue<DateTime?>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.FirstName):
-        //                    facet.FirstName = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.Gender):
-        //                    facet.Gender = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.JobTitle):
-        //                    facet.JobTitle = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.MiddleName):
-        //                    facet.MiddleName = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.Nickname):
-        //                    facet.Nickname = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.Suffix):
-        //                    facet.Suffix = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.Surname):
-        //                    facet.Surname = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
-        //                case nameof(IContactPersonalInfo.Title):
-        //                    facet.Title = DynamicUtils.GetValue<string>(gigyaModel, mappingField.GigyaFieldName);
-        //                    break;
+        //                Log.Warn(string.Format("[Gigya]: The '{0}' facet property is not available.", mappingField.CmsFieldName), this);
+        //                continue;
         //            }
+
+        //            var value = DynamicUtils.GetValue<object>(gigyaModel, mappingField.GigyaFieldName);
+        //            property.SetValue(facet, value);
         //        }
         //    }
         //    catch (FacetNotAvailableException ex)
         //    {
-        //        Log.Warn("The 'Personal' facet is not available.", ex);
+        //        Log.Warn(string.Join("[Gigya]: The '{0}' facet is not available.", facet.GetType()), ex);
         //    }
         //}
+
+        private void UpdatePersonalFacet(dynamic gigyaModel, ContactPersonalInfoMapping mapping)
+        {
+            if (mapping == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var facet = ContactProfileProvider.PersonalInfo;
+
+                facet.BirthDate = DynamicUtils.GetValue<DateTime?>(gigyaModel, mapping.BirthDate);
+                facet.FirstName = DynamicUtils.GetValue<string>(gigyaModel, mapping.FirstName);
+                facet.Gender = DynamicUtils.GetValue<string>(gigyaModel, mapping.Gender);
+                facet.JobTitle = DynamicUtils.GetValue<string>(gigyaModel, mapping.JobTitle);
+                facet.MiddleName = DynamicUtils.GetValue<string>(gigyaModel, mapping.MiddleName);
+                facet.Nickname = DynamicUtils.GetValue<string>(gigyaModel, mapping.Nickname);
+                facet.Suffix = DynamicUtils.GetValue<string>(gigyaModel, mapping.Suffix);
+                facet.Surname = DynamicUtils.GetValue<string>(gigyaModel, mapping.Surname);
+                facet.Title = DynamicUtils.GetValue<string>(gigyaModel, mapping.Title);
+            }
+            catch (FacetNotAvailableException ex)
+            {
+                Log.Warn("The 'Personal' facet is not available.", ex);
+            }
+        }
+
+        private void UpdatePhoneNumbersFacet(dynamic gigyaModel, ContactPhoneNumbersMapping mapping)
+        {
+            if (mapping == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var facet = ContactProfileProvider.PhoneNumbers;
+
+                facet.Preferred = DynamicUtils.GetValue<string>(gigyaModel, mapping.Preferred);
+                
+                if (mapping.Entries != null)
+                {
+                    foreach (var entryMapping in mapping.Entries)
+                    {
+                        IPhoneNumber phoneNumber;
+                        if (!facet.Entries.Contains(entryMapping.Key))
+                        {
+                            phoneNumber = facet.Entries.Create(entryMapping.Key);
+                        }
+                        else
+                        {
+                            phoneNumber = facet.Entries[entryMapping.Key];
+                        }
+
+                        phoneNumber.CountryCode = DynamicUtils.GetValue<string>(gigyaModel, entryMapping.CountryCode);
+                        phoneNumber.Extension = DynamicUtils.GetValue<string>(gigyaModel, entryMapping.Extension);
+                        phoneNumber.Number = DynamicUtils.GetValue<string>(gigyaModel, entryMapping.Number);
+                    }
+                }
+            }
+            catch (FacetNotAvailableException ex)
+            {
+                Log.Warn("The 'Personal' facet is not available.", ex);
+            }
+        }
+
+        private void UpdateEmailAddressesFacet(dynamic gigyaModel, ContactEmailAddressesMapping mapping)
+        {
+            if (mapping == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var facet = ContactProfileProvider.Emails;
+
+                facet.Preferred = DynamicUtils.GetValue<string>(gigyaModel, mapping.Preferred);
+
+                if (mapping.Entries != null)
+                {
+                    foreach (var entryMapping in mapping.Entries)
+                    {
+                        IEmailAddress emailAddress;
+                        if (!facet.Entries.Contains(entryMapping.Key))
+                        {
+                            emailAddress = facet.Entries.Create(entryMapping.Key);
+                        }
+                        else
+                        {
+                            emailAddress = facet.Entries[entryMapping.Key];
+                        }
+
+                        emailAddress.SmtpAddress = DynamicUtils.GetValue<string>(gigyaModel, entryMapping.SmtpAddress);
+                        emailAddress.BounceCount = DynamicUtils.GetValue<int>(gigyaModel, entryMapping.BounceCount);
+                    }
+                }
+            }
+            catch (FacetNotAvailableException ex)
+            {
+                Log.Warn("The 'Personal' facet is not available.", ex);
+            }
+        }
     }
 }

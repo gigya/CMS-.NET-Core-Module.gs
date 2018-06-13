@@ -108,7 +108,7 @@ namespace Gigya.Module.Core.Connector.Common
 
         public static T GetValue<T>(dynamic model, string key)
         {
-            if (model == null)
+            if (model == null || string.IsNullOrEmpty(key))
             {
                 return default(T);
             }

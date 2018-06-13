@@ -184,20 +184,17 @@ namespace Sitecore.Gigya.Module.Helpers
             return mapped;
         }
 
-        private List<A.MappingFieldGroup> ExtractXdbMappingFields(Item settings)
+        private A.MappingFieldGroup ExtractXdbMappingFields(Item settings)
         {
             var fieldTypeString = MappingFieldType.xDB.ToString();
             var folder = settings.Children.FirstOrDefault(i => i.TemplateID == Constants.Templates.MappingFieldFolder && i.Fields[Constants.Fields.MappingFieldFolder.Type].Value == fieldTypeString);
             if (folder == null)
             {
-                return new List<A.MappingFieldGroup>();
+                return new A.MappingFieldGroup();
             }
 
-            var fields = folder.Children
-                .Select(Mapper.MapMappingFieldGroup)
-                .ToList();
-
-            return fields;
+            var mapping = Mapper.MapMappingFieldGroup(folder);
+            return mapping;
         }
 
         private List<MappingField> ExtractMappingFields(Item settings, MappingFieldType fieldType)

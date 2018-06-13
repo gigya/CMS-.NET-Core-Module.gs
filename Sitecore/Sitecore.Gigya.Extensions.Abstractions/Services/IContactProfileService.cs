@@ -8,6 +8,6 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Services
     {
         IContactProfileProvider ContactProfileProvider { get; }
 
-        void UpdateFacets(dynamic gigyaModel, List<MappingFieldGroup> mappingFields);
+        void UpdateFacets(dynamic gigyaModel, MappingFieldGroup mappingFields);
     }
 }

@@ -12,7 +12,7 @@ namespace Sitecore.Gigya.Module.Models
     {
         public bool EnableMembershipSync { get; set; }
         public bool EnableXdb { get; set; }
-        public List<MappingFieldGroup> MappedXdbMappingFields { get; set; }
+        public MappingFieldGroup MappedXdbMappingFields { get; set; }
         public string ProfileId { get; set; }
     }
 }

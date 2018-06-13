@@ -34,44 +34,17 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
             tracker.IsActive.Returns(true);
             tracker.Session.Returns(session);
 
-            var mappingFields = new List<MappingFieldGroup>
+            var mapping = new MappingFieldGroup
             {
-                new MappingFieldGroup
+                PersonalInfoMapping = new ContactPersonalInfoMapping
                 {
-                    FacetName = Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants.FacetKeys.Personal,
-                    Fields = new List<MappingField>
-                    {
-                        new MappingField
-                        {
-                            CmsFieldName = "FirstName",
-                            GigyaFieldName = "profile.firstName"
-                        },
-                        new MappingField
-                        {
-                            CmsFieldName = "Surname",
-                            GigyaFieldName = "profile.lastName"
-                        },
-                        new MappingField
-                        {
-                            CmsFieldName = "BirthDate",
-                            GigyaFieldName = "profile.dob"
-                        },
-                        new MappingField
-                        {
-                            CmsFieldName = "Gender",
-                            GigyaFieldName = "profile.gender"
-                        },
-                        new MappingField
-                        {
-                            CmsFieldName = "MiddleName",
-                            GigyaFieldName = "profile.middleName"
-                        },
-                        new MappingField
-                        {
-                            CmsFieldName = "Nickname",
-                            GigyaFieldName = "profile.nickName"
-                        }
-                    }
+                    BirthDate = "profile.dob",
+                    FirstName = "profile.firstName",
+                    Gender = "profile.gender",
+                    MiddleName = "profile.middleName",
+                    Nickname = "profile.nickName",
+                    Surname = "profile.lastName",
+                    Title = "profile.title"
                 }
             };
 
@@ -90,7 +63,7 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                contactProfileService.UpdateFacets(gigyaModel, mappingFields);
+                contactProfileService.UpdateFacets(gigyaModel, mapping);
 
                 //var elapsed = "Took " + stopwatch.ElapsedMilliseconds;
                 //elapsed.ShouldBeEquivalentTo("");

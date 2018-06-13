@@ -12,6 +12,7 @@ using Sitecore.Data.Items;
 using Sitecore.Gigya.Module.Controllers;
 using Sitecore.Gigya.Module.Models;
 using A = Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
+using C = Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -49,18 +50,86 @@ namespace Sitecore.Gigya.Module.Helpers
 
         public static A.MappingFieldGroup MapMappingFieldGroup(Item item)
         {
-            var facet = new A.MappingFieldGroup { FacetName = item.Fields[Constants.Fields.FacetFolder.Name]?.Value };
-            facet.Fields = item.Children.Select(MapMappingField).ToList();
+            var facet = new A.MappingFieldGroup();
+
+            foreach (Item child in item.Children)
+            {
+                var templateId = child.TemplateID.ToString();
+                switch (templateId)
+                {
+                    case Constants.Templates.xDB.IdValues.xDBContactPersonalInfo:
+                        facet.PersonalInfoMapping = MapContactPersonalInfo(child);
+                        break;
+                    case Constants.Templates.xDB.IdValues.xDBContactPhoneNumbers:
+                        facet.PhoneNumbersMapping = MapContactPhoneNumbers(child);
+                        break;
+                    case Constants.Templates.xDB.IdValues.xDBContactEmailAddresses:
+                        facet.EmailAddressesMapping = MapContactEmailAddresses(child);
+                        break;
+                }
+            }
+
             return facet;
         }
 
-        public static A.MappingField MapMappingField(Item item)
+        private static A.ContactPersonalInfoMapping MapContactPersonalInfo(Item item)
         {
-            return new A.MappingField
+            return new A.ContactPersonalInfoMapping
             {
-                CmsFieldName = item.Fields[Constants.Fields.MappingFields.SitecoreProperty]?.Value,
-                GigyaFieldName = item.Fields[Constants.Fields.MappingFields.GigyaProperty]?.Value,
+                Key = C.FacetKeys.Personal,
+                FirstName = item.Fields[nameof(A.ContactPersonalInfoMapping.FirstName)]?.Value,
+                Surname = item.Fields[nameof(A.ContactPersonalInfoMapping.Surname)]?.Value,
+                BirthDate = item.Fields[nameof(A.ContactPersonalInfoMapping.BirthDate)]?.Value,
+                Gender = item.Fields[nameof(A.ContactPersonalInfoMapping.Gender)]?.Value,
+                JobTitle = item.Fields[nameof(A.ContactPersonalInfoMapping.JobTitle)]?.Value,
+                MiddleName = item.Fields[nameof(A.ContactPersonalInfoMapping.MiddleName)]?.Value,
+                Nickname = item.Fields[nameof(A.ContactPersonalInfoMapping.Nickname)]?.Value,
+                Suffix = item.Fields[nameof(A.ContactPersonalInfoMapping.Suffix)]?.Value,
+                Title = item.Fields[nameof(A.ContactPersonalInfoMapping.Title)]?.Value
             };
+        }
+
+        private static A.ContactPhoneNumbersMapping MapContactPhoneNumbers(Item item)
+        {
+            var field = new A.ContactPhoneNumbersMapping
+            {
+                Key = C.FacetKeys.PhoneNumbers,
+                Preferred = item.Fields[nameof(A.ContactPhoneNumbersMapping.Preferred)]?.Value
+            };
+
+            if (item.Children.Any())
+            {
+                field.Entries = item.Children.Select(i => new A.ContactPhoneNumberMapping
+                {
+                    Key = i.Fields[nameof(A.ContactPhoneNumberMapping.Key)]?.Value,
+                    CountryCode = i.Fields[nameof(A.ContactPhoneNumberMapping.CountryCode)]?.Value,
+                    Number = i.Fields[nameof(A.ContactPhoneNumberMapping.Number)]?.Value,
+                    Extension = i.Fields[nameof(A.ContactPhoneNumberMapping.Extension)]?.Value
+                }).ToList();
+            }
+
+            return field;
+        }
+
+        private static A.ContactEmailAddressesMapping MapContactEmailAddresses(Item item)
+        {
+            var field = new A.ContactEmailAddressesMapping
+            {
+                Key = C.FacetKeys.Emails,
+                Preferred = item.Fields[nameof(A.ContactEmailAddressesMapping.Preferred)]?.Value
+            };
+
+            if (item.Children.Any())
+            {
+                field.Entries = item.Children.Select(i => new A.ContactEmailAddressMapping
+                {
+                    Key = i.Fields[nameof(A.ContactEmailAddressMapping.Key)]?.Value,
+                    SmtpAddress = i.Fields[nameof(A.ContactEmailAddressMapping.SmtpAddress)]?.Value,
+                    BounceCount = i.Fields[nameof(A.ContactEmailAddressMapping.BounceCount)]?.Value
+                }).ToList();
+            }
+
+            return field;
         }
 
         public static AutocompleteSuggestion Map(AccountSchemaProperty item)

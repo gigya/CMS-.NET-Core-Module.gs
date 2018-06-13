@@ -84,7 +84,18 @@ namespace Sitecore.Gigya.Module.Helpers
         protected virtual bool MapProfileFieldsAndUpdate(SitecoreGigyaModuleSettings settings, dynamic gigyaModel, List<MappingField> mappingFields)
         {
             var user = _accountRepository.GetActiveUser();
-            return MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
+            var success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
+
+            if (success)
+            {
+                // identify contact                
+                _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
+
+                // update the contacts facets
+                _contactProfileService.UpdateFacets(gigyaModel, settings.MappedXdbMappingFields);
+            }
+
+            return success;
         }
 
         /// <summary>
@@ -258,15 +269,6 @@ namespace Sitecore.Gigya.Module.Helpers
             if (updateProfile)
             {
                 success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields);
-            }
-
-            if (success)
-            {
-                // identify contact                
-                _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
-
-                // update the contacts facets
-                _contactProfileService.UpdateFacets(gigyaModel, settings.MappedXdbMappingFields);
             }
 
             return success;

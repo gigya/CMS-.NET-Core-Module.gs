@@ -53,6 +53,20 @@ namespace Sitecore.Gigya.Module
             public static readonly ID MappingField = new ID("{A8ECE2D3-757C-4A0E-A184-DFAFC194C973}");
             public static readonly ID SitecoreXdbFacetFolder = new ID("{DD6899B5-2D80-44FA-9F5B-4BBC4F14AA11}");
             public static readonly ID GigyaCustomXdbFacetFolder = new ID("{5505EBBB-4594-4B5E-97DC-7476A8869524}");
+
+            public class xDB
+            {
+                public class IdValues
+                {
+                    public const string xDBContactPersonalInfo = "{D853B9FF-446D-4581-89CD-3872911AACB7}";
+                    public const string xDBContactPhoneNumbers = "{5D33AB3A-8FD3-4A85-B01A-7CEE302C2CC8}";
+                    public const string xDBContactEmailAddresses = "{6B17260C-5E1C-4199-8937-72BD2A25476B}";
+                }
+
+                public static readonly ID xDBContactPersonalInfo = new ID(IdValues.xDBContactPersonalInfo);
+                public static readonly ID xDBContactPhoneNumbers = new ID(IdValues.xDBContactPhoneNumbers);
+                public static readonly ID xDBContactEmailAddresses = new ID(IdValues.xDBContactEmailAddresses);
+            }
         }
 
         public class Dictionary
