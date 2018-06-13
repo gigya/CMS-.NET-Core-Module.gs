@@ -50,6 +50,7 @@ namespace Sitecore.Gigya.Module
             public static readonly ID GigyaSettings = new ID("{CB5000AC-098F-420E-B973-D6AD423F2DAE}");
             public static readonly ID SitecoreDefaultUserProfile = new ID("{642C9A7E-EE31-4979-86F0-39F338C10AFB}");
             public static readonly ID MappingFieldFolder = new ID("{6FE4A2F7-B184-463F-A7CA-8471159E579A}");
+            public static readonly ID xDbMappingFieldFolder = new ID("{198AA053-EBE7-4AFC-8A9E-1C289D5DEEE2}");
             public static readonly ID MappingField = new ID("{A8ECE2D3-757C-4A0E-A184-DFAFC194C973}");
             public static readonly ID SitecoreXdbFacetFolder = new ID("{DD6899B5-2D80-44FA-9F5B-4BBC4F14AA11}");
             public static readonly ID GigyaCustomXdbFacetFolder = new ID("{5505EBBB-4594-4B5E-97DC-7476A8869524}");
@@ -61,11 +62,17 @@ namespace Sitecore.Gigya.Module
                     public const string xDBContactPersonalInfo = "{D853B9FF-446D-4581-89CD-3872911AACB7}";
                     public const string xDBContactPhoneNumbers = "{5D33AB3A-8FD3-4A85-B01A-7CEE302C2CC8}";
                     public const string xDBContactEmailAddresses = "{6B17260C-5E1C-4199-8937-72BD2A25476B}";
+                    public const string xDBContactAddresses = "{993A1B9C-D7D8-4629-A12E-0150BF611E94}";
+                    public const string xDBCommunicationProfile = "{CF7B0763-DFE9-4B4D-9767-58D3CCC235CD}";
+                    public const string xDPreferences = "{F193F7AD-81B9-41F5-9BCA-7DB0426D3B17}";
                 }
 
                 public static readonly ID xDBContactPersonalInfo = new ID(IdValues.xDBContactPersonalInfo);
                 public static readonly ID xDBContactPhoneNumbers = new ID(IdValues.xDBContactPhoneNumbers);
                 public static readonly ID xDBContactEmailAddresses = new ID(IdValues.xDBContactEmailAddresses);
+                public static readonly ID xDBContactAddresses = new ID(IdValues.xDBContactAddresses);
+                public static readonly ID xDBCommunicationProfile = new ID(IdValues.xDBCommunicationProfile);
+                public static readonly ID xDPreferences = new ID(IdValues.xDPreferences);
             }
         }
 

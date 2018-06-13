@@ -120,6 +120,13 @@
     <Compile Include="Providers\ContactProfileProvider.cs" />
     <Compile Include="Repositories\RenderingPropertiesRepository.cs" />
     <Compile Include="Services\ContactProfileService.cs" />
+    <Compile Include="Services\FacetMappers\PreferencesFacetMapper.cs" />
+    <Compile Include="Services\FacetMappers\CommunicationProfileFacetMapper.cs" />
+    <Compile Include="Services\FacetMappers\EmailAddressFacetMapper.cs" />
+    <Compile Include="Services\FacetMappers\PhoneNumbersFacetMapper.cs" />
+    <Compile Include="Services\FacetMappers\FacetMapperBase.cs" />
+    <Compile Include="Services\FacetMappers\AddressFacetMapper.cs" />
+    <Compile Include="Services\FacetMappers\PersonalFacetMapper.cs" />
     <Compile Include="Services\TrackerService.cs" />
   </ItemGroup>
   <ItemGroup>

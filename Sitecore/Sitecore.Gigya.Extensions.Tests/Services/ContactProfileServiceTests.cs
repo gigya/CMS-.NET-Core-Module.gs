@@ -26,6 +26,20 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
 {
     public class ContactProfileServiceTests
     {
+        private ExpandoObject GetGigyaModel()
+        {
+            dynamic gigyaModel = new ExpandoObject();
+            gigyaModel.profile = new ExpandoObject();
+            gigyaModel.profile.firstName = "MyFirstName";
+            gigyaModel.profile.lastName = "MyLastName";
+            gigyaModel.profile.dob = DateTime.Now;
+            gigyaModel.profile.gender = "Male";
+            gigyaModel.profile.middleName = "Middle";
+            gigyaModel.profile.nickName = "Nick";
+            gigyaModel.profile.phoneNumber = "0123456789";
+            return gigyaModel;
+        }
+
         [Theory]
         [AutoDbData]
         public void ShouldUpdatePersonalFacet([NoAutoProperties] ContactProfileService contactProfileService, ITracker tracker, [Substitute] Session session)
@@ -48,14 +62,7 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
                 }
             };
 
-            dynamic gigyaModel = new ExpandoObject();
-            gigyaModel.profile = new ExpandoObject();
-            gigyaModel.profile.firstName = "MyFirstName";
-            gigyaModel.profile.lastName = "MyLastName";
-            gigyaModel.profile.dob = DateTime.Now;
-            gigyaModel.profile.gender = "Male";
-            gigyaModel.profile.middleName = "Middle";
-            gigyaModel.profile.nickName = "Nick";
+            dynamic gigyaModel = GetGigyaModel();
 
             using (new TrackerSwitcher(tracker))
             {
@@ -77,6 +84,43 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
                 facet.Gender.ShouldBeEquivalentTo((string)gigyaModel.profile.gender);
                 facet.MiddleName.ShouldBeEquivalentTo((string)gigyaModel.profile.middleName);
                 facet.Nickname.ShouldBeEquivalentTo((string)gigyaModel.profile.nickName);
+            }
+        }
+
+        [Theory]
+        [AutoDbData]
+        public void ShouldUpdateExistingPhoneNumberEntryFacet([NoAutoProperties] ContactProfileService contactProfileService, ITracker tracker, [Substitute] Session session)
+        {
+            // arrange
+            tracker.IsActive.Returns(true);
+            tracker.Session.Returns(session);
+
+            var mapping = new MappingFieldGroup
+            {
+                PhoneNumbersMapping = new ContactPhoneNumbersMapping
+                {
+                    Entries = new List<ContactPhoneNumberMapping>
+                    {
+                        new ContactPhoneNumberMapping
+                        {
+                            Key = "Primary",
+                            Number = "profile.phoneNumber"
+                        }
+                    }
+                }
+            };
+
+            dynamic gigyaModel = GetGigyaModel();
+
+            using (new TrackerSwitcher(tracker))
+            {
+                // act
+                contactProfileService.UpdateFacets(gigyaModel, mapping);
+
+                // assert
+                var facet = contactProfileService.ContactProfileProvider.PhoneNumbers;
+
+                facet.Entries[mapping.PhoneNumbersMapping.Entries[0].Key].Number.ShouldBeEquivalentTo((string)gigyaModel.profile.phoneNumber);
             }
         }
 

@@ -2,6 +2,14 @@
 @* @using Sitecore.Mvc.Analytics.Extensions *@
 @{
     Layout = null;
+
+    var context = HttpContext.Current;
+    if (!string.IsNullOrEmpty(context.Request["end-session"]))
+    {
+        context.Session.Abandon();
+        context.Response.Redirect("/", true);
+        return;
+    }
 }
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -32,6 +40,8 @@
                         <h1 class="contentTitle">@Html.Sitecore().Field("title")</h1>
                         @Html.Sitecore().Placeholder("main")
                         <div id="gigya-placeholder" style="border: 1px solid #d4d4d4; margin-top: 40px;"></div>
+
+                        <a href="/?end-session=true">End Session</a>
                     </div>				
                 </div>
                 <div id="Footer"><hr class="divider"/>&#169; @DateTime.Now.Year.ToString() Sitecore</div>

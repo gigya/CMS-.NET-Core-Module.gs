@@ -86,7 +86,7 @@ namespace Sitecore.Gigya.Module.Helpers
             var user = _accountRepository.GetActiveUser();
             var success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
 
-            if (success)
+            if (success && settings.EnableXdb)
             {
                 // identify contact                
                 _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);

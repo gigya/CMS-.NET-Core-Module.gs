@@ -6,18 +6,14 @@ using System.Threading.Tasks;
 
 namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
 {
-    //public class MappingField
-    //{
-    //    public string GigyaFieldName { get; set; }
-    //    public string CmsFieldName { get; set; }
-    //    public List<MappingField> Children { get; set; }
-    //}
-
     public class MappingFieldGroup
     {
         public ContactPersonalInfoMapping PersonalInfoMapping { get; set; }
         public ContactPhoneNumbersMapping PhoneNumbersMapping { get; set; }
         public ContactEmailAddressesMapping EmailAddressesMapping { get; set; }
+        public ContactAddressesMapping AddressesMapping { get; set; }
+        public CommunicationProfileMapping CommunicationProfileMapping { get; set; }
+        public PreferencesMapping CommunicationPreferencesMapping { get; set; }
     }
 
     public abstract class MappingBase
@@ -38,9 +34,19 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
         public string JobTitle { get; set; }
     }
 
+    public class CommunicationProfileMapping : MappingBase
+    {
+        public string CommunicationRevoked { get; set; }
+        public string ConsentRevoked { get; set; }
+    }
+
+    public class PreferencesMapping : MappingBase
+    {
+        public string Language { get; set; }
+    }
+
     public class ContactPhoneNumbersMapping : MappingBase
     {
-        public string Preferred { get; set; }
         public List<ContactPhoneNumberMapping> Entries { get; set; }
     }
 
@@ -53,7 +59,6 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
 
     public class ContactEmailAddressesMapping : MappingBase
     {
-        public string Preferred { get; set; }
         public List<ContactEmailAddressMapping> Entries { get; set; }
     }
 
@@ -61,5 +66,24 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
     {
         public string SmtpAddress { get; set; }
         public string BounceCount { get; set; }
+    }
+
+    public class ContactAddressesMapping : MappingBase
+    {
+        public List<ContactAddressMapping> Entries { get; set; }
+    }
+
+    public class ContactAddressMapping : MappingBase
+    {
+        public string Country { get; set; }
+        public string StateProvince { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+        public string StreetLine1 { get; set; }
+        public string StreetLine2 { get; set; }
+        public string StreetLine3 { get; set; }
+        public string StreetLine4 { get; set; }
+        public string Latitude { get; }
+        public string Longitude { get; }
     }
 }

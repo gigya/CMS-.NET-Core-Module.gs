@@ -66,6 +66,15 @@ namespace Sitecore.Gigya.Module.Helpers
                     case Constants.Templates.xDB.IdValues.xDBContactEmailAddresses:
                         facet.EmailAddressesMapping = MapContactEmailAddresses(child);
                         break;
+                    case Constants.Templates.xDB.IdValues.xDBContactAddresses:
+                        facet.AddressesMapping = MapContactAddresses(child);
+                        break;
+                    case Constants.Templates.xDB.IdValues.xDBCommunicationProfile:
+                        facet.CommunicationProfileMapping = MapCommunicationProfile(child);
+                        break;
+                    case Constants.Templates.xDB.IdValues.xDPreferences:
+                        facet.CommunicationPreferencesMapping = MapCommunicationPreferences(child);
+                        break;
                 }
             }
 
@@ -89,12 +98,30 @@ namespace Sitecore.Gigya.Module.Helpers
             };
         }
 
+        private static A.CommunicationProfileMapping MapCommunicationProfile(Item item)
+        {
+            return new A.CommunicationProfileMapping
+            {
+                Key = C.FacetKeys.Preferences,
+                CommunicationRevoked = item.Fields[nameof(A.CommunicationProfileMapping.CommunicationRevoked)]?.Value,
+                ConsentRevoked = item.Fields[nameof(A.CommunicationProfileMapping.ConsentRevoked)]?.Value
+            };
+        }
+
+        private static A.PreferencesMapping MapCommunicationPreferences(Item item)
+        {
+            return new A.PreferencesMapping
+            {
+                Key = C.FacetKeys.Preferences,
+                Language = item.Fields[nameof(A.PreferencesMapping.Language)]?.Value
+            };
+        }
+
         private static A.ContactPhoneNumbersMapping MapContactPhoneNumbers(Item item)
         {
             var field = new A.ContactPhoneNumbersMapping
             {
-                Key = C.FacetKeys.PhoneNumbers,
-                Preferred = item.Fields[nameof(A.ContactPhoneNumbersMapping.Preferred)]?.Value
+                Key = C.FacetKeys.PhoneNumbers
             };
 
             if (item.Children.Any())
@@ -115,8 +142,7 @@ namespace Sitecore.Gigya.Module.Helpers
         {
             var field = new A.ContactEmailAddressesMapping
             {
-                Key = C.FacetKeys.Emails,
-                Preferred = item.Fields[nameof(A.ContactEmailAddressesMapping.Preferred)]?.Value
+                Key = C.FacetKeys.Emails
             };
 
             if (item.Children.Any())
@@ -126,6 +152,32 @@ namespace Sitecore.Gigya.Module.Helpers
                     Key = i.Fields[nameof(A.ContactEmailAddressMapping.Key)]?.Value,
                     SmtpAddress = i.Fields[nameof(A.ContactEmailAddressMapping.SmtpAddress)]?.Value,
                     BounceCount = i.Fields[nameof(A.ContactEmailAddressMapping.BounceCount)]?.Value
+                }).ToList();
+            }
+
+            return field;
+        }
+
+        private static A.ContactAddressesMapping MapContactAddresses(Item item)
+        {
+            var field = new A.ContactAddressesMapping
+            {
+                Key = C.FacetKeys.Addresses
+            };
+
+            if (item.Children.Any())
+            {
+                field.Entries = item.Children.Select(i => new A.ContactAddressMapping
+                {
+                    Key = i.Fields[nameof(A.ContactAddressesMapping.Key)]?.Value,
+                    City = i.Fields[nameof(A.ContactAddressMapping.City)]?.Value,
+                    Country = i.Fields[nameof(A.ContactAddressMapping.Country)]?.Value,
+                    PostalCode = i.Fields[nameof(A.ContactAddressMapping.PostalCode)]?.Value,
+                    StateProvince = i.Fields[nameof(A.ContactAddressMapping.StateProvince)]?.Value,
+                    StreetLine1 = i.Fields[nameof(A.ContactAddressMapping.StreetLine1)]?.Value,
+                    StreetLine2 = i.Fields[nameof(A.ContactAddressMapping.StreetLine2)]?.Value,
+                    StreetLine3 = i.Fields[nameof(A.ContactAddressMapping.StreetLine3)]?.Value,
+                    StreetLine4 = i.Fields[nameof(A.ContactAddressMapping.StreetLine4)]?.Value
                 }).ToList();
             }
 

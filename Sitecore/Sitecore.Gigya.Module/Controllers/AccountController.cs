@@ -26,7 +26,7 @@ namespace Sitecore.Gigya.Module.Controllers
         protected readonly IAccountRepository _accountRepository;
         protected readonly GigyaAccountHelper _gigyaAccountHelper;
 
-        public AccountController() : this(new AccountRepository(new Pipelines.PipelineService()), new TrackerService(), new ContactProfileService(new ContactProfileProvider()))
+        public AccountController() : this(new AccountRepository(new Pipelines.PipelineService()), new TrackerService(), new ContactProfileService(new ContactProfileProvider(), new Logger(new SitecoreLogger())))
         {
         }
 
