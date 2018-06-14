@@ -9,6 +9,6 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Facets
 {
     public interface IGigyaFacet : IFacet, IElement
     {
-        IElementCollection<IGigyaElement> Fields { get; }
+        IElementDictionary<IGigyaElement> Entries { get; }
     }
 }

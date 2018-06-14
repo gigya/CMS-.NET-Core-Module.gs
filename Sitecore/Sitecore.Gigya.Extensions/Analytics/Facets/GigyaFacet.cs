@@ -10,19 +10,19 @@ namespace Sitecore.Gigya.Extensions.Analytics.Facets
     [Serializable]
     public class GigyaFacet : Facet, IGigyaFacet
     {
-        private const string _fields = "Fields";
+        private const string _name = "Entries";
 
-        public IElementCollection<IGigyaElement> Fields
+        public IElementDictionary<IGigyaElement> Entries
         {
             get
             {
-                return this.GetCollection<IGigyaElement>(_fields);
+                return this.GetDictionary<IGigyaElement>(_name);
             }
         }
 
         public GigyaFacet()
         {
-            this.EnsureAttribute<IGigyaElement>(_fields);
+            this.EnsureDictionary<IGigyaElement>(_name);
         }
     }
 }

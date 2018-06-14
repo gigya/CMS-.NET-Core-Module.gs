@@ -37,6 +37,7 @@ namespace Sitecore.Gigya.Extensions.Services
             new EmailAddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.EmailAddressesMapping);
             new CommunicationProfileFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.CommunicationProfileMapping);
             new PreferencesFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.CommunicationPreferencesMapping);
+            new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
 
             ContactProfileProvider.Flush();
         }

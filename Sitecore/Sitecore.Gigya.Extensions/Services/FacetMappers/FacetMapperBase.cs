@@ -1,6 +1,8 @@
 ﻿using Gigya.Module.Core.Connector.Logging;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
+using Sitecore.Gigya.Extensions.Models.Pipelines;
+using Sitecore.Pipelines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace Sitecore.Gigya.Extensions.Services.FacetMappers
     public abstract class FacetMapperBase<T> where T: MappingBase
     {
         protected readonly Logger _logger;
-        public IContactProfileProvider _contactProfileProvider;
+        protected IContactProfileProvider _contactProfileProvider;
 
         public FacetMapperBase(IContactProfileProvider contactProfileProvider, Logger logger)
         {
@@ -26,7 +28,20 @@ namespace Sitecore.Gigya.Extensions.Services.FacetMappers
                 return;
             }
 
-            UpdateFacet(gigyaModel, mapping);
+            var args = new FacetMapperPipelineArgs<T>
+            {
+                GigyaModel = gigyaModel,
+                Mapping = mapping
+            };
+
+            CorePipeline.Run("gigya.module.facetUpdating", args, false);
+
+            if (!args.Aborted)
+            {
+                UpdateFacet(args.GigyaModel, args.Mapping);
+            }
+
+            CorePipeline.Run("gigya.module.facetUpdated", args, false);
         }
 
         protected abstract void UpdateFacet(dynamic gigyaModel, T mapping);

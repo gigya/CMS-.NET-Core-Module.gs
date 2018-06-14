@@ -75,6 +75,9 @@ namespace Sitecore.Gigya.Module.Helpers
                     case Constants.Templates.xDB.IdValues.xDPreferences:
                         facet.CommunicationPreferencesMapping = MapCommunicationPreferences(child);
                         break;
+                    case Constants.Templates.IdValues.GigyaCustomXdbFacetFolder:
+                        facet.GigyaFieldsMapping = MapGigyaFields(child);
+                        break;
                 }
             }
 
@@ -102,7 +105,7 @@ namespace Sitecore.Gigya.Module.Helpers
         {
             return new A.CommunicationProfileMapping
             {
-                Key = C.FacetKeys.Preferences,
+                Key = C.FacetKeys.CommunicationProfile,
                 CommunicationRevoked = item.Fields[nameof(A.CommunicationProfileMapping.CommunicationRevoked)]?.Value,
                 ConsentRevoked = item.Fields[nameof(A.CommunicationProfileMapping.ConsentRevoked)]?.Value
             };
@@ -179,6 +182,27 @@ namespace Sitecore.Gigya.Module.Helpers
                     StreetLine3 = i.Fields[nameof(A.ContactAddressMapping.StreetLine3)]?.Value,
                     StreetLine4 = i.Fields[nameof(A.ContactAddressMapping.StreetLine4)]?.Value
                 }).ToList();
+            }
+
+            return field;
+        }
+
+        private static A.GigyaFieldsMapping MapGigyaFields(Item item)
+        {
+            var field = new A.GigyaFieldsMapping
+            {
+                Key = C.FacetKeys.Gigya
+            };
+
+            if (item.Children.Any())
+            {
+                field.Entries = item.Children.Select(i => new A.GigyaMapping
+                {
+                    Key = i.Fields[Constants.Fields.MappingFields.SitecoreProperty]?.Value,
+                    GigyaProperty = i.Fields[Constants.Fields.MappingFields.GigyaProperty]?.Value
+                })
+                .Where(i => !string.IsNullOrEmpty(i.Key) && !string.IsNullOrEmpty(i.GigyaProperty))
+                .ToList();
             }
 
             return field;

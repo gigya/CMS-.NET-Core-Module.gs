@@ -14,6 +14,7 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
         public ContactAddressesMapping AddressesMapping { get; set; }
         public CommunicationProfileMapping CommunicationProfileMapping { get; set; }
         public PreferencesMapping CommunicationPreferencesMapping { get; set; }
+        public GigyaFieldsMapping GigyaFieldsMapping { get; set; }
     }
 
     public abstract class MappingBase
@@ -85,5 +86,15 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
         public string StreetLine4 { get; set; }
         public string Latitude { get; }
         public string Longitude { get; }
+    }
+
+    public class GigyaFieldsMapping : MappingBase
+    {
+        public List<GigyaMapping> Entries { get; set; }
+    }
+
+    public class GigyaMapping : MappingBase
+    {
+        public string GigyaProperty { get; set; }
     }
 }

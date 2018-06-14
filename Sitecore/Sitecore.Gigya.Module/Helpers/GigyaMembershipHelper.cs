@@ -86,15 +86,10 @@ namespace Sitecore.Gigya.Module.Helpers
             var user = _accountRepository.GetActiveUser();
             var success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
 
-            if (success && settings.EnableXdb)
+            if (success)
             {
-                // identify contact                
-                _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
-
-                // update the contacts facets
-                _contactProfileService.UpdateFacets(gigyaModel, settings.MappedXdbMappingFields);
+                UpdateXdb(settings, gigyaModel);
             }
-
             return success;
         }
 
@@ -259,19 +254,34 @@ namespace Sitecore.Gigya.Module.Helpers
 
         protected override bool AuthenticateUser(string username, SitecoreGigyaModuleSettings settings, bool updateProfile, dynamic gigyaModel, List<MappingField> mappingFields)
         {
-            var isLoggedIn = LoginByUsername(username, settings);
-            if (!isLoggedIn)
+            var success = LoginByUsername(username, settings);
+            if (!success)
             {
                 return false;
             }
 
-            var success = isLoggedIn;
             if (updateProfile)
             {
                 success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields);
             }
+            else
+            {
+                UpdateXdb(settings, gigyaModel);
+            }
 
             return success;
+        }
+
+        private void UpdateXdb(SitecoreGigyaModuleSettings settings, dynamic gigyaModel)
+        {
+            if (settings.EnableXdb)
+            {
+                // identify contact                
+                _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
+
+                // update the contacts facets
+                _contactProfileService.UpdateFacets(gigyaModel, settings.MappedXdbMappingFields);
+            }
         }
     }
 }

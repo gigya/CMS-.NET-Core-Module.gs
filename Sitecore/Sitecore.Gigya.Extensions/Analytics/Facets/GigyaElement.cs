@@ -10,32 +10,18 @@ namespace Sitecore.Gigya.Extensions.Analytics.Facets
     [Serializable]
     public class GigyaElement : Element, IGigyaElement
     {
-        private const string _field = "Field";
         private const string _value = "Value";
 
         public GigyaElement()
         {
-            EnsureAttribute<string>(_field);
-            EnsureAttribute<string>(_value);
+            EnsureAttribute<object>(_value);
         }
 
-        public string Field
+        public object Value
         {
             get
             {
-                return GetAttribute<string>(_field);
-            }
-            set
-            {
-                SetAttribute(_field, value);
-            }
-        }
-
-        public string Value
-        {
-            get
-            {
-                return GetAttribute<string>(_value);
+                return GetAttribute<object>(_value);
             }
             set
             {
