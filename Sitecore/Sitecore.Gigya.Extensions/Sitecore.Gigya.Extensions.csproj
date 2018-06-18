@@ -114,6 +114,7 @@
     <Compile Include="Analytics\Conditions\ContactFacetHasValue.cs" />
     <Compile Include="Analytics\Facets\GigyaElement.cs" />
     <Compile Include="Analytics\Facets\GigyaFacet.cs" />
+    <Compile Include="Analytics\Macros\FacetProperty.cs" />
     <Compile Include="Attributes\SitecoreUserAuthorizeAttribute.cs" />
     <Compile Include="Extensions\SitecoreContextExtensions.cs" />
     <Compile Include="Fields\ExtendedLinkUrl.cs" />
@@ -130,6 +131,7 @@
     <Compile Include="Services\FacetMappers\FacetMapperBase.cs" />
     <Compile Include="Services\FacetMappers\AddressFacetMapper.cs" />
     <Compile Include="Services\FacetMappers\PersonalFacetMapper.cs" />
+    <Compile Include="Services\SitecoreContentService.cs" />
     <Compile Include="Services\TrackerService.cs" />
   </ItemGroup>
   <ItemGroup>
