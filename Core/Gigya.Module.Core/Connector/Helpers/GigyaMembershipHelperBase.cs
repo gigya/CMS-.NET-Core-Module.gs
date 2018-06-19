@@ -106,16 +106,7 @@ namespace Gigya.Module.Core.Connector.Helpers
                 return null;
             }
 
-            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
-            {
-                if (settings.DebugMode)
-                {
-                    _logger.Debug("Invalid user signature for login request.");
-                }
-                return null;
-            }
-
-            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
+            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings, model.SignatureTimestamp, model.Signature);
             if (userInfoResponse == null || userInfoResponse.GetErrorCode() != 0)
             {
                 if (settings.DebugMode)
@@ -228,17 +219,8 @@ namespace Gigya.Module.Core.Connector.Helpers
                 return;
             }
 
-            if (!_gigyaApiHelper.ValidateApplicationKeySignature(model.UserId, settings, model.SignatureTimestamp, model.Signature))
-            {
-                if (settings.DebugMode)
-                {
-                    _logger.Debug("Invalid user signature for login request.");
-                }
-                return;
-            }
-
             // get user info
-            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings);
+            var userInfoResponse = _gigyaApiHelper.GetAccountInfo(model.UserId, settings, model.SignatureTimestamp, model.Signature);
             if (userInfoResponse == null || userInfoResponse.GetErrorCode() != 0)
             {
                 _logger.Error("Failed to getAccountInfo");

@@ -101,12 +101,12 @@ namespace Sitecore.Gigya.Module.Helpers
         {
             if (!settings.EnableMembershipSync)
             {
-                return false;
+                return true;
             }
 
             if (mappingFields == null || !mappingFields.Any())
             {
-                return false;
+                return true;
             }
 
             // profileId is different

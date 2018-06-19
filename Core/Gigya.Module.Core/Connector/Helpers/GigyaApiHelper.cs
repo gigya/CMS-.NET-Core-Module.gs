@@ -104,6 +104,33 @@ namespace Gigya.Module.Core.Connector.Helpers
             return ValidateExchangeSignatureResponse(response);
         }
 
+        /// <summary>
+        /// Validates the <paramref name="signature"/> and <paramref name="signatureTimestamp"/> and calls getAccountInfo asynchronously.
+        /// </summary>
+        /// <param name="userId">The Gigya UID.</param>
+        /// <param name="settings">The CMS settings.</param>
+        /// <param name="signatureTimestamp">The signature timestamp.</param>
+        /// <param name="signature">The signature.</param>
+        /// <returns></returns>
+        public GSResponse GetAccountInfo(string userId, GigyaModuleSettings settings, string signatureTimestamp, string signature)
+        {
+            var validationTask = Task.Run(() => ValidateApplicationKeySignature(userId, settings, signatureTimestamp, signature));
+            var accountInfoTask = Task.Run(() => GetAccountInfo(userId, settings));
+
+            Task.WaitAll(validationTask, accountInfoTask);
+
+            if (!validationTask.Result)
+            {
+                if (settings.DebugMode)
+                {
+                    _logger.Debug("Invalid user signature for login request.");
+                }
+                return null;
+            }
+
+            return accountInfoTask.Result;
+        }
+
         public GSResponse GetAccountInfo(string userId, GigyaModuleSettings settings)
         {
             var method = "accounts.getAccountInfo";
