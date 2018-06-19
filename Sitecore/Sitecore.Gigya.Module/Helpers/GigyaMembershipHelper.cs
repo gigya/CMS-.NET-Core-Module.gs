@@ -21,6 +21,7 @@ using System.Reflection;
 using Sitecore.Security.Accounts;
 using Sitecore.DependencyInjection;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
+using Sitecore.Gigya.Extensions.Services;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
@@ -128,10 +129,10 @@ namespace Sitecore.Gigya.Module.Helpers
                     continue;
                 }
 
-                object value = GetGigyaValue(gigyaModel, field.GigyaFieldName, field.CmsFieldName);
-
                 try
                 {
+                    object value = GetGigyaValue(gigyaModel, field.GigyaFieldName, field.CmsFieldName);
+
                     // check if there is a property as part of the hard coded profile
                     var userProperty = GetDefaultUserProperty(profileTypeProperties, field.CmsFieldName);
                     if (userProperty != null)
@@ -190,16 +191,27 @@ namespace Sitecore.Gigya.Module.Helpers
         /// <param name="gigyaModel">Deserialized Gigya JSON object.</param>
         /// <param name="gigyaFieldName">Gigya field name e.g. profile.age</param>
         /// <returns></returns>
-        protected virtual object GetGigyaValue(dynamic gigyaModel, string gigyaFieldName, string sitefinityFieldName)
+        protected virtual object GetGigyaValue(dynamic gigyaModel, string gigyaFieldName, string cmsFieldName)
         {
             var args = new GigyaGetFieldEventArgs
             {
                 GigyaModel = gigyaModel,
                 GigyaFieldName = gigyaFieldName,
-                CmsFieldName = sitefinityFieldName,
+                CmsFieldName = cmsFieldName,
                 Origin = "GetGigyaValue",
                 GigyaValue = DynamicUtils.GetValue<object>(gigyaModel, gigyaFieldName)
             };
+
+            if (args.GigyaValue == null)
+            {
+                // apply any custom computed fields
+                switch (cmsFieldName)
+                {
+                    case Constants.CmsFields.FullName:
+                        args.GigyaValue = string.Join(" ", DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.FirstName), DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.LastName)).Trim();
+                        break;
+                }
+            }
 
             CorePipeline.Run("gigya.module.getGigyaValue", args, false);
             return args.GigyaValue;
@@ -280,7 +292,7 @@ namespace Sitecore.Gigya.Module.Helpers
                 _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
 
                 // update the contacts facets
-                _contactProfileService.UpdateFacets(gigyaModel, settings.MappedXdbMappingFields);
+                _contactProfileService.UpdateFacetsAsync(gigyaModel, settings.MappedXdbMappingFields).Wait();
             }
         }
     }

@@ -4,6 +4,7 @@ using Sitecore.Analytics.Model.Entities;
 using Sitecore.Analytics.Model.Framework;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
+using Sitecore.Gigya.Extensions.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

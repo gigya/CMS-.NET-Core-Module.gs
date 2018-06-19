@@ -33,6 +33,7 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
         public string BirthDate { get; set; }
         public string Gender { get; set; }
         public string JobTitle { get; set; }
+        public string PreferredLanguage { get; set; }
     }
 
     public class CommunicationProfileMapping : MappingBase
@@ -67,6 +68,7 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
     {
         public string SmtpAddress { get; set; }
         public string BounceCount { get; set; }
+        public string Validated { get; set; }
     }
 
     public class ContactAddressesMapping : MappingBase

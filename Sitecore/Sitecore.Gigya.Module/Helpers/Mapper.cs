@@ -97,7 +97,8 @@ namespace Sitecore.Gigya.Module.Helpers
                 MiddleName = item.Fields[nameof(A.ContactPersonalInfoMapping.MiddleName)]?.Value,
                 Nickname = item.Fields[nameof(A.ContactPersonalInfoMapping.Nickname)]?.Value,
                 Suffix = item.Fields[nameof(A.ContactPersonalInfoMapping.Suffix)]?.Value,
-                Title = item.Fields[nameof(A.ContactPersonalInfoMapping.Title)]?.Value
+                Title = item.Fields[nameof(A.ContactPersonalInfoMapping.Title)]?.Value,
+                PreferredLanguage = item.Fields[nameof(A.ContactPersonalInfoMapping.PreferredLanguage)]?.Value
             };
         }
 
@@ -154,7 +155,8 @@ namespace Sitecore.Gigya.Module.Helpers
                 {
                     Key = i.Fields[nameof(A.ContactEmailAddressMapping.Key)]?.Value,
                     SmtpAddress = i.Fields[nameof(A.ContactEmailAddressMapping.SmtpAddress)]?.Value,
-                    BounceCount = i.Fields[nameof(A.ContactEmailAddressMapping.BounceCount)]?.Value
+                    BounceCount = i.Fields[nameof(A.ContactEmailAddressMapping.BounceCount)]?.Value,
+                    Validated = i.Fields[nameof(A.ContactEmailAddressMapping.Validated)]?.Value
                 }).ToList();
             }
 

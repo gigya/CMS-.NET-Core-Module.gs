@@ -9,11 +9,13 @@ using Sitecore.Exceptions;
 using Sitecore.Gigya.DependencyInjection;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
+using Sitecore.Gigya.Extensions.Providers;
 using Sitecore.Gigya.Extensions.Services.FacetMappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Sitecore.Gigya.Extensions.Services
@@ -29,7 +31,7 @@ namespace Sitecore.Gigya.Extensions.Services
             _logger = logger;
         }
 
-        public void UpdateFacets(dynamic gigyaModel, MappingFieldGroup mapping)
+        public Task UpdateFacetsAsync(dynamic gigyaModel, MappingFieldGroup mapping)
         {
             new PersonalFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PersonalInfoMapping);
             new AddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.AddressesMapping);
@@ -40,6 +42,7 @@ namespace Sitecore.Gigya.Extensions.Services
             new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
 
             ContactProfileProvider.Flush();
+            return Task.CompletedTask;
         }
     }
 }

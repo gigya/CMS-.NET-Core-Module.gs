@@ -70,7 +70,7 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
 
-                contactProfileService.UpdateFacets(gigyaModel, mapping);
+                contactProfileService.UpdateFacetsAsync(gigyaModel, mapping).Wait();
 
                 //var elapsed = "Took " + stopwatch.ElapsedMilliseconds;
                 //elapsed.ShouldBeEquivalentTo("");
@@ -115,7 +115,7 @@ namespace Sitecore.Gigya.Extensions.Tests.Services
             using (new TrackerSwitcher(tracker))
             {
                 // act
-                contactProfileService.UpdateFacets(gigyaModel, mapping);
+                contactProfileService.UpdateFacetsAsync(gigyaModel, mapping).Wait();
 
                 // assert
                 var facet = contactProfileService.ContactProfileProvider.PhoneNumbers;

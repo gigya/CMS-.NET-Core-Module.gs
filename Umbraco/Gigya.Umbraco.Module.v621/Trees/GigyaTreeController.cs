@@ -16,11 +16,11 @@ using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
 using Umbraco.Core.Services;
 using Umbraco.Web.Mvc;
-using Umbraco.Web.Trees;
+using T = Umbraco.Web.Trees;
 
 namespace Gigya.Umbraco.Module.v621.Trees
 {
-    [Tree("gigya", "gigyaTree", "Gigya Settings")]
+    [T.Tree("gigya", "gigyaTree", "Gigya Settings")]
     [PluginController("Gigya")]
     public class GigyaTreeController : BaseTree
     {

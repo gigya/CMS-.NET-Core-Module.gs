@@ -3,8 +3,9 @@ using Sitecore.Analytics.Model.Entities;
 using Sitecore.Analytics.Model.Framework;
 using Sitecore.Analytics.Tracking;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Facets;
+using Sitecore.Gigya.Extensions.Analytics.Facets;
 
-namespace Sitecore.Gigya.Extensions.Abstractions.Services
+namespace Sitecore.Gigya.Extensions.Providers
 {
     public interface IContactProfileProvider
     {

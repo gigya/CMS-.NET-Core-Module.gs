@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
+using Sitecore.Gigya.Extensions.Providers;
 
-namespace Sitecore.Gigya.Extensions.Abstractions.Services
+namespace Sitecore.Gigya.Extensions.Services
 {
     public interface IContactProfileService
     {
         IContactProfileProvider ContactProfileProvider { get; }
 
-        void UpdateFacets(dynamic gigyaModel, MappingFieldGroup mappingFields);
+        Task UpdateFacetsAsync(dynamic gigyaModel, MappingFieldGroup mappingFields);
     }
 }

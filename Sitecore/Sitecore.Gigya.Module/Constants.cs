@@ -29,7 +29,7 @@ namespace Sitecore.Gigya.Module
         public class CmsFields
         {
             public const string UserId = "UserId";
-            public const string FullName = "Full Name";
+            public const string FullName = "FullName";
             public const string Email = "Email";
             public const string Comment = "Comment";
         }

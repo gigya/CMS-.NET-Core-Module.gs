@@ -8,6 +8,8 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics
 {
     public class Constants
     {
+        public const string IdentifierSource = "gigya";
+
         public class FacetKeys
         {
             public const string Gigya = "Gigya";
