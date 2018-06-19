@@ -86,11 +86,7 @@ namespace Sitecore.Gigya.Module.Helpers
         {
             var user = _accountRepository.GetActiveUser();
             var success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
-
-            if (success)
-            {
-                UpdateXdb(settings, gigyaModel);
-            }
+            UpdateXdb(settings, gigyaModel);
             return success;
         }
 
@@ -111,6 +107,22 @@ namespace Sitecore.Gigya.Module.Helpers
             if (mappingFields == null || !mappingFields.Any())
             {
                 return false;
+            }
+
+            // profileId is different
+            if (user.Profile.ProfileItemId != settings.ProfileId)
+            {
+                user.Profile.ProfileItemId = settings.ProfileId;
+
+                try
+                {
+                    user.Profile.Save();
+                }
+                catch (Exception e)
+                {
+                    _logger.Error("Failed to update profile for user: " + user.Name, e);
+                    return false;
+                }
             }
 
             var profileTypeProperties = user.Profile.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(i => i.CanWrite).ToList();

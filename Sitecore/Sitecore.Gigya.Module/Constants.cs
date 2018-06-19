@@ -53,7 +53,7 @@ namespace Sitecore.Gigya.Module
             }
 
             public static readonly ID GigyaSettings = new ID("{CB5000AC-098F-420E-B973-D6AD423F2DAE}");
-            public static readonly ID SitecoreDefaultUserProfile = new ID("{642C9A7E-EE31-4979-86F0-39F338C10AFB}");
+            public static readonly ID SitecoreDefaultUserProfile = new ID("{AE4C4969-5B7E-4B4E-9042-B2D8701CE214}");
             public static readonly ID MappingFieldFolder = new ID("{6FE4A2F7-B184-463F-A7CA-8471159E579A}");
             public static readonly ID xDbMappingFieldFolder = new ID("{198AA053-EBE7-4AFC-8A9E-1C289D5DEEE2}");
             public static readonly ID MappingField = new ID("{A8ECE2D3-757C-4A0E-A184-DFAFC194C973}");
