@@ -22,7 +22,7 @@ namespace Sitecore.Gigya.Extensions.Services
                 result.Add(A.Constants.FacetKeys.Gigya);
                 result.Add("Entries");
                 result.Add(child.Name);
-                result.Add("Values");
+                result.Add("Value");
                 return result.ToArray();
             }
             
