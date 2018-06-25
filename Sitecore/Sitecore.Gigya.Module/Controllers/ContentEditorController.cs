@@ -13,6 +13,9 @@ using Sitecore.Gigya.Module.Models;
 using Gigya.Module.Core.Data;
 using Sitecore.Gigya.Extensions.Attributes;
 using Gigya.Module.Core.Mvc.Attributes;
+using Gigya.Module.Core.Connector.Models;
+
+using C = Gigya.Module.Core;
 
 namespace Sitecore.Gigya.Module.Controllers
 {
@@ -54,6 +57,9 @@ namespace Sitecore.Gigya.Module.Controllers
             var gigyaAccountSchemaHelper = new GigyaAccountSchemaHelper<SitecoreGigyaModuleSettings>(new GigyaApiHelper<SitecoreGigyaModuleSettings>(settingsHelper, logger), settings);
             var schema = gigyaAccountSchemaHelper.GetAccountSchema();
 
+            // add any sitecore specified computed fields
+            AddComputedFields(schema);
+
             var results = new AutocompleteResult();
             var properties = schema.Properties;
             if (!string.IsNullOrEmpty(query))
@@ -66,6 +72,17 @@ namespace Sitecore.Gigya.Module.Controllers
 
             var data = JsonConvert.SerializeObject(results);
             return Content(data, "application/json");
+        }
+
+        private void AddComputedFields(AccountSchemaModel model)
+        {
+            if (!model.Properties.Any(i => i.Name == C.Constants.GigyaFields.FullName))
+            {
+                model.Properties.Add(new AccountSchemaProperty
+                {
+                    Name = C.Constants.GigyaFields.FullName
+                });
+            }
         }
     }
 }

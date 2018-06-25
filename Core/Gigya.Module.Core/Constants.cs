@@ -16,6 +16,7 @@ namespace Gigya.Module.Core
             public const string UserId = "UID";
             public const string UserIdSignature = "UIDSignature";
             public const string SignatureTimestamp = "signatureTimestamp";
+            public const string FullName = "profile.fullName";
         }
 
         public class SignatureValidation

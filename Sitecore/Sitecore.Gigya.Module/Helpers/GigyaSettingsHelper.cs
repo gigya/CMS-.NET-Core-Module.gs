@@ -157,9 +157,7 @@ namespace Sitecore.Gigya.Module.Helpers
                 ProfileId = _userProfileHelper.GetSelectedProfile(settings).ID.ToString()
             };
 
-            mapped.MappedMappingFields = ExtractMappingFields(settings, MappingFieldType.Membership);
-            mapped.MappedXdbMappingFields = ExtractXdbMappingFields(settings);
-
+            MapMappingFields(settings, mapped);
             ExtractDataCenter(settings, mapped, database);
 
             if (!string.IsNullOrEmpty(mapped.ApplicationSecret) && mapped.ApplicationSecret.StartsWith(Constants.EncryptionPrefix))
@@ -167,7 +165,29 @@ namespace Sitecore.Gigya.Module.Helpers
                 mapped.ApplicationSecret = mapped.ApplicationSecret.Substring(Constants.EncryptionPrefix.Length);
             }
 
-            // map session mode
+            MapSessionMode(settings, mapped);
+
+            return mapped;
+        }
+
+        private void MapMappingFields(Item settings, SitecoreGigyaModuleSettings mapped)
+        {
+            var mappingFieldSourceItem = settings;
+            var parentSettingsId = ((MultilistField)settings.Fields[Constants.Fields.Parent]).Items.FirstOrDefault();
+            if (!string.IsNullOrEmpty(parentSettingsId))
+            {
+                var parentSettings = settings.Database.GetItem(new ID(parentSettingsId));
+                if (parentSettings != null)
+                {
+                    mappingFieldSourceItem = parentSettings;
+                }
+            }
+            mapped.MappedMappingFields = ExtractMappingFields(mappingFieldSourceItem, MappingFieldType.Membership);
+            mapped.MappedXdbMappingFields = ExtractXdbMappingFields(mappingFieldSourceItem);
+        }
+
+        private static void MapSessionMode(Item settings, SitecoreGigyaModuleSettings mapped)
+        {
             if (((CheckboxField)settings.Fields[Constants.Fields.SessionCookieMode]).Checked)
             {
                 mapped.GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Session;
@@ -180,8 +200,6 @@ namespace Sitecore.Gigya.Module.Helpers
             {
                 mapped.GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Fixed;
             }
-
-            return mapped;
         }
 
         private A.MappingFieldGroup ExtractXdbMappingFields(Item settings)

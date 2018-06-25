@@ -108,6 +108,7 @@ namespace Sitecore.Gigya.Module
             public const string GigyaSessionType = "Gigya Session Type";
             public const string GigyaSessionDuration = "Gigya Session Duration";
             public const string Profile = "Profile";
+            public const string Parent = "Settings Parent";
 
             public class MappingFields
             {

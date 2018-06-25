@@ -57,6 +57,7 @@
     </Reference>
     <Reference Include="Sitecore.Analytics.Model, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Analytics.Model.NoReferences.8.2.180406\lib\NET452\Sitecore.Analytics.Model.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sitecore.Kernel, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.2.180406\lib\NET452\Sitecore.Kernel.dll</HintPath>
@@ -119,6 +120,7 @@
     <Content Include="Scripts\Gigya\jQuery-Autocomplete\license.txt" />
     <Content Include="sitecore modules\Gigya\css\gigya-content-editor.css" />
     <Content Include="Views\Gigya\SampleMvcLayout.cshtml" />
+    <None Include="Properties\PublishProfiles\Dev81.pubxml" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>

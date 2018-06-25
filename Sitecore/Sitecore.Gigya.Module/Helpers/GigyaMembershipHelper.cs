@@ -217,9 +217,9 @@ namespace Sitecore.Gigya.Module.Helpers
             if (args.GigyaValue == null)
             {
                 // apply any custom computed fields
-                switch (cmsFieldName)
+                switch (args.GigyaFieldName)
                 {
-                    case Constants.CmsFields.FullName:
+                    case Core.Constants.GigyaFields.FullName:
                         args.GigyaValue = string.Join(" ", DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.FirstName), DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.LastName)).Trim();
                         break;
                 }
