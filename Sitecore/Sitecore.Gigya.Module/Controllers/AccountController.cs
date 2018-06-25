@@ -25,15 +25,16 @@ namespace Sitecore.Gigya.Module.Controllers
         protected readonly IAccountRepository _accountRepository;
         protected readonly GigyaAccountHelper _gigyaAccountHelper;
 
-        public AccountController() : this(new AccountRepository(new Pipelines.PipelineService()), new TrackerService(), new ContactProfileService(new ContactProfileProvider(), new Logger(new SitecoreLogger())))
+        public AccountController() : this(new AccountRepository(new Pipelines.PipelineService()), new TrackerService(), new ContactProfileService(new ContactProfileProvider(), new Logger(new SitecoreLogger())), 
+            new Helpers.GigyaSettingsHelper())
         {
         }
 
-        public AccountController(IAccountRepository accountRepository, ITrackerService trackerService, IContactProfileService contactProfileService) : base()
+        public AccountController(IAccountRepository accountRepository, ITrackerService trackerService, IContactProfileService contactProfileService, IGigyaSettingsHelper<SitecoreGigyaModuleSettings> settingsHelper) : base()
         {
             _accountRepository = accountRepository;
             Logger = new Logger(new SitecoreLogger());
-            SettingsHelper = new Helpers.GigyaSettingsHelper();
+            SettingsHelper = settingsHelper;
 
             _gigyaAccountHelper = new GigyaAccountHelper(SettingsHelper, Logger, null, _accountRepository);
             var apiHelper = new GigyaApiHelper<SitecoreGigyaModuleSettings>(SettingsHelper, Logger);

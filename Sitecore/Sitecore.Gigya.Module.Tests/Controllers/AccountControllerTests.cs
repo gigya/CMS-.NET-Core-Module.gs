@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using Gigya.Module.Core.Mvc.Models;
+using NSubstitute;
 using Ploeh.AutoFixture.AutoNSubstitute;
 using Sitecore.Collections;
 using Sitecore.Data;
@@ -7,6 +8,7 @@ using Sitecore.FakeDb.AutoFixture;
 using Sitecore.FakeDb.Sites;
 using Sitecore.Gigya.Module.Controllers;
 using Sitecore.Gigya.Module.Repositories;
+using Sitecore.Gigya.Module.Tests.Helpers;
 using Sitecore.Gigya.Testing;
 using Sitecore.Gigya.Testing.Attributes;
 using Sitecore.Security;
@@ -35,7 +37,7 @@ namespace Sitecore.Gigya.Module.Tests.Controllers
 
         [Theory]
         [AutoDbData]
-        public void Logout_ShouldCallSitecoreLogout(Database db, [Content] DbItem item, IAccountRepository repo)
+        public void Logout_ShouldCallSitecoreLogout(Database db, [Content] DbItem item, IAccountRepository repo, FakeGigyaSettingsHelper gigyaSettingsHelper)
         {
             var fakeSite = new FakeSiteContext(new StringDictionary
                                                {
@@ -44,9 +46,16 @@ namespace Sitecore.Gigya.Module.Tests.Controllers
                                                }) as SiteContext;
             fakeSite.Database = db;
 
+            repo.CurrentIdentity.Returns(new CurrentIdentity
+            {
+                IsAuthenticated = true,
+                Name = "Test User",
+                UID = "uid"
+            });
+
             using (new SiteContextSwitcher(fakeSite))
             {
-                var ctrl = new AccountController(repo, null, null);
+                var ctrl = new AccountController(repo, null, null, gigyaSettingsHelper);
                 ctrl.Logout();
                 repo.Received(1).Logout();
             }
