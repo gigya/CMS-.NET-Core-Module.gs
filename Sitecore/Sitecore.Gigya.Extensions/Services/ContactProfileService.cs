@@ -6,7 +6,6 @@ using Sitecore.Analytics.Model.Framework;
 using Sitecore.Analytics.Tracking;
 using Sitecore.Diagnostics;
 using Sitecore.Exceptions;
-using Sitecore.Gigya.DependencyInjection;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
 using Sitecore.Gigya.Extensions.Providers;

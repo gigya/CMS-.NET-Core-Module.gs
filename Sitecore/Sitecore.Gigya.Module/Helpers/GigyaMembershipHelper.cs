@@ -19,7 +19,6 @@ using Sitecore.Gigya.Module.Models;
 using System.Configuration;
 using System.Reflection;
 using Sitecore.Security.Accounts;
-using Sitecore.DependencyInjection;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
 using Sitecore.Gigya.Extensions.Services;
 

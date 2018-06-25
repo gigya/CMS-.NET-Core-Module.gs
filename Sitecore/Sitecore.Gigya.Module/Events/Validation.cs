@@ -49,12 +49,16 @@ namespace Sitecore.Gigya.Module.Events
                 return;
             }
 
-            if ((DateTime.UtcNow - updatedItem.Created) < TimeSpan.FromSeconds(10))
+            try
             {
-                // bit of hack to prevent this validation from running when and item is created
-                return;
+                if ((DateTime.UtcNow - updatedItem.Statistics.Created) < TimeSpan.FromSeconds(10))
+                {
+                    // bit of hack to prevent this validation from running when and item is created
+                    return;
+                }
             }
-            
+            catch { }
+
             var settingsHelper = new Helpers.GigyaSettingsHelper();
             var mappedSettings = settingsHelper.Map(updatedItem, "validation-test", Context.ContentDatabase);
             if (!mappedSettings.EnableRaas)

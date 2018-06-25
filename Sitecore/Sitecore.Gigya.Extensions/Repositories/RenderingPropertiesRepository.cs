@@ -5,11 +5,9 @@
     using SC = Sitecore;
     using Sitecore.Diagnostics;
     using Sitecore.Reflection;
-    using Sitecore.Gigya.DependencyInjection;
     using System.Web;
     using Sitecore.Gigya.Extensions.Abstractions.Repositories;
 
-    [Service(typeof(IRenderingPropertiesRepository))]
     public class RenderingPropertiesRepository : IRenderingPropertiesRepository
     {
         public T Get<T>(SC.Mvc.Presentation.Rendering rendering)

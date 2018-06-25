@@ -14,7 +14,6 @@ using Core = Gigya.Module.Core;
 using Sitecore.Gigya.Module.Repositories;
 using Sitecore.Gigya.Module.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
-using Sitecore.DependencyInjection;
 using Sitecore.Configuration;
 using Sitecore.Gigya.Extensions.Services;
 using Sitecore.Gigya.Extensions.Providers;

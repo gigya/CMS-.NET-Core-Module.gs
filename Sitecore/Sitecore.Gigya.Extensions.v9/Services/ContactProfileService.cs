@@ -2,7 +2,6 @@
 using Gigya.Module.Core.Connector.Logging;
 using Sitecore.Diagnostics;
 using Sitecore.Exceptions;
-using Sitecore.Gigya.DependencyInjection;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
 using Sitecore.Gigya.Extensions.Providers;

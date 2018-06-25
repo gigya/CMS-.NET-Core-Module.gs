@@ -55,16 +55,20 @@
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Sitecore.Analytics.Model, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sitecore.Analytics.Model.NoReferences.8.2.180406\lib\NET452\Sitecore.Analytics.Model.dll</HintPath>
+    <Reference Include="Sitecore.Analytics, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Analytics.NoReferences.8.1.151003\lib\NET45\Sitecore.Analytics.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Sitecore.Kernel, Version=10.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.2.180406\lib\NET452\Sitecore.Kernel.dll</HintPath>
+    <Reference Include="Sitecore.Analytics.Model, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Analytics.Model.NoReferences.8.1.151003\lib\NET45\Sitecore.Analytics.Model.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Sitecore.Mvc, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Sitecore.Mvc.NoReferences.8.2.180406\lib\NET452\Sitecore.Mvc.dll</HintPath>
+    <Reference Include="Sitecore.Kernel, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.1.151003\lib\NET45\Sitecore.Kernel.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Sitecore.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Mvc.NoReferences.8.1.151003\lib\NET45\Sitecore.Mvc.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
@@ -209,10 +213,6 @@
     <ProjectReference Include="..\..\Core\Gigya.Module.Core\Gigya.Module.Core.csproj">
       <Project>{7610af03-891b-4ab2-a619-549bc9657cce}</Project>
       <Name>Gigya.Module.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sitecore.Gigya.DependencyInjection\Sitecore.Gigya.DependencyInjection.csproj">
-      <Project>{2dae103e-11a8-46ad-86bd-da40dd729411}</Project>
-      <Name>Sitecore.Gigya.DependencyInjection</Name>
     </ProjectReference>
     <ProjectReference Include="..\Sitecore.Gigya.Extensions.Abstractions\Sitecore.Gigya.Extensions.Abstractions.csproj">
       <Project>{8EEEB107-3691-4259-B39A-9F1820CBA5CB}</Project>
