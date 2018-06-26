@@ -20,7 +20,6 @@ namespace Sitecore.Gigya.Extensions.Providers
     public class ContactProfileProvider : IContactProfileProvider
     {
         private XConnectClient _client;
-        //private readonly ContactManager _contactManager;
         private Contact _contact;
 
         public ContactProfileProvider()
@@ -32,26 +31,46 @@ namespace Sitecore.Gigya.Extensions.Providers
         {
             get
             {
+                if (_contact != null)
+                {
+                    return _contact;
+                }
+
                 if (!A.Tracker.IsActive)
                 {
                     return null;
                 }
 
-                if (_contact == null && A.Tracker.Current.Contact != null)
-                {
-                    var trackerIdentifier = new IdentifiedContactReference(C.IdentifierSource, A.Tracker.Current.Contact.ContactId.ToString("N"));
-                    _contact = _client.Get<Contact>(trackerIdentifier, new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, PhoneNumberList.DefaultFacetKey));
-                }
-
-                if (_contact == null)
-                {
-                    var trackerIdentifier = new ContactIdentifier(C.IdentifierSource, Guid.NewGuid().ToString("N"), ContactIdentifierType.Known);
-                    _contact = new Contact();
-                    _client.AddContact(_contact);
-                }
-
+                _contact = GetContact();
                 return _contact;
             }
+        }
+
+        private Contact GetContact()
+        {
+            if (A.Tracker.Current.Contact == null)
+            {
+                return null;
+            }
+
+            var identifier = A.Tracker.Current.Contact.Identifiers.FirstOrDefault(i => i.Source == C.IdentifierSource);
+            if (identifier == null)
+            {
+                // unable to get a contact if we don't have a known identifier
+                return null;
+            }
+
+            var contactIdentifier = new IdentifiedContactReference(C.IdentifierSource, identifier.Identifier);
+            var contact = _client.Get<Contact>(contactIdentifier, new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, PhoneNumberList.DefaultFacetKey));
+            return contact ?? CreateContact(identifier.Identifier);
+        }
+
+        private Contact CreateContact(string identifier)
+        {
+            var trackerIdentifier = new ContactIdentifier(C.IdentifierSource, identifier, ContactIdentifierType.Known);
+            var contact = new Contact(trackerIdentifier);
+            _client.AddContact(_contact);
+            return contact;
         }
 
         //public IContactPicture Picture => GetFacet<IContactPicture>(C.FacetKeys.Picture);
@@ -81,6 +100,11 @@ namespace Sitecore.Gigya.Extensions.Providers
 
         public virtual void SetFacet<T>(T facet, string facetName) where T : Facet
         {
+            if (Contact == null)
+            {
+                return;
+            }
+
             _client.SetFacet<T>(Contact, facetName, facet);
         }
     }

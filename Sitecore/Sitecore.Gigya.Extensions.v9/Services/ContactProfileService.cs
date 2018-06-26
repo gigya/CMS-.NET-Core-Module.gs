@@ -28,49 +28,8 @@ namespace Sitecore.Gigya.Extensions.Services
             _logger = logger;
         }
 
-        public async Task UpdateFacetsAsync(dynamic gigyaModel, MappingFieldGroup mapping)
+        public Task UpdateFacetsAsync(dynamic gigyaModel, MappingFieldGroup mapping)
         {
-            using (XConnect.Client.XConnectClient client = Sitecore.XConnect.Client.Configuration.SitecoreXConnectClientConfiguration.GetClient())
-            {
-                {
-                    try
-                    {
-                        Contact contact = new Contact(new ContactIdentifier("twitter", "myrtlesitecore", ContactIdentifierType.Known));
-
-                        client.AddContact(contact);
-
-                        // Facet with a reference object, key is specified
-                        PersonalInformation personalInfoFacet = new PersonalInformation()
-                        {
-                            FirstName = "Myrtle",
-                            LastName = "McSitecore"
-                        };
-
-                        FacetReference reference = new FacetReference(contact, PersonalInformation.DefaultFacetKey);
-
-                        client.SetFacet(reference, personalInfoFacet);
-
-                        // Facet without a reference, using default key
-                        EmailAddressList emails = new EmailAddressList(new EmailAddress("myrtle@test.test", true), "Home");
-
-                        client.SetFacet(contact, emails);
-
-                        // Facet without a reference, key is specified
-
-                        AddressList addresses = new AddressList(new Address() { AddressLine1 = "Cool Street 12", City = "Sitecore City", PostalCode = "ABC 123" }, "Home");
-
-                        client.SetFacet(contact, AddressList.DefaultFacetKey, addresses);
-
-                        // Submit operations as batch
-                        await client.SubmitAsync();
-                    }
-                    catch (XdbExecutionException ex)
-                    {
-                        _logger.Error("Failed to update contact facets", ex);
-                    }
-                }
-            }
-
             new PersonalFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PersonalInfoMapping);
             //new AddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.AddressesMapping);
             //new PhoneNumbersFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PhoneNumbersMapping);
@@ -81,6 +40,7 @@ namespace Sitecore.Gigya.Extensions.Services
             //new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
 
             ContactProfileProvider.Flush();
+            return Task.CompletedTask;
         }
     }
 }

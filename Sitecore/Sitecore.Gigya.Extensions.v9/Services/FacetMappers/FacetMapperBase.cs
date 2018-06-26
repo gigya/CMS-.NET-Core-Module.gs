@@ -1,9 +1,11 @@
-﻿using Gigya.Module.Core.Connector.Logging;
+﻿using A = Sitecore.Analytics;
+using Gigya.Module.Core.Connector.Logging;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
 using Sitecore.Gigya.Extensions.Models.Pipelines;
 using Sitecore.Gigya.Extensions.Providers;
 using Sitecore.Pipelines;
+using Sitecore.XConnect.Client;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,7 @@ namespace Sitecore.Gigya.Extensions.Services.FacetMappers
 
         public void Update(dynamic gigyaModel, T mapping)
         {
-            if (mapping == null)
+            if (mapping == null || !A.Tracker.IsActive)
             {
                 return;
             }
