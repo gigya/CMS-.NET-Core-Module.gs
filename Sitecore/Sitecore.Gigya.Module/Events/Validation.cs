@@ -49,6 +49,12 @@ namespace Sitecore.Gigya.Module.Events
                 return;
             }
 
+            if (updatedItem.ID == Constants.Ids.BranchGlobalSettings)
+            {
+                // no need to branch template
+                return;
+            }
+
             try
             {
                 if ((DateTime.UtcNow - updatedItem.Statistics.Created) < TimeSpan.FromSeconds(10))

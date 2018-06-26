@@ -36,12 +36,14 @@ namespace Sitecore.Gigya.Module
 
         public class Ids
         {
+            public static readonly ID BranchGlobalSettings = new ID("{AE8B36EC-7053-48FC-8974-6726075E0A4D}");
             public static readonly ID GlobalSettings = new ID("{2EB49887-39E6-40FC-8EC5-3CBE241B2494}");
             public static readonly ID UserProperties = new ID("{1578C18A-C918-48EF-A496-4DCE4C5CD450}");
         }
 
         public class Paths
         {
+            public const string ModulePath = "/sitecore/system/Modules/Gigya";
             public const string SiteSettingsSuffix = "Gigya Settings";
         }
 

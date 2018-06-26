@@ -1,5 +1,5 @@
 ﻿@using Sitecore.Mvc
-@* @using Sitecore.Mvc.Analytics.Extensions *@
+@using Sitecore.Mvc.Analytics.Extensions 
 @{
     Layout = null;
 
@@ -15,7 +15,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>@Html.Sitecore().Field("title", new { DisableWebEdit = true })</title>
-        @* @Html.Sitecore().VisitorIdentification() *@
+         @Html.Sitecore().VisitorIdentification() 
         <link href="/default.css" rel="stylesheet" />
         <style type="text/css">
             body.gigya-cms-logging-in .gigya-loading-example {

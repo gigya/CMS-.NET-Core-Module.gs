@@ -14,7 +14,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Sitecore.Gigya.Module</RootNamespace>
     <AssemblyName>Sitecore.Gigya.Module</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort />
@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,7 +54,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Sitecore.Analytics, Version=8.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Analytics.NoReferences.8.1.151003\lib\NET45\Sitecore.Analytics.dll</HintPath>
@@ -71,22 +72,21 @@
       <HintPath>..\..\packages\Sitecore.Mvc.NoReferences.8.1.151003\lib\NET45\Sitecore.Mvc.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Web.Razor">
@@ -125,6 +125,7 @@
     <Content Include="sitecore modules\Gigya\css\gigya-content-editor.css" />
     <Content Include="Views\Gigya\SampleMvcLayout.cshtml" />
     <None Include="Properties\PublishProfiles\Dev81.pubxml" />
+    <None Include="Properties\PublishProfiles\Dev9.pubxml" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>
@@ -218,9 +219,9 @@
       <Project>{8EEEB107-3691-4259-B39A-9F1820CBA5CB}</Project>
       <Name>Sitecore.Gigya.Extensions.Abstractions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Sitecore.Gigya.Extensions\Sitecore.Gigya.Extensions.csproj">
-      <Project>{9bc95c63-5c43-4bd5-b733-ca1ed5424a09}</Project>
-      <Name>Sitecore.Gigya.Extensions</Name>
+    <ProjectReference Include="..\Sitecore.Gigya.Extensions.v9\Sitecore.Gigya.Extensions.v9.csproj">
+      <Project>{c13af05b-7f95-455b-ac74-6ff6af23f76c}</Project>
+      <Name>Sitecore.Gigya.Extensions.v9</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

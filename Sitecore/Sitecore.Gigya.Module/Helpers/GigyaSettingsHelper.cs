@@ -111,7 +111,7 @@ namespace Sitecore.Gigya.Module.Helpers
 
             using (SecurityModel.SecurityDisabler disabler = new SecurityModel.SecurityDisabler())
             {
-                var globalSettings = Context.Database.GetItem(Constants.Ids.GlobalSettings);
+                var globalSettings = GetGlobalSettings();
                 if (globalSettings != null)
                 {
                     result.Add(Map(globalSettings, Constants.GlobalSettingsId));
@@ -126,6 +126,20 @@ namespace Sitecore.Gigya.Module.Helpers
             }
 
             return result;
+        }
+
+        private Item GetGlobalSettings()
+        {
+            var globalSettings = Context.Database.GetItem(Constants.Ids.GlobalSettings);
+            if (globalSettings != null)
+            {
+                return globalSettings;
+            }
+
+            // try and find global settings based on path and template
+            var moduleFolder = Context.Database.GetItem(Constants.Paths.ModulePath);
+            globalSettings = moduleFolder.Children.FirstOrDefault(i => i.TemplateID == Constants.Templates.GigyaSettings);
+            return globalSettings;
         }
 
         public SitecoreGigyaModuleSettings Map(Item settings, string id)
@@ -154,7 +168,7 @@ namespace Sitecore.Gigya.Module.Helpers
                 SessionTimeout = System.Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds),
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
                 GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding,
-                ProfileId = _userProfileHelper.GetSelectedProfile(settings).ID.ToString()
+                ProfileId = _userProfileHelper.GetSelectedProfile(settings)?.ID?.ToString()
             };
 
             MapMappingFields(settings, mapped);
@@ -289,22 +303,24 @@ namespace Sitecore.Gigya.Module.Helpers
         public SessionValidationModel IsSessionSettingsValid(SitecoreGigyaModuleSettings settings)
         {
             var response = new SessionValidationModel();
-            var sessionTimeoutSeconds = HttpContext.Current.Session.Timeout * 60;
-            var formsTimeoutSeconds = FormsAuthentication.Timeout.TotalSeconds;
 
-            if (sessionTimeoutSeconds != formsTimeoutSeconds)
+            var context = HttpContext.Current;
+            if (context == null)
             {
-                response.Message = string.Format("Forms authentication timeout value of {0} doesn't match the session timeout value of {1}. Check the values in web.config.", FormsAuthentication.Timeout.TotalMinutes, HttpContext.Current.Session.Timeout);
+                // happens when installing the module
+                response.IsValid = true;
                 return response;
             }
+            
+            var formsTimeoutSeconds = FormsAuthentication.Timeout.TotalSeconds;
 
             switch (settings.GigyaSessionMode)
             {
                 case Core.Connector.Enums.GigyaSessionMode.Fixed:
                 case Core.Connector.Enums.GigyaSessionMode.Sliding:
-                    if (settings.SessionTimeout != sessionTimeoutSeconds)
+                    if (settings.SessionTimeout != formsTimeoutSeconds)
                     {
-                        response.Message = string.Format("Gigya session timeout of {0} seconds doesn't match Sitecore's timeout of {1} seconds set in web.config.", settings.SessionTimeout, sessionTimeoutSeconds);
+                        response.Message = string.Format("Gigya session timeout of {0} seconds doesn't match Sitecore's timeout of {1} seconds set in web.config.", settings.SessionTimeout, formsTimeoutSeconds);
                         return response;
                     }
                     break;
