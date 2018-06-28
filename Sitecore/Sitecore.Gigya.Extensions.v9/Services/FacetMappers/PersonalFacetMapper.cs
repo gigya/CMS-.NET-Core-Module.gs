@@ -23,8 +23,7 @@ namespace Sitecore.Gigya.Extensions.Services.FacetMappers
             try
             {
                 var facet = _contactProfileProvider.PersonalInfo;
-                var exists = facet != null;
-                if (!exists)
+                if (facet == null)
                 {
                     facet = new PersonalInformation();
                 }
@@ -40,10 +39,7 @@ namespace Sitecore.Gigya.Extensions.Services.FacetMappers
                 facet.Title = DynamicUtils.GetValue<string>(gigyaModel, mapping.Title);
                 facet.PreferredLanguage = DynamicUtils.GetValue<string>(gigyaModel, mapping.PreferredLanguage);
 
-                if (!exists)
-                {
-                    _contactProfileProvider.SetFacet(facet, PersonalInformation.DefaultFacetKey);
-                }
+                _contactProfileProvider.SetFacet(facet, PersonalInformation.DefaultFacetKey);
             }
             catch (FacetNotAvailableException ex)
             {

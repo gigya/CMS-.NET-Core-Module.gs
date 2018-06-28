@@ -14,6 +14,7 @@ using System.Linq;
 using C = Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants;
 using Sitecore.XConnect.Client.Configuration;
 using Sitecore.XConnect.Client;
+using Sitecore.Analytics.Model;
 
 namespace Sitecore.Gigya.Extensions.Providers
 {
@@ -21,6 +22,7 @@ namespace Sitecore.Gigya.Extensions.Providers
     {
         private XConnectClient _client;
         private Contact _contact;
+        //private Logger _logger = 
 
         public ContactProfileProvider()
         {
@@ -53,24 +55,58 @@ namespace Sitecore.Gigya.Extensions.Providers
                 return null;
             }
 
-            var identifier = A.Tracker.Current.Contact.Identifiers.FirstOrDefault(i => i.Source == C.IdentifierSource);
+            if (A.Tracker.Current.Contact.IsNew)
+            {
+                return CreateContact();
+            }
+
+            var identifier = A.Tracker.Current.Contact.Identifiers.FirstOrDefault();
             if (identifier == null)
             {
                 // unable to get a contact if we don't have a known identifier
                 return null;
             }
 
-            var contactIdentifier = new IdentifiedContactReference(C.IdentifierSource, identifier.Identifier);
-            var contact = _client.Get<Contact>(contactIdentifier, new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, PhoneNumberList.DefaultFacetKey));
-            return contact ?? CreateContact(identifier.Identifier);
+            var contactIdentifier = new IdentifiedContactReference(identifier.Source, identifier.Identifier);
+            var expandOptions = ExpandOptions();
+            var contact = _client.Get(contactIdentifier, expandOptions);
+            return contact;
         }
 
-        private Contact CreateContact(string identifier)
+        private static ContactExpandOptions ExpandOptions()
         {
-            var trackerIdentifier = new ContactIdentifier(C.IdentifierSource, identifier, ContactIdentifierType.Known);
-            var contact = new Contact(trackerIdentifier);
-            _client.AddContact(_contact);
-            return contact;
+            return new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, PhoneNumberList.DefaultFacetKey);
+        }
+
+        private Contact CreateContact()
+        {
+            var manager = Factory.CreateObject("tracking/contactManager", true) as A.Tracking.ContactManager;
+            if (manager == null)
+            {
+                return null;
+            }
+
+            A.Tracker.Current.Contact.ContactSaveMode = ContactSaveMode.AlwaysSave;
+            manager.SaveContactToCollectionDb(A.Tracker.Current.Contact);
+
+            // Now that the contact is saved, you can retrieve it using the tracker identifier
+            // NOTE: Sitecore.Analytics.XConnect.DataAccess.Constants.IdentifierSource is marked internal in 9.0 Initial and cannot be used. If you are using 9.0 Initial, pass "xDB.Tracker" in as a string.
+            var trackerIdentifier = new IdentifiedContactReference("xDB.Tracker", A.Tracker.Current.Contact.ContactId.ToString("N"));
+
+            // Get contact from xConnect, update and save the facet
+            try
+            {
+                var expandOptions = ExpandOptions();
+                var contact = _client.Get(trackerIdentifier, expandOptions);
+                return contact;
+            }
+            catch (Exception ex)
+            {
+                // todo: log exception
+
+            }
+
+            return null;
         }
 
         //public IContactPicture Picture => GetFacet<IContactPicture>(C.FacetKeys.Picture);

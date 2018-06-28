@@ -64,6 +64,12 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
         public List<ContactEmailAddressMapping> Entries { get; set; }
     }
 
+    public class ConsentMapping : MappingBase
+    {
+        public string ConsentRevoked { get; set; }
+        public string DoNotMarket { get; set; }
+    }
+
     public class ContactEmailAddressMapping : MappingBase
     {
         public string SmtpAddress { get; set; }

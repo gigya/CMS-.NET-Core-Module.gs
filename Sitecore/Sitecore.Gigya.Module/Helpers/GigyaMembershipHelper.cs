@@ -289,6 +289,7 @@ namespace Sitecore.Gigya.Module.Helpers
             }
             else
             {
+                TrackContact(settings, gigyaModel);
                 UpdateXdb(settings, gigyaModel);
             }
 
@@ -299,11 +300,17 @@ namespace Sitecore.Gigya.Module.Helpers
         {
             if (settings.EnableXdb)
             {
-                // identify contact                
-                _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
-
                 // update the contacts facets
                 _contactProfileService.UpdateFacetsAsync(gigyaModel, settings.MappedXdbMappingFields).Wait();
+            }
+        }
+
+        private void TrackContact(SitecoreGigyaModuleSettings settings, dynamic gigyaModel)
+        {
+            if (settings.EnableXdb)
+            {
+                // identify contact                
+                _trackerService.IdentifyContact(_accountRepository.CurrentIdentity.Name);
             }
         }
     }

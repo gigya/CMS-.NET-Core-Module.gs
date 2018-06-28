@@ -42,6 +42,9 @@
       <HintPath>..\..\packages\Sitecore.Analytics.Model.NoReferences.9.0.171002\lib\NET462\Sitecore.Analytics.Model.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Sitecore.Analytics.XConnect, Version=11.18.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Analytics.XConnect.NoReferences.9.0.171002\lib\NET462\Sitecore.Analytics.XConnect.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Kernel, Version=11.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.9.0.171002\lib\NET462\Sitecore.Kernel.dll</HintPath>
       <Private>False</Private>
@@ -106,7 +109,7 @@
     <Compile Include="Repositories\RenderingPropertiesRepository.cs" />
     <Compile Include="Services\ContactProfileService.cs" />
     <Compile Include="Services\FacetMappers\AddressFacetMapper.cs" />
-    <Compile Include="Services\FacetMappers\CommunicationProfileFacetMapper.cs" />
+    <Compile Include="Services\FacetMappers\ConsentFacetMapper.cs" />
     <Compile Include="Services\FacetMappers\EmailAddressFacetMapper.cs" />
     <Compile Include="Services\FacetMappers\FacetMapperBase.cs" />
     <Compile Include="Services\FacetMappers\GigyaFacetMapper.cs" />

@@ -39,18 +39,27 @@ namespace Sitecore.Gigya.Extensions.Services.FacetMappers
                         continue;
                     }
 
-                    var address = Map(gigyaModel, mappingEntry); ;
+                    var model = Map(gigyaModel, mappingEntry);
 
                     if (i == 0)
                     {
-                        facet.PreferredAddress = address;
-                        facet.PreferredKey = mappingEntry.Key;
+                        if (facet == null)
+                        {
+                            facet = new AddressList(model, mappingEntry.Key);
+                        }
+                        else
+                        {
+                            facet.PreferredAddress = model;
+                            facet.PreferredKey = mappingEntry.Key;
+                        }
                     }
                     else
                     {
-                        facet.Others.Add(mappingEntry.Key, address);
+                        facet.Others.Add(mappingEntry.Key, model);
                     }
                 }
+
+                _contactProfileProvider.SetFacet(facet, AddressList.DefaultFacetKey);
             }
             catch (FacetNotAvailableException ex)
             {
@@ -70,8 +79,21 @@ namespace Sitecore.Gigya.Extensions.Services.FacetMappers
             entry.AddressLine2 = DynamicUtils.GetValue<string>(gigyaModel, entryMapping.StreetLine2);
             entry.AddressLine3 = DynamicUtils.GetValue<string>(gigyaModel, entryMapping.StreetLine3);
             entry.AddressLine4 = DynamicUtils.GetValue<string>(gigyaModel, entryMapping.StreetLine4);
-            entry.GeoCoordinate.Latitude = DynamicUtils.GetValue<float>(gigyaModel, entryMapping.Latitude);
-            entry.GeoCoordinate.Longitude = DynamicUtils.GetValue<float>(gigyaModel, entryMapping.Longitude);
+
+            var latitude = DynamicUtils.GetValue<double?>(gigyaModel, entryMapping.Latitude);
+            var longitude = DynamicUtils.GetValue<double?>(gigyaModel, entryMapping.Longitude);
+            if (latitude.HasValue && longitude.HasValue)
+            {
+                if (entry.GeoCoordinate == null)
+                {
+                    entry.GeoCoordinate = new GeoCoordinate(latitude.Value, longitude.Value);
+                }
+                else
+                {
+                    entry.GeoCoordinate.Latitude = latitude.Value;
+                    entry.GeoCoordinate.Longitude = longitude.Value;
+                }
+            }
 
             return entry;
         }
