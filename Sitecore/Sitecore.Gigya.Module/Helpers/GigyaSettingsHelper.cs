@@ -13,7 +13,6 @@ using System.Xml.XPath;
 using SC = Sitecore;
 using Core = Gigya.Module.Core;
 using Sitecore.Data.Items;
-using Sitecore.Gigya.Extensions.Extensions;
 using Sitecore.Data.Fields;
 using System.Web.Mvc;
 using Sitecore.Gigya.Module.Encryption;
@@ -25,6 +24,7 @@ using System.Web;
 
 using A = Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Gigya.Module.Core.Connector.Extensions;
+using Sitecore.Gigya.Module.Extensions;
 
 namespace Sitecore.Gigya.Module.Helpers
 {

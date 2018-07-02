@@ -15,8 +15,7 @@ using Sitecore.Gigya.Module.Repositories;
 using Sitecore.Gigya.Module.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
 using Sitecore.Configuration;
-using Sitecore.Gigya.Extensions.Services;
-using Sitecore.Gigya.Extensions.Providers;
+using Sitecore.Gigya.Extensions.Abstractions;
 
 namespace Sitecore.Gigya.Module.Controllers
 {
@@ -24,11 +23,6 @@ namespace Sitecore.Gigya.Module.Controllers
     {
         protected readonly IAccountRepository _accountRepository;
         protected readonly GigyaAccountHelper _gigyaAccountHelper;
-
-        public AccountController() : this(new AccountRepository(new Pipelines.PipelineService()), new TrackerService(), new ContactProfileService(new ContactProfileProvider(), new Logger(new SitecoreLogger())), 
-            new Helpers.GigyaSettingsHelper())
-        {
-        }
 
         public AccountController(IAccountRepository accountRepository, ITrackerService trackerService, IContactProfileService contactProfileService, IGigyaSettingsHelper<SitecoreGigyaModuleSettings> settingsHelper) : base()
         {

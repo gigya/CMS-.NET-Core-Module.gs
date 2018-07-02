@@ -11,11 +11,11 @@ using Sitecore.Gigya.Module.Helpers;
 using Sitecore.Gigya.Module.Logging;
 using Sitecore.Gigya.Module.Models;
 using Gigya.Module.Core.Data;
-using Sitecore.Gigya.Extensions.Attributes;
 using Gigya.Module.Core.Mvc.Attributes;
 using Gigya.Module.Core.Connector.Models;
 
 using C = Gigya.Module.Core;
+using Sitecore.Gigya.Module.Attributes;
 
 namespace Sitecore.Gigya.Module.Controllers
 {

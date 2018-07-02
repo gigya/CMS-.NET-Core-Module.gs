@@ -173,3 +173,12 @@
 /.vs/Gigya/DesignTimeBuild
 /Sitecore/Sitecore.Gigya.XConnect.Models/obj/Debug
 /Sitecore/Sitecore.Gigya.XConnect.Models.Tests/obj/Debug
+/Sitecore/Sitecore.Gigya.Connector.v9/bin
+/Sitecore/Sitecore.Gigya.Connector.v9/obj/Debug
+/Sitecore/Sitecore.Gigya.Extensions.v9.old/bin/Debug
+/Sitecore/Sitecore.Gigya.Extensions.v9.old/obj/Debug
+/Sitecore/Sitecore.Gigya.XConnect.Models/bin/Debug
+/Sitecore/Sitecore.Gigya.XConnect.Models.Tests/bin/Debug
+/Sitecore/Sitecore.Gigya.Connector.v8/bin
+/Sitecore/Sitecore.Gigya.Connector.v8/obj
+/Sitecore/Sitecore.Gigya.Testing/bin

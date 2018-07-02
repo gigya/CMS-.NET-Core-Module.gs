@@ -20,7 +20,7 @@ using System.Configuration;
 using System.Reflection;
 using Sitecore.Security.Accounts;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
-using Sitecore.Gigya.Extensions.Services;
+using Sitecore.Gigya.Extensions.Abstractions;
 
 namespace Sitecore.Gigya.Module.Helpers
 {
