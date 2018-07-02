@@ -118,7 +118,6 @@
   <ItemGroup>
     <Compile Include="Analytics\Conditions\ContactFacetHasValue.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Models\Pipelines\FacetMapperPipelineArgs.cs" />
     <Compile Include="Pipelines\RegisterWebApiRoutes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ContactProfileProvider.cs" />

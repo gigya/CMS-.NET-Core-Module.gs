@@ -2,7 +2,6 @@
 using Gigya.Module.Core.Connector.Logging;
 using Sitecore.Gigya.Extensions.Abstractions.Analytics.Models;
 using Sitecore.Gigya.Extensions.Abstractions.Services;
-using Sitecore.Gigya.Connector.Models.Pipelines;
 using Sitecore.Gigya.Connector.Providers;
 using Sitecore.Pipelines;
 using Sitecore.XConnect.Client;
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Sitecore.Gigya.Module.Models.Pipelines;
 
 namespace Sitecore.Gigya.Connector.Services.FacetMappers
 {

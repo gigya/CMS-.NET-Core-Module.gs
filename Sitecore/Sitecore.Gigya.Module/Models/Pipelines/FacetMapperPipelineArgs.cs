@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Sitecore.Gigya.Connector.Models.Pipelines
+namespace Sitecore.Gigya.Module.Models.Pipelines
 {
     public class FacetMapperPipelineArgs<T> : PipelineArgs where T : MappingBase
     {
