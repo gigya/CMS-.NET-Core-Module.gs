@@ -171,6 +171,7 @@
     <Compile Include="Models\GigyaSettingsViewModel.cs" />
     <Compile Include="Models\GigyaRegisterViewModel.cs" />
     <Compile Include="Models\MappingFieldType.cs" />
+    <Compile Include="Models\Pipelines\FacetsUpdatedPipelineArgs.cs" />
     <Compile Include="Models\Pipelines\FacetMapperPipelineArgs.cs" />
     <Compile Include="Models\SessionValidationModel.cs" />
     <Compile Include="Models\SitecoreGigyaModuleSettings.cs" />

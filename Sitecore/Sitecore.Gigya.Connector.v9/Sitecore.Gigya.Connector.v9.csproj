@@ -122,6 +122,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ContactProfileProvider.cs" />
     <Compile Include="Providers\IContactProfileProvider.cs" />
+    <Compile Include="Providers\ILegacyContactProfileProvider.cs" />
+    <Compile Include="Providers\LegacyContactProfileProvider.cs" />
     <Compile Include="Services\ContactProfileService.cs" />
     <Compile Include="Services\FacetMappers\AddressFacetMapper.cs" />
     <Compile Include="Services\FacetMappers\ConsentFacetMapper.cs" />
@@ -131,6 +133,13 @@
     <Compile Include="Services\FacetMappers\PersonalFacetMapper.cs" />
     <Compile Include="Services\FacetMappers\PhoneNumbersFacetMapper.cs" />
     <Compile Include="Services\FacetMappers\PreferencesFacetMapper.cs" />
+    <Compile Include="Services\LegacyFacetMappers\AddressFacetMapper.cs" />
+    <Compile Include="Services\LegacyFacetMappers\CommunicationProfileFacetMapper.cs" />
+    <Compile Include="Services\LegacyFacetMappers\EmailAddressFacetMapper.cs" />
+    <Compile Include="Services\LegacyFacetMappers\FacetMapperBase.cs" />
+    <Compile Include="Services\LegacyFacetMappers\PersonalFacetMapper.cs" />
+    <Compile Include="Services\LegacyFacetMappers\PhoneNumbersFacetMapper.cs" />
+    <Compile Include="Services\LegacyFacetMappers\PreferencesFacetMapper.cs" />
     <Compile Include="Services\SitecoreContentService.cs" />
     <Compile Include="Services\TrackerService.cs" />
   </ItemGroup>

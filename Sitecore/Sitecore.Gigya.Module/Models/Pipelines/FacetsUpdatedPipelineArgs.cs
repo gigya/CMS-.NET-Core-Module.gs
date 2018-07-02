@@ -8,9 +8,9 @@ using System.Web;
 
 namespace Sitecore.Gigya.Module.Models.Pipelines
 {
-    public class FacetMapperPipelineArgs<T> : PipelineArgs where T : MappingBase
+    public class FacetsUpdatedPipelineArgs : PipelineArgs
     {
-        public T Mapping { get; set; }
+        public MappingFieldGroup Mappings { get; set; }
         public dynamic GigyaModel { get; set; }
     }
 }

@@ -23,7 +23,8 @@ namespace Sitecore.Gigya.Connector.Controllers
 {
     public class AccountController : Sitecore.Gigya.Module.Controllers.AccountController
     {
-        public AccountController() : base(new AccountRepository(new Module.Pipelines.PipelineService()), new TrackerService(), new ContactProfileService(new ContactProfileProvider(), new Logger(new SitecoreLogger())),
+        public AccountController() : base(new AccountRepository(new Module.Pipelines.PipelineService()), new TrackerService(), 
+            new ContactProfileService(new ContactProfileProvider(), new LegacyContactProfileProvider(), new Logger(new SitecoreLogger())),
             new Module.Helpers.GigyaSettingsHelper())
         {
         }
