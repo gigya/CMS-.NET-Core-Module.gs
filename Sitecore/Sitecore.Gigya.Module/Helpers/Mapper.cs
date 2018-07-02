@@ -78,6 +78,9 @@ namespace Sitecore.Gigya.Module.Helpers
                     case Constants.Templates.IdValues.GigyaCustomXdbFacetFolder:
                         facet.GigyaFieldsMapping = MapGigyaFields(child);
                         break;
+                    //case Constants.Templates.IdValues.Consent:
+                    //    facet.GigyaFieldsMapping = MapGigyaFields(child);
+                    //    break;
                 }
             }
 
@@ -118,6 +121,16 @@ namespace Sitecore.Gigya.Module.Helpers
             {
                 Key = C.FacetKeys.Preferences,
                 Language = item.Fields[nameof(A.PreferencesMapping.Language)]?.Value
+            };
+        }
+
+        private static A.ConsentMapping MapConsent(Item item)
+        {
+            return new A.ConsentMapping
+            {
+                Key = "ConsentInformation",
+                ConsentRevoked = item.Fields[nameof(A.ConsentMapping.ConsentRevoked)]?.Value,
+                DoNotMarket = item.Fields[nameof(A.ConsentMapping.DoNotMarket)]?.Value
             };
         }
 

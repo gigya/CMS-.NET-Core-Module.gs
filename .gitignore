@@ -171,3 +171,5 @@
 /Tests/Gigya.UnitTests.Umbraco621/App_Data/NuGetBackup/20180618-142139
 /Umbraco/Gigya.Umbraco.Module.v621/App_Data/NuGetBackup/20180618-142152
 /.vs/Gigya/DesignTimeBuild
+/Sitecore/Sitecore.Gigya.XConnect.Models/obj/Debug
+/Sitecore/Sitecore.Gigya.XConnect.Models.Tests/obj/Debug

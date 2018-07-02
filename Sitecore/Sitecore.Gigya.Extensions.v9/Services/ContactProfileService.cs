@@ -39,6 +39,13 @@ namespace Sitecore.Gigya.Extensions.Services
             //new PreferencesFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.CommunicationPreferencesMapping);
             //new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
 
+
+            // need to update legacy facets in session using Sitecore.Gigya.Extensions
+
+
+            // add a pipeline here for custom facets
+
+
             ContactProfileProvider.Flush();
             return Task.CompletedTask;
         }
