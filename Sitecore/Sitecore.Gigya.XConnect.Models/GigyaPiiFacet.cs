@@ -11,28 +11,29 @@ namespace Sitecore.Gigya.XConnect.Models
 {
     [FacetKey(DefaultFacetKey)]
     [Serializable]
-    public class GigyaFacet : Facet
+    [PIISensitive]
+    public class GigyaPiiFacet : Facet
     {
-        public const string DefaultFacetKey = "Gigya";
+        public const string DefaultFacetKey = "GigyaPii";
 
-        public Dictionary<string, GigyaElement> Entries { get; set; }
+        public List<GigyaElement> Entries { get; set; }
     }
 
     [Serializable]
-    public class GigyaElement
+    public class GigyaPiiElement
     {
-        public string Value { get; set; }
+        public object Value { get; set; }
     }
 
-    public class GigyaModel
+    public class GigyaPiiModel
     {
         public static XdbModel Model { get; } = BuildModel();
 
         private static XdbModel BuildModel()
         {
-            var builder = new XdbModelBuilder("GigyaModel", new XdbModelVersion(1, 0));
+            var builder = new XdbModelBuilder("xConnectIntroModel", new XdbModelVersion(1, 0));
             builder.ReferenceModel(CollectionModel.Model);
-            builder.DefineFacet<Contact, GigyaFacet>(GigyaFacet.DefaultFacetKey);
+            builder.DefineFacet<Contact, GigyaPiiFacet>(GigyaPiiFacet.DefaultFacetKey);
             return builder.BuildModel();
         }
     }

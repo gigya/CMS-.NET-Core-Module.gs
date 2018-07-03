@@ -15,6 +15,7 @@ using C = Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants;
 using Sitecore.XConnect.Client.Configuration;
 using Sitecore.XConnect.Client;
 using Sitecore.Analytics.Model;
+using Sitecore.Gigya.XConnect.Models;
 
 namespace Sitecore.Gigya.Connector.Providers
 {
@@ -75,7 +76,7 @@ namespace Sitecore.Gigya.Connector.Providers
 
         private static ContactExpandOptions ExpandOptions()
         {
-            return new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, PhoneNumberList.DefaultFacetKey);
+            return new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, PhoneNumberList.DefaultFacetKey, C.FacetKeys.Gigya);
         }
 
         private Contact CreateContact()
@@ -117,7 +118,7 @@ namespace Sitecore.Gigya.Connector.Providers
         //public IContactCommunicationProfile CommunicationProfile => GetFacet<IContactCommunicationProfile>(C.FacetKeys.CommunicationProfile);
         public PhoneNumberList PhoneNumbers => GetFacet<PhoneNumberList>(PhoneNumberList.DefaultFacetKey);
         public ConsentInformation ConsentInformation => GetFacet<ConsentInformation>(ConsentInformation.DefaultFacetKey);
-        //public IGigyaFacet Gigya => GetFacet<IGigyaFacet>(C.FacetKeys.Gigya);
+        public GigyaFacet Gigya => GetCustomFacet<GigyaFacet>(C.FacetKeys.Gigya);
 
         public Contact Flush()
         {
@@ -127,6 +128,21 @@ namespace Sitecore.Gigya.Connector.Providers
             }
             _client.Submit();
             return Contact;
+        }
+
+        protected virtual T GetCustomFacet<T>(string facetName) where T : Facet
+        {
+            var xConnectFacet = A.Tracker.Current.Contact.GetFacet<A.XConnect.Facets.IXConnectFacets>("XConnectFacets");
+            if (xConnectFacet == null)
+            {
+                return null;
+            }
+
+            if (xConnectFacet.Facets.TryGetValue(facetName, out Facet facet))
+            {
+                return facet as T;
+            }
+            return null;
         }
 
         protected virtual T GetFacet<T>(string facetName) where T : Facet

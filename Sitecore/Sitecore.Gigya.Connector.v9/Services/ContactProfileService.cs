@@ -36,24 +36,32 @@ namespace Sitecore.Gigya.Connector.Services
 
         public Task UpdateFacetsAsync(dynamic gigyaModel, MappingFieldGroup mapping)
         {
-            new PersonalFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PersonalInfoMapping);
-            new AddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.AddressesMapping);
-            new PhoneNumbersFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PhoneNumbersMapping);
-            new EmailAddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.EmailAddressesMapping);
-            //new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
-
-            // legacy facets in session aren't updated using xconnect...so we have to do it twice...convenient
-            UpdateLegacyFacets(gigyaModel, mapping);
-
-            // add a pipeline here for custom facets
-            var args = new FacetsUpdatedPipelineArgs
+            try
             {
-                GigyaModel = gigyaModel,
-                Mappings = mapping
-            };
-            CorePipeline.Run("gigya.module.facetsAllUpdated", args, false);
+                new PersonalFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PersonalInfoMapping);
+                new AddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.AddressesMapping);
+                new PhoneNumbersFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PhoneNumbersMapping);
+                new EmailAddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.EmailAddressesMapping);
+                new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
 
-            ContactProfileProvider.Flush();
+                // legacy facets in session aren't updated using xconnect...so we have to do it twice...convenient
+                UpdateLegacyFacets(gigyaModel, mapping);
+
+                // add a pipeline here for custom facets
+                var args = new FacetsUpdatedPipelineArgs
+                {
+                    GigyaModel = gigyaModel,
+                    Mappings = mapping
+                };
+                CorePipeline.Run("gigya.module.facetsAllUpdated", args, false);
+
+                ContactProfileProvider.Flush();
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Unable to update facets.", e);
+            }
+
             return Task.CompletedTask;
         }
 

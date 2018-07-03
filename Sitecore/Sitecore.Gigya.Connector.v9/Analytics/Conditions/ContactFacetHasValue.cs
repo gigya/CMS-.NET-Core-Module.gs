@@ -1,9 +1,12 @@
 ﻿using Sitecore.Analytics;
+using Sitecore.Analytics.Model.Entities;
 using Sitecore.Analytics.Model.Framework;
 using Sitecore.Analytics.Tracking;
 using Sitecore.Data;
 using Sitecore.Diagnostics;
+using Sitecore.Gigya.Connector.Providers;
 using Sitecore.Gigya.Connector.Services;
+using Sitecore.Gigya.XConnect.Models;
 using Sitecore.Rules;
 using Sitecore.Rules.Conditions;
 using System;
@@ -11,11 +14,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
+using C = Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants;
+
 namespace Sitecore.Gigya.Connector.Analytics.Conditions
 {
     public class ContactFacetHasValueCondition<T> : OperatorCondition<T> where T : RuleContext
     {
-        private static readonly ID _facetNameId = new ID(Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants.FacetKeys.FacetNamesId);
+        private static readonly ID _facetNameId = new ID(C.FacetKeys.FacetNamesId);
 
         public object FacetValue { get; set; }
 
@@ -61,95 +66,142 @@ namespace Sitecore.Gigya.Connector.Analytics.Conditions
                 return false;
             }
 
-            IFacet facet = contact.Facets[facetName];
-            if (facet == null)
-            {
-                Log.Info(string.Format("{0} : cannot find facet {1}", this.GetType(), facetName), this);
-                return false;
-            }
-
             var memberName = propertyQueue.Dequeue().ToString();
-            if (!facet.Members.Contains(memberName))
-            {
-                Log.Info(string.Format("{0} : cannot find facet {1}", this.GetType(), facetName), this);
-                return false;
-            }
-
-            var datalist = facet.Members[memberName];
-            if (datalist == null)
-            {
-                Log.Info(string.Format("{0} : cannot find facet {1}", this.GetType(), facetName), this);
-                return false;
-            }
 
             var conditionOperator = GetOperator();
             decimal? decimalRequiredValue = GetDecimalValue();
+            return HasFacetValue(facetName, memberName, decimalRequiredValue, conditionOperator);
 
-            if (typeof(IModelAttributeMember).IsInstanceOfType(datalist))
+            //return CompareFacetValue(propValue, decimalRequiredValue, conditionOperator);
+
+
+            //if (typeof(IModelAttributeMember).IsInstanceOfType(datalist))
+            //{
+            //    var propValue = ((IModelAttributeMember)datalist).Value;
+            //    return CompareFacetValue(propValue, decimalRequiredValue, conditionOperator);
+            //}
+            //if (typeof(IElementDictionary).IsInstanceOfType(datalist))
+            //{
+            //    var dictionaryMember = (IModelDictionaryMember)datalist;
+
+            //    string elementName = propertyQueue.Dequeue().ToString();
+            //    if (!dictionaryMember.Elements.Contains(elementName))
+            //    {
+            //        Log.Info(string.Format("{0} : cannot find element {1}", this.GetType(), elementName), this);
+            //        return false;
+            //    }
+
+            //    IElement element = dictionaryMember.Elements[elementName];
+            //    if (element == null)
+            //    {
+            //        Log.Info(string.Format("{0} : cannot find element {1}", this.GetType(), elementName), this);
+            //        return false;
+            //    }
+
+            //    string propertyToFind = propertyQueue.Dequeue().ToString();
+            //    if (!element.Members.Contains(propertyToFind))
+            //    {
+            //        Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
+            //        return false;
+            //    }
+
+            //    var prop = element.Members[propertyToFind];
+            //    if (prop == null)
+            //    {
+            //        Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
+            //        return false;
+            //    }
+
+            //    var propValue = ((IModelAttributeMember)prop).Value;
+            //    return CompareFacetValue(propValue, decimalRequiredValue, conditionOperator);
+            //}
+            //if (typeof(IModelCollectionMember).IsInstanceOfType(datalist))
+            //{
+            //    var collectionMember = (IModelCollectionMember)datalist;
+            //    var propertyToFind = propertyQueue.Dequeue().ToString();
+            //    for (int i = 0; i < collectionMember.Elements.Count; i++)
+            //    {
+            //        IElement element = collectionMember.Elements[i];
+            //        if (!element.Members.Contains(propertyToFind))
+            //        {
+            //            Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
+            //            return false;
+            //        }
+
+            //        var prop = element.Members[propertyToFind];
+            //        if (prop == null)
+            //        {
+            //            Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
+            //            return false;
+            //        }
+            //        var propValue = ((IModelAttributeMember)prop).Value;
+            //        if (CompareFacetValue(propValue, decimalRequiredValue, conditionOperator))
+            //        {
+            //            return true;
+            //        }
+            //    }
+            //}
+
+            //return false;
+        }
+
+        private bool HasFacetValue(string facetName, string memberName, decimal? requiredValue, ConditionOperator conditionOperator)
+        {
+            var legacyProvider = new LegacyContactProfileProvider();
+            var provider = new ContactProfileProvider();
+
+            switch (facetName)
             {
-                var propValue = ((IModelAttributeMember)datalist).Value;
-                return CompareFacetValue(propValue, decimalRequiredValue, conditionOperator);
-            }
-            if (typeof(IModelDictionaryMember).IsInstanceOfType(datalist))
-            {
-                var dictionaryMember = (IModelDictionaryMember)datalist;
-
-                string elementName = propertyQueue.Dequeue().ToString();
-                if (!dictionaryMember.Elements.Contains(elementName))
-                {
-                    Log.Info(string.Format("{0} : cannot find element {1}", this.GetType(), elementName), this);
-                    return false;
-                }
-
-                IElement element = dictionaryMember.Elements[elementName];
-                if (element == null)
-                {
-                    Log.Info(string.Format("{0} : cannot find element {1}", this.GetType(), elementName), this);
-                    return false;
-                }
-
-                string propertyToFind = propertyQueue.Dequeue().ToString();
-                if (!element.Members.Contains(propertyToFind))
-                {
-                    Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
-                    return false;
-                }
-
-                var prop = element.Members[propertyToFind];
-                if (prop == null)
-                {
-                    Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
-                    return false;
-                }
-
-                var propValue = ((IModelAttributeMember)prop).Value;
-                return CompareFacetValue(propValue, decimalRequiredValue, conditionOperator);
-            }
-            if (typeof(IModelCollectionMember).IsInstanceOfType(datalist))
-            {
-                var collectionMember = (IModelCollectionMember)datalist;
-                var propertyToFind = propertyQueue.Dequeue().ToString();
-                for (int i = 0; i < collectionMember.Elements.Count; i++)
-                {
-                    IElement element = collectionMember.Elements[i];
-                    if (!element.Members.Contains(propertyToFind))
+                case C.FacetKeys.Personal:
                     {
-                        Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
-                        return false;
-                    }
+                        var facet = provider.PersonalInfo;
+                        if (facet == null)
+                        {
+                            return false;
+                        }
 
-                    var prop = element.Members[propertyToFind];
-                    if (prop == null)
-                    {
-                        Log.Info(string.Format("{0} : cannot find property {1}", this.GetType(), propertyToFind), this);
-                        return false;
+                        switch (memberName)
+                        {
+                            case nameof(IContactPersonalInfo.FirstName):
+                                return CompareFacetValue(facet.FirstName, requiredValue, conditionOperator);
+                        }
                     }
-                    var propValue = ((IModelAttributeMember)prop).Value;
-                    if (CompareFacetValue(propValue, decimalRequiredValue, conditionOperator))
+                    break;
+                case C.FacetKeys.Addresses:
                     {
-                        return true;
+                        var facet = legacyProvider.Addresses;
+                        if (facet == null)
+                        {
+                            return false;
+                        }
+
+                        foreach (var key in facet.Entries.Keys)
+                        {
+                            var address = facet.Entries[key];
+
+                            // test.....
+                            if (CompareFacetValue(address.PostalCode, requiredValue, conditionOperator))
+                            {
+                                return true;
+                            }
+                        }
                     }
-                }
+                    break;
+                case C.FacetKeys.Gigya:
+                    {
+                        var facet = provider.Gigya;
+                        if (facet == null)
+                        {
+                            return false;
+                        }
+
+                        if (!facet.Entries.TryGetValue(memberName, out GigyaElement gigyaElement))
+                        {
+                            return false;
+                        }
+
+                        return CompareFacetValue(gigyaElement.Value, requiredValue, conditionOperator);
+                    }
             }
 
             return false;

@@ -32,10 +32,7 @@ namespace Sitecore.Gigya.Connector.Services.FacetMappers
                 facet.ConsentRevoked = DynamicUtils.GetValue<bool>(gigyaModel, mapping.ConsentRevoked);
                 facet.DoNotMarket = DynamicUtils.GetValue<bool>(gigyaModel, mapping.DoNotMarket);
 
-                if (!exists)
-                {
-                    _contactProfileProvider.SetFacet(facet, PersonalInformation.DefaultFacetKey);
-                }
+                _contactProfileProvider.SetFacet(facet, ConsentInformation.DefaultFacetKey);
             }
             catch (FacetNotAvailableException ex)
             {

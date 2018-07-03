@@ -20,6 +20,7 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics
             public const string Emails = "Emails";
             public const string Preferences = "Preferences";
             public const string Picture = "Picture";
+            public const string XConnectFacets = "XConnectFacets";
 
             public const string FacetNamesId = "{8E338058-242A-4B4D-A4E6-577F955354DE}";
             public const string GigyaFacetId = "{485BEA81-3F63-4494-8FD1-DFABF15626F3}";

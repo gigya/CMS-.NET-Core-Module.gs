@@ -33,6 +33,9 @@
     <Reference Include="Sitecore.XConnect, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.XConnect.NoReferences.9.0.171002\lib\NET462\Sitecore.XConnect.dll</HintPath>
     </Reference>
+    <Reference Include="Sitecore.XConnect.Collection.Model, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.XConnect.Collection.Model.NoReferences.9.0.171002\lib\NET462\Sitecore.XConnect.Collection.Model.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GigyaPiiFacet.cs" />
     <Compile Include="GigyaFacet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
