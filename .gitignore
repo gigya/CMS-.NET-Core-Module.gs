@@ -182,3 +182,5 @@
 /Sitecore/Sitecore.Gigya.Connector.v8/bin
 /Sitecore/Sitecore.Gigya.Connector.v8/obj
 /Sitecore/Sitecore.Gigya.Testing/bin
+/Sitecore/Sitecore.Gigya.Migration/bin/Debug
+/Sitecore/Sitecore.Gigya.Migration/obj/Debug
