@@ -15,6 +15,7 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics.Models
         public CommunicationProfileMapping CommunicationProfileMapping { get; set; }
         public PreferencesMapping CommunicationPreferencesMapping { get; set; }
         public GigyaFieldsMapping GigyaFieldsMapping { get; set; }
+        public GigyaFieldsMapping GigyaPiiFieldsMapping { get; set; }
     }
 
     public abstract class MappingBase

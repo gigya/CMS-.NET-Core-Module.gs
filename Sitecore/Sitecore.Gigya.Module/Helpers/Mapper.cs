@@ -78,9 +78,12 @@ namespace Sitecore.Gigya.Module.Helpers
                     case Constants.Templates.IdValues.GigyaCustomXdbFacetFolder:
                         facet.GigyaFieldsMapping = MapGigyaFields(child);
                         break;
-                    //case Constants.Templates.IdValues.Consent:
-                    //    facet.GigyaFieldsMapping = MapGigyaFields(child);
-                    //    break;
+                    case Constants.Templates.IdValues.GigyaPiiCustomXdbFacetFolder:
+                        facet.GigyaPiiFieldsMapping = MapGigyaFields(child);
+                        break;
+                        //case Constants.Templates.IdValues.Consent:
+                        //    facet.GigyaFieldsMapping = MapGigyaFields(child);
+                        //    break;
                 }
             }
 

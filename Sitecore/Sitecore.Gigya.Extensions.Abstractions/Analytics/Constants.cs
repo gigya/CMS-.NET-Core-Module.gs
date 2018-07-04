@@ -13,6 +13,7 @@ namespace Sitecore.Gigya.Extensions.Abstractions.Analytics
         public class FacetKeys
         {
             public const string Gigya = "Gigya";
+            public const string GigyaPii = "GigyaPii";
             public const string Personal = "Personal";
             public const string Addresses = "Addresses";
             public const string PhoneNumbers = "Phone Numbers";

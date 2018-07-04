@@ -43,6 +43,7 @@ namespace Sitecore.Gigya.Connector.Services
                 new PhoneNumbersFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.PhoneNumbersMapping);
                 new EmailAddressFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.EmailAddressesMapping);
                 new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
+                new GigyaPiiFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaPiiFieldsMapping);
 
                 // legacy facets in session aren't updated using xconnect...so we have to do it twice...convenient
                 UpdateLegacyFacets(gigyaModel, mapping);
@@ -73,7 +74,6 @@ namespace Sitecore.Gigya.Connector.Services
             new LFM.EmailAddressFacetMapper(LegacyContactProfileProvider, _logger).Update(gigyaModel, mapping.EmailAddressesMapping);
             new LFM.CommunicationProfileFacetMapper(LegacyContactProfileProvider, _logger).Update(gigyaModel, mapping.CommunicationProfileMapping);
             new LFM.PreferencesFacetMapper(LegacyContactProfileProvider, _logger).Update(gigyaModel, mapping.CommunicationPreferencesMapping);
-            //new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Sitecore.Gigya.Connector.Services.FacetMappers
             }
             catch (FacetNotAvailableException ex)
             {
-                _logger.Warn("The 'Personal' facet is not available.", ex);
+                _logger.Warn("The 'Consent' facet is not available.", ex);
             }
         }
     }

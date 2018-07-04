@@ -7,33 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using A = Sitecore.Gigya.Extensions.Abstractions.Analytics;
+
 namespace Sitecore.Gigya.XConnect.Models
 {
     [FacetKey(DefaultFacetKey)]
     [Serializable]
-    public class GigyaFacet : Facet
+    public class GigyaFacet : GigyaXConnectFacet
     {
-        public const string DefaultFacetKey = "Gigya";
-
-        public Dictionary<string, GigyaElement> Entries { get; set; }
-    }
-
-    [Serializable]
-    public class GigyaElement
-    {
-        public string Value { get; set; }
-    }
-
-    public class GigyaModel
-    {
-        public static XdbModel Model { get; } = BuildModel();
-
-        private static XdbModel BuildModel()
-        {
-            var builder = new XdbModelBuilder("GigyaModel", new XdbModelVersion(1, 0));
-            builder.ReferenceModel(CollectionModel.Model);
-            builder.DefineFacet<Contact, GigyaFacet>(GigyaFacet.DefaultFacetKey);
-            return builder.BuildModel();
-        }
+        public const string DefaultFacetKey = A.Constants.FacetKeys.Gigya;
     }
 }

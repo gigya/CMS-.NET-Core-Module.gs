@@ -15,6 +15,7 @@ namespace Sitecore.Gigya.Connector.Providers
         Contact Contact { get; }
         EmailAddressList Emails { get; }
         GigyaFacet Gigya { get; }
+        GigyaPiiFacet GigyaPii { get; }
         PersonalInformation PersonalInfo { get; }
         PhoneNumberList PhoneNumbers { get; }
         ConsentInformation ConsentInformation { get; }

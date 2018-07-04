@@ -52,6 +52,7 @@ namespace Sitecore.Gigya.Module
             public class IdValues
             {
                 public const string GigyaCustomXdbFacetFolder = "{5505EBBB-4594-4B5E-97DC-7476A8869524}";
+                public const string GigyaPiiCustomXdbFacetFolder = "{FFEAB9BC-5E68-4D81-B24A-6CF5F5B215E2}";
             }
 
             public static readonly ID GigyaSettings = new ID("{CB5000AC-098F-420E-B973-D6AD423F2DAE}");

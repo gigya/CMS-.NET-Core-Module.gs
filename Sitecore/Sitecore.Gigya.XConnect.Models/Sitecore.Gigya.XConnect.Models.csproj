@@ -48,10 +48,17 @@
   <ItemGroup>
     <Compile Include="GigyaPiiFacet.cs" />
     <Compile Include="GigyaFacet.cs" />
+    <Compile Include="GigyaXConnectFacet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Sitecore.Gigya.Extensions.Abstractions\Sitecore.Gigya.Extensions.Abstractions.csproj">
+      <Project>{8eeeb107-3691-4259-b39a-9f1820cba5cb}</Project>
+      <Name>Sitecore.Gigya.Extensions.Abstractions</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

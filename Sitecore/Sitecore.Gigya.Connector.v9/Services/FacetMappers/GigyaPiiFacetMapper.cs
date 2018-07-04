@@ -14,22 +14,22 @@ using C = Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants;
 
 namespace Sitecore.Gigya.Connector.Services.FacetMappers
 {
-    public class GigyaFacetMapper : GigyaFacetMapperBase<GigyaFacet>
+    public class GigyaPiiFacetMapper : GigyaFacetMapperBase<GigyaPiiFacet>
     {
-        public GigyaFacetMapper(IContactProfileProvider contactProfileProvider, Logger logger) : base(contactProfileProvider, logger)
+        public GigyaPiiFacetMapper(IContactProfileProvider contactProfileProvider, Logger logger) : base(contactProfileProvider, logger)
         {
         }
 
-        protected override string FacetKey => C.FacetKeys.Gigya;
+        protected override string FacetKey => C.FacetKeys.GigyaPii;
 
-        protected override void SetFacet(GigyaFacet facet)
+        protected override void SetFacet(GigyaPiiFacet facet)
         {
             _contactProfileProvider.SetFacet(facet, FacetKey);
         }
 
-        protected override GigyaFacet GetOrCreateFacet()
+        protected override GigyaPiiFacet GetOrCreateFacet()
         {
-            return _contactProfileProvider.Gigya ?? new GigyaFacet { Entries = new Dictionary<string, GigyaElement>() };
+            return _contactProfileProvider.GigyaPii ?? new GigyaPiiFacet { Entries = new Dictionary<string, GigyaElement>() };
         }
     }
 }

@@ -21,13 +21,12 @@ namespace Sitecore.Gigya.Connector.Providers
 {
     public class ContactProfileProvider : IContactProfileProvider
     {
-        private XConnectClient _client;
+        private Lazy<XConnectClient> _client = new Lazy<XConnectClient>(() => SitecoreXConnectClientConfiguration.GetClient());
         private Contact _contact;
         //private Logger _logger = 
 
         public ContactProfileProvider()
         {
-            _client = SitecoreXConnectClientConfiguration.GetClient();
         }
 
         public Contact Contact
@@ -70,13 +69,14 @@ namespace Sitecore.Gigya.Connector.Providers
 
             var contactIdentifier = new IdentifiedContactReference(identifier.Source, identifier.Identifier);
             var expandOptions = ExpandOptions();
-            var contact = _client.Get(contactIdentifier, expandOptions);
+            var contact = _client.Value.Get(contactIdentifier, expandOptions);
             return contact;
         }
 
         private static ContactExpandOptions ExpandOptions()
         {
-            return new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, PhoneNumberList.DefaultFacetKey, C.FacetKeys.Gigya);
+            return new ContactExpandOptions(PersonalInformation.DefaultFacetKey, EmailAddressList.DefaultFacetKey, AddressList.DefaultFacetKey, 
+                PhoneNumberList.DefaultFacetKey, C.FacetKeys.Gigya, C.FacetKeys.GigyaPii);
         }
 
         private Contact CreateContact()
@@ -98,7 +98,7 @@ namespace Sitecore.Gigya.Connector.Providers
             try
             {
                 var expandOptions = ExpandOptions();
-                var contact = _client.Get(trackerIdentifier, expandOptions);
+                var contact = _client.Value.Get(trackerIdentifier, expandOptions);
                 return contact;
             }
             catch (Exception ex)
@@ -110,15 +110,13 @@ namespace Sitecore.Gigya.Connector.Providers
             return null;
         }
 
-        //public IContactPicture Picture => GetFacet<IContactPicture>(C.FacetKeys.Picture);
-        //public IContactPreferences Preferences => GetFacet<IContactPreferences>(C.FacetKeys.Preferences);
         public PersonalInformation PersonalInfo => GetFacet<PersonalInformation>(PersonalInformation.DefaultFacetKey);
         public AddressList Addresses => GetFacet<AddressList>(AddressList.DefaultFacetKey);
         public EmailAddressList Emails => GetFacet<EmailAddressList>(EmailAddressList.DefaultFacetKey);
-        //public IContactCommunicationProfile CommunicationProfile => GetFacet<IContactCommunicationProfile>(C.FacetKeys.CommunicationProfile);
         public PhoneNumberList PhoneNumbers => GetFacet<PhoneNumberList>(PhoneNumberList.DefaultFacetKey);
         public ConsentInformation ConsentInformation => GetFacet<ConsentInformation>(ConsentInformation.DefaultFacetKey);
         public GigyaFacet Gigya => GetCustomFacet<GigyaFacet>(C.FacetKeys.Gigya);
+        public GigyaPiiFacet GigyaPii => GetCustomFacet<GigyaPiiFacet>(C.FacetKeys.GigyaPii);
 
         public Contact Flush()
         {
@@ -126,14 +124,14 @@ namespace Sitecore.Gigya.Connector.Providers
             {
                 return null;
             }
-            _client.Submit();
+            _client.Value.Submit();
             return Contact;
         }
 
         protected virtual T GetCustomFacet<T>(string facetName) where T : Facet
         {
             var xConnectFacet = A.Tracker.Current.Contact.GetFacet<A.XConnect.Facets.IXConnectFacets>("XConnectFacets");
-            if (xConnectFacet == null)
+            if (xConnectFacet == null || xConnectFacet.Facets == null)
             {
                 return null;
             }
@@ -157,7 +155,7 @@ namespace Sitecore.Gigya.Connector.Providers
                 return;
             }
 
-            _client.SetFacet<T>(Contact, facetName, facet);
+            _client.Value.SetFacet<T>(Contact, facetName, facet);
         }
     }
 }

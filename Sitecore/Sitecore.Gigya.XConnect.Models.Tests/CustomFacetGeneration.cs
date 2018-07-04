@@ -8,10 +8,10 @@ namespace Sitecore.Gigya.XConnect.Models.Tests
     public class CustomFacetGeneration
     {
         [TestMethod]
-        public void GenerateJson()
+        public void GenerateGigyaFacetBaseJson()
         {
-            var model = Sitecore.XConnect.Serialization.XdbModelWriter.Serialize(GigyaModel.Model);
-            var path = Path.Combine("C:\\Temp", GigyaModel.Model.FullName + ".json");
+            var model = Sitecore.XConnect.Serialization.XdbModelWriter.Serialize(GigyaXConnectFacetModel.Model);
+            var path = Path.Combine("C:\\Temp\\Sitecore.Gigya.XConnect.Models.GigyaXConnectFacetModel, 1.0.json");
             File.WriteAllText(path, model);
         }
     }
