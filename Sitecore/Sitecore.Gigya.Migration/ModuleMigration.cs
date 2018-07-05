@@ -89,6 +89,9 @@ namespace Sitecore.Gigya.Migration
                 _response.Messages.AppendLine();
                 _response.Messages.AppendLine("Migration completed successfully. Updated Sitecore items will need to be published.");
                 _response.Messages.AppendLine("Please review the user profile field types in the core db at /sitecore/templates/System/Security/User.");
+
+                _response.Messages.AppendLine();
+                _response.Messages.AppendLine("IMPORTANT - Comment out all profile properties (system.web/profile/properties) in web.config except \"SC_UserData\".");
             }
             catch (Exception e)
             {
