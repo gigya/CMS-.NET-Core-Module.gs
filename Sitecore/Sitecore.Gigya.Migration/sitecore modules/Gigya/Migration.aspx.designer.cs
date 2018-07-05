@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Sitecore.Gigya.Module.sitecore_modules.Gigya {
+namespace Sitecore.Gigya.Migration.sitecore_modules.Gigya {
     
     
     public partial class Migration {
@@ -20,6 +20,15 @@ namespace Sitecore.Gigya.Module.sitecore_modules.Gigya {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
+        
+        /// <summary>
+        /// Database control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox Database;
         
         /// <summary>
         /// Messages control.

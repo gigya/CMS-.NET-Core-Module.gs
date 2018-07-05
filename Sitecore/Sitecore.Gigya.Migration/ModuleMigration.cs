@@ -3,6 +3,7 @@ using Sitecore.Configuration;
 using Sitecore.Data;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.Gigya.Module.Encryption;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -15,9 +16,22 @@ namespace Sitecore.Gigya.Migration
 {
     public class ModuleMigration
     {
+        private Database _database;
+
+        public ModuleMigration(string database = "master")
+        {
+            _database = Sitecore.Configuration.Factory.GetDatabase(database);
+        }
+
         public ModuleMigrationModel DoIt()
         {
             var response = new ModuleMigrationModel();
+
+            if (_database == null)
+            {
+                response.Messages.AppendLine("Couldn't access content database");
+                return response;
+            }
 
             try
             {
@@ -52,18 +66,21 @@ namespace Sitecore.Gigya.Migration
                     var apiKey = GigyaSettings.APIKeyCollection[siteName];
                     if (!string.IsNullOrEmpty(apiKey))
                     {
-                        var siteRoot = Context.Database.GetItem(site.RootPath +  site.StartItem);
+                        var siteRoot = _database.GetItem(site.RootPath +  site.StartItem);
                         var settings = siteRoot.Children.FirstOrDefault(i => i.TemplateID == Constants.Ids.GigyaSettings) ?? globalSettings.CopyTo(siteRoot, "Gigya Settings", ID.NewID, false);
 
                         MapSettings(settings, dataCenter);
 
                         settings.Editing.BeginEdit();
-                        ((MultilistField)settings.Fields[Constants.Fields.Parent]).Add(globalSettings.ID.ToString());
+                        var settingsParent = ((MultilistField)settings.Fields[Constants.Fields.Parent]);
+                        settingsParent.Value = string.Empty;
+                        settingsParent.Add(globalSettings.ID.ToString());
                         settings.Editing.EndEdit();
                     }
                 }
 
                 response.Success = true;
+                response.Messages.AppendLine("Migration completed successfully. Updated Sitecore items will need to be published.");
             }
             catch (Exception e)
             {
@@ -75,7 +92,7 @@ namespace Sitecore.Gigya.Migration
 
         private void MapXdbPersonalFacet(ref ModuleMigrationModel response)
         {
-            var xDbPersonalMapping = Context.Database.GetItem(Constants.Ids.xDbPersonalMapping);
+            var xDbPersonalMapping = _database.GetItem(Constants.Ids.xDbPersonalMapping);
             if (xDbPersonalMapping == null)
             {
                 response.Messages.AppendLine("Couldn't find personal facet settings");
@@ -93,7 +110,7 @@ namespace Sitecore.Gigya.Migration
 
         private string GetDataCenter()
         {
-            var dataCenterFolder = Context.Database.GetItem(Constants.Ids.DataCenterFolder);
+            var dataCenterFolder = _database.GetItem(Constants.Ids.DataCenterFolder);
             if (dataCenterFolder == null)
             {
                 return null;
@@ -109,7 +126,10 @@ namespace Sitecore.Gigya.Migration
 
             globalSettings.Fields[Constants.Fields.ApiKey].Value = GigyaSettings.APIKeyCollection["default"];
             globalSettings.Fields[Constants.Fields.ApplicationKey].Value = GigyaSettings.GetGigyaApplicationUserKeyForSite();
-            globalSettings.Fields[Constants.Fields.ApplicationSecret].Value = GigyaSettings.GetGigyaApplicationSecretKeyForSite();
+
+            var encrypted = SitecoreEncryptionService.Instance.Encrypt(GigyaSettings.GetGigyaApplicationSecretKeyForSite());
+            globalSettings.Fields[Constants.Fields.ApplicationSecret].Value = string.Concat(Module.Constants.EncryptionPrefix, encrypted);
+
             if (!string.IsNullOrEmpty(dataCenter))
             {
                 globalSettings.Fields[Constants.Fields.DataCenter].Value = dataCenter;
@@ -126,7 +146,7 @@ namespace Sitecore.Gigya.Migration
 
         private void MapMembershipFields(ref ModuleMigrationModel response)
         {
-            var mappingFolder = Context.Database.GetItem(Constants.Ids.MembershipMapping);
+            var mappingFolder = _database.GetItem(Constants.Ids.MembershipMapping);
             if (mappingFolder == null)
             {
                 response.Messages.AppendLine("Couldn't find membership settings");
@@ -173,7 +193,7 @@ namespace Sitecore.Gigya.Migration
 
         private string GetEnabledProviders()
         {
-            Item providerSettingsItem = Context.Database.GetItem(Constants.Ids.ShareProviderSettingsItemId);
+            Item providerSettingsItem = _database.GetItem(Constants.Ids.ShareProviderSettingsItemId);
             if (providerSettingsItem == null)
             {
                 return string.Empty;
@@ -183,7 +203,7 @@ namespace Sitecore.Gigya.Migration
 
         private Item GetGlobalSettings()
         {
-            var globalSettings = Context.Database.GetItem(Constants.Ids.GlobalSettings);
+            var globalSettings = _database.GetItem(Constants.Ids.GlobalSettings);
             if (globalSettings != null)
             {
                 return globalSettings;

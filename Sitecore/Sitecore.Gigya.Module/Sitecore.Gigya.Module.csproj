@@ -123,7 +123,6 @@
     <Content Include="Scripts\Gigya\jQuery-Autocomplete\jquery.autocomplete.min.js" />
     <Content Include="Scripts\Gigya\jQuery-Autocomplete\license.txt" />
     <Content Include="sitecore modules\Gigya\css\gigya-content-editor.css" />
-    <Content Include="sitecore modules\Gigya\Migration.aspx" />
     <Content Include="Views\Gigya\SampleMvcLayout.cshtml" />
     <None Include="Properties\PublishProfiles\Dev81.pubxml" />
     <None Include="Properties\PublishProfiles\Dev9.pubxml" />
@@ -189,13 +188,6 @@
     <Compile Include="Repositories\AccountRepository.cs" />
     <Compile Include="Repositories\IAccountRepository.cs" />
     <Compile Include="Repositories\RenderingPropertiesRepository.cs" />
-    <Compile Include="sitecore modules\Gigya\Migration.aspx.cs">
-      <DependentUpon>Migration.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="sitecore modules\Gigya\Migration.aspx.designer.cs">
-      <DependentUpon>Migration.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\Gigya\gigya-cms.js" />
@@ -228,10 +220,6 @@
     <ProjectReference Include="..\Sitecore.Gigya.Extensions.Abstractions\Sitecore.Gigya.Extensions.Abstractions.csproj">
       <Project>{8EEEB107-3691-4259-B39A-9F1820CBA5CB}</Project>
       <Name>Sitecore.Gigya.Extensions.Abstractions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Sitecore.Gigya.Migration\Sitecore.Gigya.Migration.csproj">
-      <Project>{40b71961-33f3-4bf3-80eb-c9362f569974}</Project>
-      <Name>Sitecore.Gigya.Migration</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

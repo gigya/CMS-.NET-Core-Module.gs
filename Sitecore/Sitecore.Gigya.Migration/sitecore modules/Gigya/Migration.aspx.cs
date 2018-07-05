@@ -6,7 +6,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace Sitecore.Gigya.Module.sitecore_modules.Gigya
+namespace Sitecore.Gigya.Migration.sitecore_modules.Gigya
 {
     public partial class Migration : System.Web.UI.Page
     {
@@ -20,7 +20,7 @@ namespace Sitecore.Gigya.Module.sitecore_modules.Gigya
 
         protected void Migrate_Click(object sender, EventArgs e)
         {
-            var migrator = new ModuleMigration();
+            var migrator = new ModuleMigration(this.Database.Text);
             var response = migrator.DoIt();
 
             Messages.Text = response.Messages.ToString();

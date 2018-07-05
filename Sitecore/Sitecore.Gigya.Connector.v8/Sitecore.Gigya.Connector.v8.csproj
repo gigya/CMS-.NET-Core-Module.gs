@@ -106,7 +106,7 @@
   <ItemGroup>
     <Content Include="App_Config\Include\Gigya\Gigya.Module.Connector.config" />
     <None Include="packages.config" />
-    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\Dev.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
