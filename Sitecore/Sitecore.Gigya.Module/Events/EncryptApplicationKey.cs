@@ -63,7 +63,7 @@ namespace Sitecore.Gigya.Module.Events
 
             try
             {
-                var encrypted = SitecoreEncryptionService.Instance.Encrypt(secretKey);
+                var encrypted = SitecoreEncryptionService.Instance.Encrypt(secretKey.Trim());
                 updatedItem.Fields[Constants.Fields.ApplicationSecret].Value = string.Concat(Constants.EncryptionPrefix, encrypted);
             }
             finally
