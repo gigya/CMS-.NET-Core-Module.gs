@@ -18,6 +18,8 @@ namespace Sitecore.Gigya.Migration
             public static readonly ID MappingFieldTemplate = new ID("{A8ECE2D3-757C-4A0E-A184-DFAFC194C973}");
             public static readonly ID DataCenterFolder = new ID("{7D2827F8-A73F-49D7-94C7-3187F90E9625}");
             public static readonly ID GigyaSettings = new ID("{CB5000AC-098F-420E-B973-D6AD423F2DAE}");
+            public static readonly ID UserTemplateId = new ID("{642C9A7E-EE31-4979-86F0-39F338C10AFB}");
+            public static readonly ID TemplateField = new ID("{455A3E98-A627-4B40-8035-E683A0331AC7}");
         }
 
         public class Fields

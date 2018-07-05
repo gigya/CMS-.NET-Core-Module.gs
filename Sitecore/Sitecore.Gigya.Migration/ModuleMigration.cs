@@ -17,6 +17,7 @@ namespace Sitecore.Gigya.Migration
     public class ModuleMigration
     {
         private Database _database;
+        private ModuleMigrationModel _response;
 
         public ModuleMigration(string database = "master")
         {
@@ -25,12 +26,12 @@ namespace Sitecore.Gigya.Migration
 
         public ModuleMigrationModel DoIt()
         {
-            var response = new ModuleMigrationModel();
+            _response = new ModuleMigrationModel();
 
             if (_database == null)
             {
-                response.Messages.AppendLine("Couldn't access content database");
-                return response;
+                _response.Messages.AppendLine("Couldn't access content database");
+                return _response;
             }
 
             try
@@ -38,20 +39,25 @@ namespace Sitecore.Gigya.Migration
                 var globalSettings = GetGlobalSettings();
                 if (globalSettings == null)
                 {
-                    response.Messages.AppendLine("Couldn't find global settings item in Sitecore.");
-                    return response;
+                    _response.Messages.AppendLine("Couldn't find global settings item in Sitecore.");
+                    return _response;
                 }
 
                 var dataCenter = GetDataCenter();
                 MapSettings(globalSettings, dataCenter);
-                response.Messages.AppendLine("Migrated global settings");
+                _response.Messages.AppendLine("Migrated global settings");
 
-                MapXdbPersonalFacet(ref response);
+                MapXdbPersonalFacet();
                 // create gigya facet mappings for d_terms, d_subscribe ????
 
-                MapMembershipFields(ref response);
+                var coreDb = Factory.GetDatabase("core");
+                var userTemplate = coreDb.GetItem(Constants.Ids.UserTemplateId);
+                if (userTemplate == null)
+                {
+                    _response.Messages.AppendLine(string.Format("Couldn't find user template with id of {0} so didn't add any fields to the default user template.", Constants.Ids.UserTemplateId));
+                }
 
-                // create profile fields?
+                MapMembershipFields(userTemplate);
 
                 // create settings for each site that has a dif application key
                 var siteInfoList = Factory.GetSiteInfoList();
@@ -79,23 +85,25 @@ namespace Sitecore.Gigya.Migration
                     }
                 }
 
-                response.Success = true;
-                response.Messages.AppendLine("Migration completed successfully. Updated Sitecore items will need to be published.");
+                _response.Success = true;
+                _response.Messages.AppendLine();
+                _response.Messages.AppendLine("Migration completed successfully. Updated Sitecore items will need to be published.");
+                _response.Messages.AppendLine("Please review the user profile field types in the core db at /sitecore/templates/System/Security/User.");
             }
             catch (Exception e)
             {
-                response.Messages.AppendLine(e.ToString());
+                _response.Messages.AppendLine(e.ToString());
             }
 
-            return response;
+            return _response;
         }
 
-        private void MapXdbPersonalFacet(ref ModuleMigrationModel response)
+        private void MapXdbPersonalFacet()
         {
             var xDbPersonalMapping = _database.GetItem(Constants.Ids.xDbPersonalMapping);
             if (xDbPersonalMapping == null)
             {
-                response.Messages.AppendLine("Couldn't find personal facet settings");
+                _response.Messages.AppendLine("Couldn't find personal facet settings");
                 return;
             }
 
@@ -105,7 +113,7 @@ namespace Sitecore.Gigya.Migration
             xDbPersonalMapping.Fields[Constants.Fields.PersonalFacet.Gender].Value = "profile.gender";
             xDbPersonalMapping.Editing.EndEdit();
 
-            response.Messages.AppendLine("Migrated personal facet settings");
+            _response.Messages.AppendLine("Migrated personal facet settings");
         }
 
         private string GetDataCenter()
@@ -144,12 +152,12 @@ namespace Sitecore.Gigya.Migration
             globalSettings.Editing.EndEdit();
         }
 
-        private void MapMembershipFields(ref ModuleMigrationModel response)
+        private void MapMembershipFields(Item userTemplate)
         {
             var mappingFolder = _database.GetItem(Constants.Ids.MembershipMapping);
             if (mappingFolder == null)
             {
-                response.Messages.AppendLine("Couldn't find membership settings");
+                _response.Messages.AppendLine("Couldn't find membership settings");
                 return;
             }
 
@@ -170,6 +178,7 @@ namespace Sitecore.Gigya.Migration
 
                         if (mappingFolder.Children.Any(i => i.Name == settings.Name))
                         {
+                            _response.Messages.AppendLine(string.Format("Membership mapping for {0} and profile.{1} already exists.", settings.Name, propertyName));
                             continue;
                         }
 
@@ -180,7 +189,29 @@ namespace Sitecore.Gigya.Migration
                         mapping.Fields[Constants.Fields.MappingFields.SitecoreProperty].Value = settings.Name;
                         mapping.Editing.EndEdit();
 
-                        response.Messages.AppendLine(string.Format("Created memebership mapping for {0} and {1}", settings.Name, propertyName));
+                        _response.Messages.AppendLine(string.Format("Created membership mapping for {0} and {1}", settings.Name, propertyName));
+
+                        if (userTemplate != null)
+                        {
+                            var templateSection = userTemplate.Children.FirstOrDefault(i => i.Name == "Data");
+                            if (templateSection == null)
+                            {
+                                continue;
+                            }
+
+                            if (templateSection.Children.Any(i => i.Name == settings.Name))
+                            {
+                                _response.Messages.AppendLine(string.Format("Profile field {0} already exists.", settings.Name));
+                                continue;
+                            }
+
+                            var newField = templateSection.Add(settings.Name, new TemplateID(Constants.Ids.TemplateField));
+                            newField.Editing.BeginEdit();
+                            newField.Fields["Type"].Value = "Single-Line Text";
+                            newField.Editing.EndEdit();
+
+                            _response.Messages.AppendLine(string.Format("Created profile field {0} with type of Single-Line Text.", settings.Name));
+                        }
                     }
                 }
             }

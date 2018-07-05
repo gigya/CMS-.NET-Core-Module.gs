@@ -15,7 +15,7 @@
             </div>
             <div class="form-group">
                 <asp:Label runat="server" AssociatedControlID="Messages">Log:</asp:Label>
-                <asp:TextBox runat="server" CssClass="form-control" TextMode="MultiLine" ID="Messages" ReadOnly="true" />
+                <asp:TextBox runat="server" CssClass="form-control" TextMode="MultiLine" Rows="10" ID="Messages" ReadOnly="true" />
             </div>
             <asp:Button runat="server" CssClass="btn btn-primary" ID="Migrate" Text="Migrate" OnClick="Migrate_Click" />
         </div>
