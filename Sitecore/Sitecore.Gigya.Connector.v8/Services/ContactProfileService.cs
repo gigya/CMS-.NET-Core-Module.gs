@@ -17,6 +17,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using Sitecore.Gigya.Extensions.Abstractions;
+using Sitecore.Gigya.Module.Models.Pipelines;
+using Sitecore.Pipelines;
 
 namespace Sitecore.Gigya.Connector.Services
 {
@@ -40,6 +42,14 @@ namespace Sitecore.Gigya.Connector.Services
             new CommunicationProfileFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.CommunicationProfileMapping);
             new PreferencesFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.CommunicationPreferencesMapping);
             new GigyaFacetMapper(ContactProfileProvider, _logger).Update(gigyaModel, mapping.GigyaFieldsMapping);
+
+            // add a pipeline here for custom facets
+            var args = new FacetsUpdatedPipelineArgs
+            {
+                GigyaModel = gigyaModel,
+                Mappings = mapping
+            };
+            CorePipeline.Run("gigya.module.facetsAllUpdated", args, false);
 
             ContactProfileProvider.Flush();
             return Task.CompletedTask;

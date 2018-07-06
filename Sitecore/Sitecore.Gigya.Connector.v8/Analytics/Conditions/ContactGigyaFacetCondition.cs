@@ -13,7 +13,7 @@ using System.Web;
 
 namespace Sitecore.Gigya.Connector.Analytics.Conditions
 {
-    public class ContactFacetHasValueCondition<T> : OperatorCondition<T> where T : RuleContext
+    public class ContactGigyaFacetCondition<T> : OperatorCondition<T> where T : RuleContext
     {
         private static readonly ID _facetNameId = new ID(Sitecore.Gigya.Extensions.Abstractions.Analytics.Constants.FacetKeys.FacetNamesId);
 
