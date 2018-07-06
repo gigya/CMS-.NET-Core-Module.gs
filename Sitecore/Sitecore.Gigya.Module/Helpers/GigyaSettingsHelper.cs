@@ -218,8 +218,7 @@ namespace Sitecore.Gigya.Module.Helpers
 
         private A.MappingFieldGroup ExtractXdbMappingFields(Item settings)
         {
-            var fieldTypeString = MappingFieldType.xDB.ToString();
-            var folder = settings.Children.FirstOrDefault(i => i.TemplateID == Constants.Templates.xDbMappingFieldFolder && i.Fields[Constants.Fields.MappingFieldFolder.Type].Value == fieldTypeString);
+            var folder = settings.Children.FirstOrDefault(i => i.TemplateID == Constants.Templates.xDbMappingFieldFolder);
             if (folder == null)
             {
                 return new A.MappingFieldGroup();

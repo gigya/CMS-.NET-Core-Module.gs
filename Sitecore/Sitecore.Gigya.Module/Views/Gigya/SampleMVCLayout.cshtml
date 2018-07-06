@@ -12,21 +12,23 @@
     }
 }
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title>@Html.Sitecore().Field("title", new { DisableWebEdit = true })</title>
-         @Html.Sitecore().VisitorIdentification() 
-        <link href="/default.css" rel="stylesheet" />
-        <style type="text/css">
-            body.gigya-cms-logging-in .gigya-loading-example {
-                position: fixed;
-                bottom: 10%;
-                left: 50%;
-                display: block !important;
-                transform: translate(-50%, -50%);
-            }
-        </style>
-    </head>
+<html>
+<head>
+    <title>@Html.Sitecore().Field("title", new { DisableWebEdit = true })</title>
+    @Html.Sitecore().VisitorIdentification()
+    <link href="/default.css" rel="stylesheet" />
+    <style type="text/css">
+        body.gigya-cms-logging-in .gigya-loading-example {
+            position: fixed;
+            bottom: 10%;
+            left: 50%;
+            display: block !important;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+
+    @Html.Sitecore().Rendering(Sitecore.Gigya.Module.Constants.Renderings.SettingsId)
+</head>
     <body>
         <div id="CenterColumn">
             <div id="InnerCenter">

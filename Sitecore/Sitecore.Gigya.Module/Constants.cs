@@ -41,6 +41,16 @@ namespace Sitecore.Gigya.Module
             public static readonly ID UserProperties = new ID("{1578C18A-C918-48EF-A496-4DCE4C5CD450}");
         }
 
+        public class Logging
+        {
+            public const string Name = "Gigya";
+        }
+
+        public class Renderings
+        {
+            public const string SettingsId = "{3191CD52-F042-43BD-B9B9-8279F6071FA2}";
+        }
+
         public class Paths
         {
             public const string ModulePath = "/sitecore/system/Modules/Gigya";

@@ -68,6 +68,9 @@
       <HintPath>..\..\packages\Sitecore.Kernel.NoReferences.8.1.151003\lib\NET45\Sitecore.Kernel.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Sitecore.Logging, Version=1.2.0.30715, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Sitecore.Logging.NoReferences.8.1.151003\lib\NET45\Sitecore.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="Sitecore.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Sitecore.Mvc.NoReferences.8.1.151003\lib\NET45\Sitecore.Mvc.dll</HintPath>
       <Private>False</Private>

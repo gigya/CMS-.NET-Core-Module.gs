@@ -1,4 +1,5 @@
 ﻿using Gigya.Module.Core.Connector.Logging;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,19 +12,21 @@ namespace Sitecore.Gigya.Module.Logging
 {
     public class SitecoreLogger : ICmsLogger
     {
+        private readonly Lazy<ILog> _logger = new Lazy<ILog>(() => SC.Diagnostics.LoggerFactory.GetLogger(Constants.Logging.Name));
+
         public void Write(string message, Exception exception, LogCategory category)
         {
             switch (category)
             {
                 case LogCategory.Debug:
-                    SC.Diagnostics.Log.Debug(message, this);
+                    _logger.Value.Debug(message);
                     return;
                 case LogCategory.Trace:
-                    SC.Diagnostics.Log.Info(message, this);
+                    _logger.Value.Info(message);
                     return;
                 case LogCategory.Error:
                 default:
-                    SC.Diagnostics.Log.Error(message, exception, this);
+                    _logger.Value.Error(message, exception);
                     return;
             }
         }
