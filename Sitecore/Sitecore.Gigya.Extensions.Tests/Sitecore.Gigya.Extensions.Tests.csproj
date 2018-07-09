@@ -219,6 +219,10 @@
       <Project>{9bc95c63-5c43-4bd5-b733-ca1ed5424a09}</Project>
       <Name>Sitecore.Gigya.Connector.v8</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Sitecore.Gigya.Module\Sitecore.Gigya.Module.csproj">
+      <Project>{79EFA8AF-E543-4AD4-B363-E327093468B8}</Project>
+      <Name>Sitecore.Gigya.Module</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sitecore.Gigya.Testing\Sitecore.Gigya.Testing.csproj">
       <Project>{7cc3d72b-4518-4b78-be48-630a263c0f5b}</Project>
       <Name>Sitecore.Gigya.Testing</Name>

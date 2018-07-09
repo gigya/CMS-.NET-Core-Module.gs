@@ -76,7 +76,7 @@ namespace Gigya.Module.Core.Connector.Helpers
             }
         }
 
-        private bool IsDynamicSessionExtensionRequired(HttpContext context, bool isLoggingIn)
+        private bool IsDynamicSessionExtensionRequired(HttpContext context, CurrentIdentity currentIdentity, bool isLoggingIn)
         {
             if (_settings.SessionProvider != Enums.GigyaSessionProvider.Gigya || _settings.GigyaSessionMode != Enums.GigyaSessionMode.Sliding)
             {
@@ -86,6 +86,12 @@ namespace Gigya.Module.Core.Connector.Helpers
             if (isLoggingIn)
             {
                 return true;
+            }
+
+            if (!currentIdentity.IsAuthenticated)
+            {
+                // not logging in and not authenticated so not required
+                return false;
             }
 
             var gigyaExpCookie = context.Request.Cookies["gltexp_" + _settings.ApiKey];
@@ -112,7 +118,7 @@ namespace Gigya.Module.Core.Connector.Helpers
         
         protected virtual void UpdateSessionExpirationCookie(HttpContext context, CurrentIdentity currentIdentity, bool isLoggingIn)
         {
-            if (!IsDynamicSessionExtensionRequired(context, isLoggingIn))
+            if (!IsDynamicSessionExtensionRequired(context, currentIdentity, isLoggingIn))
             {
                 return;
             }

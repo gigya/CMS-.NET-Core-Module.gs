@@ -19,6 +19,12 @@ namespace Sitecore.Gigya.Module.Pipelines
         {
             var accountRepository = new AccountRepository(new PipelineService());
             var currentUser = accountRepository.GetActiveUser();
+            if (!currentUser.IsAuthenticated)
+            {
+                // not logged in so don't need to extend session
+                return;
+            }
+
             if (currentUser.GetDomainName() == "sitecore")
             {
                 return;

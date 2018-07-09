@@ -1,6 +1,6 @@
 ﻿using System;
 using FluentAssertions;
-using Sitecore.Gigya.Extensions.Repositories;
+using Sitecore.Gigya.Module.Repositories;
 using Sitecore.Gigya.Testing.Attributes;
 using Sitecore.Mvc.Presentation;
 using Xunit;
