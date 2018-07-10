@@ -12,7 +12,6 @@ namespace Sitecore.Gigya.Module.Models
         public string ScreenSet { get; set; }
         public string StartScreen { get; set; }
         public string ContainerId { get; set; }
-        //public bool GenerateContainer { get; set; }
         public string GeneratedContainerId { get; set; }
     }
 

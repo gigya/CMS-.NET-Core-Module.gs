@@ -5,5 +5,6 @@
     public interface IRenderingPropertiesRepository
     {
         T Get<T>(Rendering rendering);
+        T Get<T>(string parameters);
     }
 }

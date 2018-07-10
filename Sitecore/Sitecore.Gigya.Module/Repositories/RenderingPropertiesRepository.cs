@@ -12,9 +12,14 @@
     {
         public T Get<T>(SC.Mvc.Presentation.Rendering rendering)
         {
-            var obj = ReflectionUtil.CreateObject(typeof(T));
             var currentContext = rendering;
             var parameters = currentContext?.Properties["Parameters"];
+            return Get<T>(parameters);
+        }
+
+        public T Get<T>(string parameters)
+        {
+            var obj = ReflectionUtil.CreateObject(typeof(T));
             if (parameters == null)
                 return (T)obj;
 

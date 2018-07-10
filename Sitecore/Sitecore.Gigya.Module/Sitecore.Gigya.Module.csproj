@@ -123,6 +123,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <Content Include="Layouts\Gigya\EditProfile.ascx" />
+    <Content Include="Layouts\Gigya\Login.ascx" />
+    <Content Include="Layouts\Gigya\Logout.ascx" />
+    <Content Include="Layouts\Gigya\Register.ascx" />
+    <Content Include="Layouts\Gigya\Settings.ascx" />
     <Content Include="Scripts\Gigya\jQuery-Autocomplete\jquery.autocomplete.min.js" />
     <Content Include="Scripts\Gigya\jQuery-Autocomplete\license.txt" />
     <Content Include="sitecore modules\Gigya\css\gigya-content-editor.css" />
@@ -158,6 +163,41 @@
     <Compile Include="Helpers\ISitecoreContentHelper.cs" />
     <Compile Include="Helpers\Mapper.cs" />
     <Compile Include="Helpers\SitecoreContentHelper.cs" />
+    <Compile Include="Layouts\Gigya\EditProfile.ascx.cs">
+      <DependentUpon>EditProfile.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layouts\Gigya\EditProfile.ascx.designer.cs">
+      <DependentUpon>EditProfile.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Login.ascx.cs">
+      <DependentUpon>Login.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Login.ascx.designer.cs">
+      <DependentUpon>Login.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Logout.ascx.cs">
+      <DependentUpon>Logout.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Logout.ascx.designer.cs">
+      <DependentUpon>Logout.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Register.ascx.cs">
+      <DependentUpon>Register.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Register.ascx.designer.cs">
+      <DependentUpon>Register.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Settings.ascx.cs">
+      <DependentUpon>Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Layouts\Gigya\Settings.ascx.designer.cs">
+      <DependentUpon>Settings.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Logging\SitecoreLogger.cs" />
     <Compile Include="Models\AutocompleteModels.cs" />
