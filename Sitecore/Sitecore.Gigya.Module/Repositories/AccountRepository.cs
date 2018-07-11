@@ -80,8 +80,6 @@ namespace Sitecore.Gigya.Module.Repositories
 
         public User Register(string username, string email, string password, bool persistent, string profileId)
         {
-            Assert.ArgumentNotNullOrEmpty(email, nameof(email));
-
             var fullName = Context.Domain.GetFullName(username);
             Assert.IsNotNullOrEmpty(fullName, "Can't retrieve full userName");
 
