@@ -1,4 +1,5 @@
-﻿using GigyaSecurityProvider.Utils;
+﻿using Gigya.Module.Core.Connector.Logging;
+using GigyaSecurityProvider.Utils;
 using Sitecore.Configuration;
 using Sitecore.Data;
 using Sitecore.Data.Fields;
@@ -16,7 +17,8 @@ namespace Sitecore.Gigya.Migration
 {
     public class ModuleMigration
     {
-        private Database _database;
+        private readonly Database _database;
+        private readonly Logger _logger = Sitecore.Gigya.Module.Logging.LoggerFactory.Instance();
         private ModuleMigrationModel _response;
 
         public ModuleMigration(string database = "master")
@@ -26,11 +28,19 @@ namespace Sitecore.Gigya.Migration
 
         public ModuleMigrationModel DoIt()
         {
+            var result = DoMigration();
+            _logger.Debug(_response.Messages.ToString());
+
+            return result;
+        }
+
+        private ModuleMigrationModel DoMigration()
+        {
             _response = new ModuleMigrationModel();
 
             if (_database == null)
             {
-                _response.Messages.AppendLine("Couldn't access content database");
+                _response.Messages.AppendLine("[Error]: Couldn't access content database.");
                 return _response;
             }
 
@@ -39,13 +49,13 @@ namespace Sitecore.Gigya.Migration
                 var globalSettings = GetGlobalSettings();
                 if (globalSettings == null)
                 {
-                    _response.Messages.AppendLine("Couldn't find global settings item in Sitecore.");
+                    _response.Messages.AppendLine("[Error]: Couldn't find global settings item in Sitecore.");
                     return _response;
                 }
 
                 var dataCenter = GetDataCenter();
                 MapSettings(globalSettings, dataCenter);
-                _response.Messages.AppendLine("Migrated global settings");
+                _response.Messages.AppendLine("Migrated global settings.");
 
                 MapXdbPersonalFacet();
                 // create gigya facet mappings for d_terms, d_subscribe ????
@@ -54,7 +64,7 @@ namespace Sitecore.Gigya.Migration
                 var userTemplate = coreDb.GetItem(Constants.Ids.UserTemplateId);
                 if (userTemplate == null)
                 {
-                    _response.Messages.AppendLine(string.Format("Couldn't find user template with id of {0} so didn't add any fields to the default user template.", Constants.Ids.UserTemplateId));
+                    _response.Messages.AppendLine(string.Format("[Error]: Couldn't find user template with id of {0} so didn't add any fields to the default user template.", Constants.Ids.UserTemplateId));
                 }
 
                 MapMembershipFields(userTemplate);
@@ -106,7 +116,7 @@ namespace Sitecore.Gigya.Migration
             var xDbPersonalMapping = _database.GetItem(Constants.Ids.xDbPersonalMapping);
             if (xDbPersonalMapping == null)
             {
-                _response.Messages.AppendLine("Couldn't find personal facet settings");
+                _response.Messages.AppendLine("[Error]: Couldn't find personal facet settings.");
                 return;
             }
 
@@ -116,7 +126,7 @@ namespace Sitecore.Gigya.Migration
             xDbPersonalMapping.Fields[Constants.Fields.PersonalFacet.Gender].Value = "profile.gender";
             xDbPersonalMapping.Editing.EndEdit();
 
-            _response.Messages.AppendLine("Migrated personal facet settings");
+            _response.Messages.AppendLine("Migrated personal facet settings.");
         }
 
         private string GetDataCenter()
@@ -160,7 +170,7 @@ namespace Sitecore.Gigya.Migration
             var mappingFolder = _database.GetItem(Constants.Ids.MembershipMapping);
             if (mappingFolder == null)
             {
-                _response.Messages.AppendLine("Couldn't find membership settings");
+                _response.Messages.AppendLine("[Error]: Couldn't find membership settings.");
                 return;
             }
 
@@ -192,7 +202,7 @@ namespace Sitecore.Gigya.Migration
                         mapping.Fields[Constants.Fields.MappingFields.SitecoreProperty].Value = settings.Name;
                         mapping.Editing.EndEdit();
 
-                        _response.Messages.AppendLine(string.Format("Created membership mapping for {0} and {1}", settings.Name, propertyName));
+                        _response.Messages.AppendLine(string.Format("Created membership mapping for {0} and {1}.", settings.Name, propertyName));
 
                         if (userTemplate != null)
                         {

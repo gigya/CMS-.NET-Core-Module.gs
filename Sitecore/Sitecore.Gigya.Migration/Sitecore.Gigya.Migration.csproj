@@ -108,6 +108,10 @@
     <Content Include="sitecore modules\Gigya\Migration.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Gigya.Module.Core\Gigya.Module.Core.csproj">
+      <Project>{7610AF03-891B-4AB2-A619-549BC9657CCE}</Project>
+      <Name>Gigya.Module.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sitecore.Gigya.Module\Sitecore.Gigya.Module.csproj">
       <Project>{79efa8af-e543-4ad4-b363-e327093468b8}</Project>
       <Name>Sitecore.Gigya.Module</Name>
