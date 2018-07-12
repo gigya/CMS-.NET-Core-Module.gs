@@ -88,6 +88,11 @@ namespace Sitecore.Gigya.Module.Layouts.Gigya
                 builder.Append("<script>window.gigyaDebugMode = true;</script>");
             }
 
+            if (model.SyncSSOGroup)
+            {
+                builder.Append("<script>gigya.syncGroupGltExp();</script>");
+            }
+
             writer.Write(builder.ToString());
         }
     }

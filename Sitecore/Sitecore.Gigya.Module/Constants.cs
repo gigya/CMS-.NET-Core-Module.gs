@@ -122,6 +122,8 @@ namespace Sitecore.Gigya.Module
             public const string GigyaSessionDuration = "Gigya Session Duration";
             public const string Profile = "Profile";
             public const string Parent = "Settings Parent";
+            public const string EnableSSOToken = "Enable SSO Token";
+            public const string SyncSSOGroup = "Sync SSO Group";
 
             public class MappingFields
             {

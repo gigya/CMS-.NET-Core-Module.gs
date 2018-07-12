@@ -44,5 +44,9 @@ namespace Gigya.Module.Core.Data
         public GigyaSessionMode GigyaSessionMode { get; set; }
 
         public List<MappingField> MappedMappingFields { get; set; }
+
+        public bool EnableSSOToken { get; set; }
+
+        public bool SyncSSOGroup { get; set; }
     }
 }

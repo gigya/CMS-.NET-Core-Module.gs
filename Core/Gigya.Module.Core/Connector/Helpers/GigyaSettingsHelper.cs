@@ -92,7 +92,9 @@ namespace Gigya.Module.Core.Connector.Helpers
                 IsLoggedIn = currentIdentity.IsAuthenticated,
                 Id = settings.Id,
                 DataCenter = settings.DataCenter,
-                IsGetInfoRequired = settings.SessionProvider == Enums.GigyaSessionProvider.CMS
+                IsGetInfoRequired = settings.SessionProvider == Enums.GigyaSessionProvider.CMS,
+                EnableSSOToken = settings.EnableSSOToken,
+                SyncSSOGroup = settings.SyncSSOGroup
             };
             
             model.Settings = !string.IsNullOrEmpty(settings.GlobalParameters) ? JsonConvert.DeserializeObject<ExpandoObject>(settings.GlobalParameters) : new ExpandoObject();
@@ -103,9 +105,9 @@ namespace Gigya.Module.Core.Connector.Helpers
                 model.Settings.lang = Language(settings);
             }
 
-            if (settingsProperties.ContainsKey("enableSSOToken"))
+            if (!settingsProperties.ContainsKey("enableSSOToken"))
             {
-                model.EnableSSOToken = model.Settings.enableSSOToken;
+                model.Settings.enableSSOToken = model.EnableSSOToken;
             }
 
             if (settings.SessionProvider == Enums.GigyaSessionProvider.Gigya && settings.GigyaSessionMode == Enums.GigyaSessionMode.Sliding)

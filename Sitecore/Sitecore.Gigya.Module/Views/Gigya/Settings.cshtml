@@ -23,3 +23,7 @@
 {
     <script>window.gigyaDebugMode = true;</script>
 }
+@if (Model.SyncSSOGroup)
+{
+    <script>gigya.syncGroupGltExp();</script>
+}

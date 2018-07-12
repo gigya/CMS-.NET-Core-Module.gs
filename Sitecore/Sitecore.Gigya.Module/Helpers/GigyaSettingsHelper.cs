@@ -168,7 +168,9 @@ namespace Sitecore.Gigya.Module.Helpers
                 SessionTimeout = System.Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds),
                 SessionProvider = Core.Connector.Enums.GigyaSessionProvider.Gigya,
                 GigyaSessionMode = Core.Connector.Enums.GigyaSessionMode.Sliding,
-                ProfileId = _userProfileHelper.GetSelectedProfile(settings)?.ID?.ToString()
+                ProfileId = _userProfileHelper.GetSelectedProfile(settings)?.ID?.ToString(),
+                EnableSSOToken = ((CheckboxField)settings.Fields[Constants.Fields.EnableSSOToken]).Checked,
+                SyncSSOGroup = ((CheckboxField)settings.Fields[Constants.Fields.SyncSSOGroup]).Checked
             };
 
             MapMappingFields(settings, mapped);

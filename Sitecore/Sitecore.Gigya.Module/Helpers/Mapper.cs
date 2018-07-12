@@ -35,7 +35,8 @@ namespace Sitecore.Gigya.Module.Helpers
                 RenderScript = source.RenderScript,
                 Settings = source.Settings,
                 SettingsJson = source.SettingsJson,
-                EnableSSOToken = source.EnableSSOToken
+                EnableSSOToken = source.EnableSSOToken,
+                SyncSSOGroup = source.SyncSSOGroup
             };
         }
 

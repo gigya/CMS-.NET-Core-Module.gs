@@ -21,5 +21,6 @@ namespace Sitecore.Gigya.Module.Models
         public bool IsLoggedIn { get; set; }
         public bool IsGetInfoRequired { get; set; }
         public bool EnableSSOToken { get; set; }
+        public bool SyncSSOGroup { get; set; }
     }
 }
