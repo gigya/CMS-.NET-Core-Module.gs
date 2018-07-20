@@ -11,7 +11,7 @@ namespace Sitecore.Gigya.Migration
     {
         public class Ids
         {
-            public static readonly ID GlobalSettings = new ID("{014A639C-4CEC-4D87-95E2-F40A3C91DF3B}");
+            public static readonly ID GlobalSettings = new ID(Sitecore.Gigya.Module.Constants.GlobalSettingsId);
             public static readonly ID ShareProviderSettingsItemId = new ID("{50B70327-1F66-4EA2-9749-F92B736172F4}");
             public static readonly ID xDbPersonalMapping = new ID("{CFF292C4-17AA-4C5F-8DC8-44655126BA39}");
             public static readonly ID MembershipMapping = new ID("{1F2154B9-3991-49C2-A0A7-3733422729E2}");

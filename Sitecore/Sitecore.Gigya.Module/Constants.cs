@@ -10,7 +10,7 @@ namespace Sitecore.Gigya.Module
     public static class Constants
     {
         public const string ModuleVersion = "6";
-        public const string GlobalSettingsId = "{3d64effe-6e9f-45a7-a716-14d588b62d44}";
+        public const string GlobalSettingsId = "{2EB49887-39E6-40FC-8EC5-3CBE241B2494}";
         public const string EncryptionPrefix = "___ENCRYPTED___";
         public const string StandardValuesName = "__Standard Values";
 
@@ -37,7 +37,7 @@ namespace Sitecore.Gigya.Module
         public class Ids
         {
             public static readonly ID BranchGlobalSettings = new ID("{AE8B36EC-7053-48FC-8974-6726075E0A4D}");
-            public static readonly ID GlobalSettings = new ID("{2EB49887-39E6-40FC-8EC5-3CBE241B2494}");
+            public static readonly ID GlobalSettings = new ID(GlobalSettingsId);
             public static readonly ID UserProperties = new ID("{1578C18A-C918-48EF-A496-4DCE4C5CD450}");
         }
 

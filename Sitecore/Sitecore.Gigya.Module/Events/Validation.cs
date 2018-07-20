@@ -55,6 +55,12 @@ namespace Sitecore.Gigya.Module.Events
                 return;
             }
 
+            if (!updatedItem.Modified)
+            {
+                // not modified so no need to validate
+                return;
+            }
+
             try
             {
                 if ((DateTime.UtcNow - updatedItem.Statistics.Created) < TimeSpan.FromSeconds(10))
@@ -118,9 +124,16 @@ namespace Sitecore.Gigya.Module.Events
 
         private static void CancelAndReturnError(Sitecore.Events.SitecoreEventArgs eventArgs, string message, bool cancel = true)
         {
-            eventArgs.Result.Messages.Add(message);
-            eventArgs.Result.Cancel = cancel;
-            Context.ClientPage.ClientResponse.Alert(message);
+            if (eventArgs != null && eventArgs.Result != null)
+            {
+                eventArgs.Result.Messages.Add(message);
+                eventArgs.Result.Cancel = cancel;
+            }
+
+            if (Context.ClientPage != null && Context.ClientPage.ClientResponse != null)
+            {
+                Context.ClientPage.ClientResponse.Alert(message);
+            }
         }
     }
 }
