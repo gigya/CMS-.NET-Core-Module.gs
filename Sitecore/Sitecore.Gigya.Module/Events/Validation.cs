@@ -63,7 +63,7 @@ namespace Sitecore.Gigya.Module.Events
 
             try
             {
-                if ((DateTime.UtcNow - updatedItem.Statistics.Created) < TimeSpan.FromSeconds(10))
+                if (updatedItem.Statistics.Created == DateTime.MinValue || (DateTime.UtcNow - updatedItem.Statistics.Created) < TimeSpan.FromSeconds(10))
                 {
                     // bit of hack to prevent this validation from running when and item is created
                     return;

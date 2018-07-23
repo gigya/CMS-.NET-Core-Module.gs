@@ -185,3 +185,12 @@
 /Sitecore/Sitecore.Gigya.Migration/bin/Debug
 /Sitecore/Sitecore.Gigya.Migration/obj/Debug
 /Sitecore/Sitecore.Gigya.Migration/bin
+/Sitecore/Sitecore.Gigya.Connector.v9/obj/Release
+/Sitecore/Sitecore.Gigya.Extensions.Abstractions/bin/Release
+/Sitecore/Sitecore.Gigya.Extensions.Abstractions/obj/Release
+/Sitecore/Sitecore.Gigya.Migration/obj/Release
+/Sitecore/Sitecore.Gigya.Testing/obj/Release
+/Sitecore/Sitecore.Gigya.XConnect.Models/obj/Release
+/Sitecore/Sitecore.Gigya.XConnect.Models.Tests/obj/Release
+/Tests/Gigya.UnitTests/obj/Release
+/Tests/Gigya.UnitTests.Umbraco621/obj/Release

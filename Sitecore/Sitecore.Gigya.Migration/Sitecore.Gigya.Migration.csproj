@@ -80,6 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\DevSc9.pubxml" />
     <None Include="Properties\PublishProfiles\Dev.pubxml" />
     <None Include="Web.config" />
   </ItemGroup>
