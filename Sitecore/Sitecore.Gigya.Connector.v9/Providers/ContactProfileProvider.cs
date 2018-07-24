@@ -115,8 +115,8 @@ namespace Sitecore.Gigya.Connector.Providers
         public EmailAddressList Emails => GetFacet<EmailAddressList>(EmailAddressList.DefaultFacetKey);
         public PhoneNumberList PhoneNumbers => GetFacet<PhoneNumberList>(PhoneNumberList.DefaultFacetKey);
         public ConsentInformation ConsentInformation => GetFacet<ConsentInformation>(ConsentInformation.DefaultFacetKey);
-        public GigyaFacet Gigya => GetCustomFacet<GigyaFacet>(C.FacetKeys.Gigya);
-        public GigyaPiiFacet GigyaPii => GetCustomFacet<GigyaPiiFacet>(C.FacetKeys.GigyaPii);
+        public GigyaFacet Gigya => GetFacet<GigyaFacet>(C.FacetKeys.Gigya) ?? GetCustomFacet<GigyaFacet>(C.FacetKeys.Gigya);
+        public GigyaPiiFacet GigyaPii => GetFacet<GigyaPiiFacet>(C.FacetKeys.GigyaPii) ?? GetCustomFacet<GigyaPiiFacet>(C.FacetKeys.GigyaPii);
 
         public Contact Flush()
         {
