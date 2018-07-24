@@ -283,13 +283,14 @@ namespace Sitecore.Gigya.Module.Helpers
                 return false;
             }
 
+            TrackContact(settings, gigyaModel);
+
             if (updateProfile)
             {
                 success = MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields);
             }
             else
             {
-                TrackContact(settings, gigyaModel);
                 UpdateXdb(settings, gigyaModel);
             }
 
