@@ -105,3 +105,9 @@
 /Gigya.Sitefinity.Core.9.1.6110.1.0.0.7.nupkg
 /Gigya.Sitefinity.Core.9.0.6010.1.0.0.7.nupkg
 /.vs/Gigya/DesignTimeBuild
+/Gigya.Module.DeleteSync/obj/Debug
+/Gigya.Sitefinity.Module.DeleteSync/obj/Debug
+/Gigya.Module.DeleteSync/bin/Debug
+/Gigya.Module.DeleteSync.Tests/bin/Debug
+/Gigya.Module.DeleteSync.Tests/obj/Debug
+/Gigya.Sitefinity.Module.DeleteSync/bin/Debug

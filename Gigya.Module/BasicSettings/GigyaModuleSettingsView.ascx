@@ -30,7 +30,7 @@
 </div>
 
 <sf:ResourceLinks id="resourcesLinks1" runat="server">
-	<sf:EmbeddedResourcePropertySetter Name="Telerik.Sitefinity.Resources.Themes.Default.Images.Loadings.sfLoadingFormBtns.gif"
+	<sf:EmbeddedResourcePropertySetter Name="Telerik.Sitefinity.Resources.Themes.Light.Images.Loadings.sfLoadingFormBtns.gif"
 		Static="true" ControlID="GigyaLoadingImage" ControlPropertyName="ImageUrl" />
 </sf:ResourceLinks>
 

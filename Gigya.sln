@@ -35,6 +35,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Sitefinity.Module.DS"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Umbraco.Demo.v765", "Gigya.Umbraco.Demo.v765\Gigya.Umbraco.Demo.v765.csproj", "{A2701370-4EDE-41EC-A24F-B9981EDD7348}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Module.DeleteSync", "Gigya.Module.DeleteSync\Gigya.Module.DeleteSync.csproj", "{51CF624F-16BC-42D6-AAFF-9BC72E445AED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Sitefinity.Module.DeleteSync", "Gigya.Sitefinity.Module.DeleteSync\Gigya.Sitefinity.Module.DeleteSync.csproj", "{2C0B8022-B38B-4FF2-8A60-00267CCB50E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gigya.Module.DeleteSync.Tests", "Gigya.Module.DeleteSync.Tests\Gigya.Module.DeleteSync.Tests.csproj", "{349C5056-7E79-464F-BC24-59EC66FAC218}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +126,24 @@ Global
 		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Release Pro|Any CPU.Build.0 = Release|Any CPU
 		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2701370-4EDE-41EC-A24F-B9981EDD7348}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51CF624F-16BC-42D6-AAFF-9BC72E445AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51CF624F-16BC-42D6-AAFF-9BC72E445AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51CF624F-16BC-42D6-AAFF-9BC72E445AED}.Release Pro|Any CPU.ActiveCfg = Release|Any CPU
+		{51CF624F-16BC-42D6-AAFF-9BC72E445AED}.Release Pro|Any CPU.Build.0 = Release|Any CPU
+		{51CF624F-16BC-42D6-AAFF-9BC72E445AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51CF624F-16BC-42D6-AAFF-9BC72E445AED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C0B8022-B38B-4FF2-8A60-00267CCB50E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C0B8022-B38B-4FF2-8A60-00267CCB50E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C0B8022-B38B-4FF2-8A60-00267CCB50E4}.Release Pro|Any CPU.ActiveCfg = Release|Any CPU
+		{2C0B8022-B38B-4FF2-8A60-00267CCB50E4}.Release Pro|Any CPU.Build.0 = Release|Any CPU
+		{2C0B8022-B38B-4FF2-8A60-00267CCB50E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C0B8022-B38B-4FF2-8A60-00267CCB50E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{349C5056-7E79-464F-BC24-59EC66FAC218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{349C5056-7E79-464F-BC24-59EC66FAC218}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{349C5056-7E79-464F-BC24-59EC66FAC218}.Release Pro|Any CPU.ActiveCfg = Release|Any CPU
+		{349C5056-7E79-464F-BC24-59EC66FAC218}.Release Pro|Any CPU.Build.0 = Release|Any CPU
+		{349C5056-7E79-464F-BC24-59EC66FAC218}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{349C5056-7E79-464F-BC24-59EC66FAC218}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,9 +160,8 @@ Global
 		{567779F9-A94F-4503-B417-4B9821EE9491} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
 		{738C1677-13AE-44C8-8C35-F8F017F05866} = {B9065A61-A663-4494-B9DC-19FDBBE4C0D1}
 		{A2701370-4EDE-41EC-A24F-B9981EDD7348} = {301AC4CF-835D-4BB9-822B-708E97FC7F1D}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C31766D1-F4CB-4363-B191-D9B4B289F742}
+		{2C0B8022-B38B-4FF2-8A60-00267CCB50E4} = {B9065A61-A663-4494-B9DC-19FDBBE4C0D1}
+		{349C5056-7E79-464F-BC24-59EC66FAC218} = {F31F816C-9241-496F-BA48-2EDA96FE8ACB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6AF744A5-0FF5-4F87-B51E-F4B135802893}
