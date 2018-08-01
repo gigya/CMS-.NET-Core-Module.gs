@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace Gigya.Module.DeleteSync.Models
 {
-    public class DeleteSyncFile
+    public class DeleteSyncLog
     {
         public string Key { get; set; }
-        public string Name { get; set; }
-        public List<string> UIDs { get; set; }
+        public DateTime DateCreated { get; set; }
+        public int Total { get; set; }
+        public int Success { get; set; }
+        public int Errors { get; set; }
     }
 }

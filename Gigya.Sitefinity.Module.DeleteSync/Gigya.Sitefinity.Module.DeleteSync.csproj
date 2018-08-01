@@ -72,7 +72,7 @@
     <Compile Include="BasicSettings\GigyaModuleBasicSettingsView.cs" />
     <Compile Include="BasicSettings\GigyaModuleSettingsContract.cs" />
     <Compile Include="BasicSettings\IGigyaSettingsDataContract.cs" />
-    <Compile Include="Data\DeleteSyncSettings.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Data\GigyaContext.cs" />
     <Compile Include="Data\GigyaFluentMetaDataSource.cs" />
     <Compile Include="Data\GigyaMetaDataProvider.cs" />

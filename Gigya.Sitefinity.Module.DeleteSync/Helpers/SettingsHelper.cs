@@ -1,4 +1,5 @@
-﻿using Gigya.Sitefinity.Module.DeleteSync.Data;
+﻿using Gigya.Module.DeleteSync.Models;
+using Gigya.Sitefinity.Module.DeleteSync.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

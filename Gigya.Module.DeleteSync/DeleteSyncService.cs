@@ -18,9 +18,9 @@ namespace Gigya.Module.DeleteSync
             _provider = provider;
         }
 
-        public Task<List<DeleteSyncFile>> GetUids()
+        public Task<List<DeleteSyncFile>> GetUids(Dictionary<string, DeleteSyncLog> processedFiles)
         {
-            return _provider.GetUids();
+            return _provider.GetUids(processedFiles);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace Gigya.Module.DeleteSync
 {
     public interface IDeleteSyncProvider
     {
-        Task<List<DeleteSyncFile>> GetUids();
+        Task<List<DeleteSyncFile>> GetUids(Dictionary<string, DeleteSyncLog> processedFiles);
     }
 }

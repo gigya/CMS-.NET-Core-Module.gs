@@ -46,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\DeleteSyncEventHub.cs" />
+    <Compile Include="Models\DeleteSyncEventArgs.cs" />
+    <Compile Include="Models\DeleteSyncLog.cs" />
+    <Compile Include="Models\DeleteSyncSettings.cs" />
     <Compile Include="Providers\AmazonProvider.cs" />
     <Compile Include="DeleteSyncService.cs" />
     <Compile Include="IDeleteSyncService.cs" />

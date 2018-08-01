@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gigya.Sitefinity.Module.DeleteSync.Data
+namespace Gigya.Module.DeleteSync.Models
 {
     public class DeleteSyncSettings
     {

@@ -14,13 +14,12 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Tasks
 {
     public class DeleteSyncTask : ScheduledTask
     {
-        private const string _key = "bfc466d8-d347-4803-b4e0-f5e25a7418e1";
         private readonly SettingsHelper _settingsHelper = new SettingsHelper();
         private readonly Logger _logger = new Logger(new SitefinityLogger());
 
         public DeleteSyncTask()
         {
-            this.Key = _key;
+            this.Key = Constants.Task.Key;
         }
 
         public override void ExecuteTask()
@@ -39,20 +38,15 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Tasks
                 return;
             }
 
+            var helper = new DeleteSyncHelper();
+            var processedFiles = helper.GetProcessedFiles();
+
             var provider = new AmazonProvider(settings.S3AccessKey, settings.S3SecretKey, settings.S3BucketName, settings.S3ObjectKeyPrefix, _logger);
             var service = new DeleteSyncService(provider);
-            var uids = service.GetUids().Result;
-            if (uids == null || !uids.Any())
-            {
-                _logger.Debug("No UID's to delete.");
-                return;
-            }
-
-            // process the files
-            var helper = new DeleteSyncHelper();
+            var uids = service.GetUids(processedFiles).Result;
             helper.Process(settings, uids);
 
-            // schedule again
+            // schedule next run
             var nextProcessDate = DateTime.Now.AddMinutes(settings.FrequencyMins);
             ScheduleTask(nextProcessDate);
         }
@@ -61,7 +55,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Tasks
         {
             SchedulingManager schedulingManager = SchedulingManager.GetManager();
 
-            var existingTask = schedulingManager.GetTaskData().FirstOrDefault(x => x.Key == _key);
+            var existingTask = schedulingManager.GetTaskData().FirstOrDefault(x => x.Key == Constants.Task.Key);
 
             if (existingTask == null)
             {

@@ -8,6 +8,7 @@ using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Connector.Logging;
 using Gigya.Sitefinity.Module.DeleteSync.Data;
 using Gigya.Sitefinity.Module.DeleteSync.Tasks;
+using Gigya.Module.DeleteSync.Models;
 
 namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
 {

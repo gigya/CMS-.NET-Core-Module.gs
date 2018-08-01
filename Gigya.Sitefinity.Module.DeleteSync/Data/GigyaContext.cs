@@ -6,6 +6,7 @@ using Telerik.OpenAccess;
 using Telerik.Sitefinity.Data.OA;
 using System.Reflection;
 using Telerik.OpenAccess.Metadata;
+using Gigya.Module.DeleteSync.Models;
 
 namespace Gigya.Sitefinity.Module.DeleteSync.Data
 {
@@ -35,7 +36,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Data
         }
 
         /// <summary>
-        /// Gets an IQueryable result of all gigya settings.
+        /// Gets an IQueryable result of all DeleteSyncSettings.
         /// </summary>
         public IQueryable<DeleteSyncSettings> Settings
 		{
@@ -44,6 +45,17 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Data
                 return this.GetAll<DeleteSyncSettings>();
             }
 		}
+
+        /// <summary>
+        /// Gets an IQueryable result of all DeleteSyncLog.
+        /// </summary>
+        public IQueryable<DeleteSyncLog> Logs
+        {
+            get
+            {
+                return this.GetAll<DeleteSyncLog>();
+            }
+        }
 
         static GigyaDeleteSyncContext()
         {

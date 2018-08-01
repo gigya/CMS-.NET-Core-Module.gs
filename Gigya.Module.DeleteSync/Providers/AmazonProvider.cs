@@ -30,7 +30,7 @@ namespace Gigya.Module.DeleteSync.Providers
             _prefix = prefix;
         }
 
-        public async Task<List<DeleteSyncFile>> GetUids()
+        public async Task<List<DeleteSyncFile>> GetUids(Dictionary<string, DeleteSyncLog> processedFiles)
         {
             var result = new List<DeleteSyncFile>();
 
@@ -53,6 +53,11 @@ namespace Gigya.Module.DeleteSync.Providers
 
                     foreach (S3Object entry in response.S3Objects)
                     {
+                        if (!IsFileRequired(entry.Key, processedFiles))
+                        {
+                            continue;
+                        }
+                        
                         var file = await ReadObjectDataAsync(entry.Key);
                         if (file != null)
                         {
@@ -75,7 +80,19 @@ namespace Gigya.Module.DeleteSync.Providers
                 _logger.Error("Amazon S3 error.", e);
             }
 
-            return null;
+            return result;
+        }
+
+        private bool IsFileRequired(string key, Dictionary<string, DeleteSyncLog> processedFiles)
+        {
+            DeleteSyncLog log;
+            if (!processedFiles.TryGetValue(key, out log))
+            {
+                return true;
+            }
+
+            // only need to retry if 100% failure
+            return log.Errors == log.Total;
         }
 
         private async Task<DeleteSyncFile> ReadObjectDataAsync(string key)
@@ -94,6 +111,7 @@ namespace Gigya.Module.DeleteSync.Providers
                 {
                     var file = new DeleteSyncFile
                     {
+                        Key = key,
                         Name = response.Metadata["x-amz-meta-title"]
                     };
                     

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gigya.Module.DeleteSync.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -17,7 +18,8 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Data
 		{
 			var mappings = new List<MappingConfiguration>();
 			mappings.Add(MapGigyaSettingsTable());
-			return mappings;
+            mappings.Add(MapGigyaDeleteSyncLogTable());
+            return mappings;
 		}
 
 		/// <summary>
@@ -41,5 +43,21 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Data
 
             return tableMapping;
 		}
+
+        /// <summary>
+		/// Maps the GigyaSetting class to a database table.
+		/// </summary>
+		/// <returns></returns>
+		private MappingConfiguration<DeleteSyncLog> MapGigyaDeleteSyncLogTable()
+        {
+            // map to table
+            var tableMapping = new MappingConfiguration<DeleteSyncLog>();
+            tableMapping.MapType().ToTable("sf_gigya_delete_sync_logs");
+
+            // map properties
+            tableMapping.HasProperty(t => t.Key).IsIdentity();
+
+            return tableMapping;
+        }
     }
 }
