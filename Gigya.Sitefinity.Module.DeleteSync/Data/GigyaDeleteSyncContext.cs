@@ -7,6 +7,7 @@ using Telerik.Sitefinity.Data.OA;
 using System.Reflection;
 using Telerik.OpenAccess.Metadata;
 using Gigya.Module.DeleteSync.Models;
+using Gigya.Sitefinity.Module.DeleteSync.Models;
 
 namespace Gigya.Sitefinity.Module.DeleteSync.Data
 {
@@ -32,28 +33,28 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Data
             base.Init(connectionString, cacheKey, backendConfiguration, metadataContainer, callingAssembly);
 
             // try and stop Sitefinity from caching everything
-            this.LevelTwoCache.EvictAll<DeleteSyncSettings>();
+            this.LevelTwoCache.EvictAll<SitefinityDeleteSyncSettings>();
         }
 
         /// <summary>
         /// Gets an IQueryable result of all DeleteSyncSettings.
         /// </summary>
-        public IQueryable<DeleteSyncSettings> Settings
+        public IQueryable<SitefinityDeleteSyncSettings> Settings
 		{
 			get 
             {
-                return this.GetAll<DeleteSyncSettings>();
+                return this.GetAll<SitefinityDeleteSyncSettings>();
             }
 		}
 
         /// <summary>
         /// Gets an IQueryable result of all DeleteSyncLog.
         /// </summary>
-        public IQueryable<DeleteSyncLog> Logs
+        public IQueryable<SitefinityDeleteSyncLog> Logs
         {
             get
             {
-                return this.GetAll<DeleteSyncLog>();
+                return this.GetAll<SitefinityDeleteSyncLog>();
             }
         }
 

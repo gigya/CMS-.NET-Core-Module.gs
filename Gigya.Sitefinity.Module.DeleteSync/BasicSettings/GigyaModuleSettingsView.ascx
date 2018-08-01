@@ -10,6 +10,7 @@
     select { padding: 2px 2px 3px 2px; }
     .label-after-field { display: inline; }
     #session-timeout-wrapper input { margin: 0; }
+    .no-input-margin-bottom input, .no-input-margin-bottom .sfDropdownList { margin-bottom: 0; }
 </style>
 
 <div class="sfSettingsSection">
@@ -35,12 +36,14 @@
             </Choices>
         </sfFields:ChoiceField>
     </div>
-    <sfFields:ChoiceField Title="Action<span class='required'>*</span>" runat="server" DataFieldName="Action" DisplayMode="Write" RenderChoicesAs="DropDown">
-        <Choices>
-            <sfFields:ChoiceItem Text="Delete Notification" Value="0" />
-            <sfFields:ChoiceItem Text="Full User Deletion" Value="1" />
-        </Choices>
-    </sfFields:ChoiceField>
+    <div class="no-input-margin-bottom">
+        <sfFields:ChoiceField Title="Action<span class='required'>*</span>" runat="server" DataFieldName="Action" DisplayMode="Write" RenderChoicesAs="DropDown">
+            <Choices>
+                <sfFields:ChoiceItem Text="Delete Notification" Value="0" />
+                <sfFields:ChoiceItem Text="Full User Deletion" Value="1" />
+            </Choices>
+        </sfFields:ChoiceField>
+    </div>
     <div class="sfInlineBlock" style="line-height: 1.6; margin-bottom: 10px;">
         Full user deletion means all the data associated with this user will be permanently deleted from CMS's database. 
         Deletion notification means that the user is not deleted, but an indication is added that they were deleted from Gigya. In this case, you should usually add custom code to handle the user data in CMS's database. For more information, see Gigya's Developer Guide.
@@ -53,22 +56,45 @@
         Tooltip=""
         WrapperTag="div">
     </sfFields:TextField>
-    <sfFields:TextField runat="server"
-        DataFieldName="EmailsOnSuccess"
-        Title="Email on success"
-        DisplayMode="Write"
-        MaxCharactersCount="255"
-        Tooltip="Array of emails with comma separator."
-        WrapperTag="div">
-    </sfFields:TextField>
-    <sfFields:TextField runat="server"
-        DataFieldName="EmailsOnFailure"
-        Title="Email on failure<span class='required'>*</span>"
-        DisplayMode="Write"
-        MaxCharactersCount="255"
-        Tooltip="Array of emails with comma separator."
-        WrapperTag="div">
-    </sfFields:TextField>
+    <div class="no-input-margin-bottom">
+        <sfFields:TextField runat="server"
+            DataFieldName="MaxAttempts"
+            Title="Number of attempts for each file<span class='required'>*</span>"
+            DisplayMode="Write"
+            MaxCharactersCount="255"
+            Tooltip="A file will only be retried if all UID's failed."
+            WrapperTag="div">
+        </sfFields:TextField>
+    </div>
+    <div class="sfInlineBlock" style="line-height: 1.6; margin-bottom: 10px;">
+        A file will only be retried if all UID's failed.
+    </div>
+    <div class="no-input-margin-bottom">
+        <sfFields:TextField runat="server"
+            DataFieldName="EmailsOnSuccess"
+            Title="Email on success"
+            DisplayMode="Write"
+            MaxCharactersCount="255"
+            Tooltip="Array of emails with comma separator."
+            WrapperTag="div">
+        </sfFields:TextField>
+    </div>
+    <div class="sfInlineBlock" style="line-height: 1.6; margin-bottom: 10px;">
+        A comma-separated list of emails that will be notified when the job completes successfully.
+    </div>
+    <div class="no-input-margin-bottom">
+        <sfFields:TextField runat="server"
+            DataFieldName="EmailsOnFailure"
+            Title="Email on failure"
+            DisplayMode="Write"
+            MaxCharactersCount="255"
+            Tooltip="Array of emails with comma separator."
+            WrapperTag="div">
+        </sfFields:TextField>
+    </div>
+    <div class="sfInlineBlock" style="line-height: 1.6; margin-bottom: 10px;">
+        A comma-separated list of emails that will be notified when the job fails or completes with errors.
+    </div>
     <sfFields:TextField runat="server"
         DataFieldName="S3BucketName"
         Title="S3 bucket name<span class='required'>*</span>"
@@ -109,7 +135,14 @@
     </div>
     <sfFields:TextField runat="server"
         DataFieldName="S3ObjectKeyPrefix"
-        Title="S3 object key prefix<span class='required'>*</span>"
+        Title="S3 object key prefix"
+        DisplayMode="Write"
+        MaxCharactersCount="255"
+        WrapperTag="div">
+    </sfFields:TextField>
+    <sfFields:TextField runat="server"
+        DataFieldName="S3Region"
+        Title="S3 region<span class='required'>*</span>"
         DisplayMode="Write"
         MaxCharactersCount="255"
         WrapperTag="div">

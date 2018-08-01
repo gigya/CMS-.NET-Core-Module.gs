@@ -1,5 +1,6 @@
 ﻿using Gigya.Module.DeleteSync.Models;
 using Gigya.Sitefinity.Module.DeleteSync.Data;
+using Gigya.Sitefinity.Module.DeleteSync.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
 {
     public class SettingsHelper
     {
-        public DeleteSyncSettings GetSettings()
+        public SitefinityDeleteSyncSettings GetSettings()
         {
             using (var context = GigyaDeleteSyncContext.Get())
             {

@@ -3,6 +3,7 @@ using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.DeleteSync.Events;
 using Gigya.Module.DeleteSync.Models;
 using Gigya.Sitefinity.Module.DeleteSync.Data;
+using Gigya.Sitefinity.Module.DeleteSync.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,12 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
         {
             using (var context = GigyaDeleteSyncContext.Get())
             {
-                var logs = context.Logs.ToDictionary(i => i.Key);
+                var logs = context.Logs.ToDictionary(i => i.Key, Mapper.Map);
                 return logs;
             }
         }
 
-        public void Process(DeleteSyncSettings settings, List<DeleteSyncFile> files)
+        public void Process(SitefinityDeleteSyncSettings settings, List<DeleteSyncFile> files)
         {
             _logger.DebugFormat("Found {0} files to delete.", files.Count);
 
@@ -37,38 +38,55 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
             {
                 foreach (var file in files)
                 {
-                    var log = new DeleteSyncLog
+                    for (int i = 0; i < settings.MaxAttempts; i++)
                     {
-                        DateCreated = DateTime.UtcNow,
-                        Key = file.Name,
-                        Total = file.UIDs.Count
-                    };
+                        var log = ProcessUids(settings, file);
+                        if (log.Errors == log.Total)
+                        {
+                            // complete failure so try again
+                            continue;
+                        }
 
-                    foreach (var id in file.UIDs)
-                    {
-                        try
-                        {
-                            var success = DeleteOrUpdateUser(id, settings.Action);
-                            if (success)
-                            {
-                                log.Success++;
-                            }
-                            else
-                            {
-                                log.Errors++;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.Error("Error occurred deleting users.", e);
-                            log.Errors++;
-                        }
+                        context.Add(log);
+                        break;
                     }
-
-                    context.Add(log);
+                    
                     context.SaveChanges();
                 }
             }
+        }
+
+        private SitefinityDeleteSyncLog ProcessUids(SitefinityDeleteSyncSettings settings, DeleteSyncFile file)
+        {
+            var log = new SitefinityDeleteSyncLog
+            {
+                DateCreated = DateTime.UtcNow,
+                Key = file.Key,
+                Total = file.UIDs.Count
+            };
+
+            foreach (var id in file.UIDs)
+            {
+                try
+                {
+                    var success = DeleteOrUpdateUser(id, settings.Action);
+                    if (success)
+                    {
+                        log.Success++;
+                    }
+                    else
+                    {
+                        log.Errors++;
+                    }
+                }
+                catch (Exception e)
+                {
+                    _logger.Error("Error occurred deleting users.", e);
+                    log.Errors++;
+                }
+            }
+
+            return log;
         }
 
         private bool DeleteOrUpdateUser(string uid, DeleteSyncAction action)
@@ -95,15 +113,30 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
                 return false;
             }
 
+            var success = false;
             switch (action)
             {
                 case DeleteSyncAction.FullUserDeletion:
-                    return DeleteUser(user);
+                    success = DeleteUser(user);
+                    break;
                 case DeleteSyncAction.DeleteNotification:
-                    return MarkUserAsDeleted(user);
+                    success = MarkUserAsDeleted(user);
+                    break;
                 default:
                     throw new ArgumentException(string.Format("Action: {0} not supported.", action));
             }
+
+            if (success)
+            {
+                var deletedUserEventArgs = new DeleteSyncUserDeletedEventArgs
+                {
+                    Action = action,
+                    CmsUid = user.Id,
+                    Uid = uid
+                };
+                DeleteSyncEventHub.Instance.RaiseDeletedUser(this, deletedUserEventArgs);
+            }
+            return success;
         }
 
         private bool MarkUserAsDeleted(User user)

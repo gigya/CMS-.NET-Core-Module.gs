@@ -1,12 +1,17 @@
-﻿using System;
+﻿using Gigya.Module.DeleteSync.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gigya.Module.DeleteSync.Models
+namespace Gigya.Sitefinity.Module.DeleteSync.Models
 {
-    public class DeleteSyncSettings
+    /// <summary>
+    /// SitefinityDeleteSyncSettings
+    /// </summary>
+    /// <remarks>Annoyingly Telerik's OpenAccess doesn't support inheritance.</remarks>
+    public class SitefinityDeleteSyncSettings// : DeleteSyncSettings
     {
         public int Id { get; set; }
         public DeleteSyncAction Action { get; set; }
@@ -19,12 +24,6 @@ namespace Gigya.Module.DeleteSync.Models
         public string S3SecretKey { get; set; }
         public string S3ObjectKeyPrefix { get; set; }
         public string S3Region { get; set; }
-        public int MaxAttempts { get; set; } = 1
-    }
-
-    public enum DeleteSyncAction
-    {
-        DeleteNotification,
-        FullUserDeletion
+        public int MaxAttempts { get; set; } = 1;
     }
 }

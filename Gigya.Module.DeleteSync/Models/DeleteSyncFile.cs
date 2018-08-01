@@ -9,7 +9,6 @@ namespace Gigya.Module.DeleteSync.Models
     public class DeleteSyncFile
     {
         public string Key { get; set; }
-        public string Name { get; set; }
         public List<string> UIDs { get; set; }
     }
 }

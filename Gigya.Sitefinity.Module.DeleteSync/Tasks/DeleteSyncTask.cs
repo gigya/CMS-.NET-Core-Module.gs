@@ -41,7 +41,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Tasks
             var helper = new DeleteSyncHelper();
             var processedFiles = helper.GetProcessedFiles();
 
-            var provider = new AmazonProvider(settings.S3AccessKey, settings.S3SecretKey, settings.S3BucketName, settings.S3ObjectKeyPrefix, _logger);
+            var provider = new AmazonProvider(settings.S3AccessKey, settings.S3SecretKey, settings.S3BucketName, settings.S3ObjectKeyPrefix, settings.S3Region, _logger);
             var service = new DeleteSyncService(provider);
             var uids = service.GetUids(processedFiles).Result;
             helper.Process(settings, uids);

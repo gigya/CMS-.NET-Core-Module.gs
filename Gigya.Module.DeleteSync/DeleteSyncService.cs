@@ -22,5 +22,10 @@ namespace Gigya.Module.DeleteSync
         {
             return _provider.GetUids(processedFiles);
         }
+
+        public Task<bool> IsValid()
+        {
+            return _provider.IsValid();
+        }
     }
 }

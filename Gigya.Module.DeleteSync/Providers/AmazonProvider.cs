@@ -14,23 +14,46 @@ namespace Gigya.Module.DeleteSync.Providers
     public class AmazonProvider : IDeleteSyncProvider
     {
         private readonly Logger _logger;
-        private readonly IAmazonS3 _client;
+        private readonly Lazy<IAmazonS3> _client;
         private readonly string _accessKey;
         private readonly string _secretKey;
         private readonly string _bucketName;
         private readonly string _prefix;
 
-        public AmazonProvider(string accessKey, string secretKey, string bucketName, string prefix, Logger logger)
+        public AmazonProvider(string accessKey, string secretKey, string bucketName, string prefix, string region, Logger logger)
         {
-            _client = new AmazonS3Client(accessKey, secretKey);
             _logger = logger;
             _accessKey = accessKey;
             _secretKey = secretKey;
             _bucketName = bucketName;
             _prefix = prefix;
+
+            var regionEndpoint = Amazon.RegionEndpoint.GetBySystemName(region);
+            _client = new Lazy<IAmazonS3>(() => new AmazonS3Client(_accessKey, _secretKey, Amazon.RegionEndpoint.GetBySystemName(region)));
         }
 
-        public async Task<List<DeleteSyncFile>> GetUids(Dictionary<string, DeleteSyncLog> processedFiles)
+        public virtual async Task<bool> IsValid()
+        {
+            ListObjectsRequest request = new ListObjectsRequest
+            {
+                Prefix = _prefix,
+                BucketName = _bucketName,
+                MaxKeys = 1
+            };
+
+            try
+            {
+                var response = await _client.Value.ListObjectsAsync(request);
+                return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Amazon S3 settings are invalid.", e);
+                return false;
+            }
+        }
+
+        public virtual async Task<List<DeleteSyncFile>> GetUids(Dictionary<string, DeleteSyncLog> processedFiles)
         {
             var result = new List<DeleteSyncFile>();
 
@@ -45,7 +68,7 @@ namespace Gigya.Module.DeleteSync.Providers
             {
                 while (true)
                 {
-                    var response = await _client.ListObjectsAsync(request);
+                    var response = await _client.Value.ListObjectsAsync(request);
                     if (response == null)
                     {
                         break;
@@ -83,19 +106,12 @@ namespace Gigya.Module.DeleteSync.Providers
             return result;
         }
 
-        private bool IsFileRequired(string key, Dictionary<string, DeleteSyncLog> processedFiles)
+        protected virtual bool IsFileRequired(string key, Dictionary<string, DeleteSyncLog> processedFiles)
         {
-            DeleteSyncLog log;
-            if (!processedFiles.TryGetValue(key, out log))
-            {
-                return true;
-            }
-
-            // only need to retry if 100% failure
-            return log.Errors == log.Total;
+            return !processedFiles.ContainsKey(key);
         }
 
-        private async Task<DeleteSyncFile> ReadObjectDataAsync(string key)
+        protected virtual async Task<DeleteSyncFile> ReadObjectDataAsync(string key)
         {
             try
             {
@@ -105,14 +121,13 @@ namespace Gigya.Module.DeleteSync.Providers
                     Key = key
                 };
 
-                using (GetObjectResponse response = await _client.GetObjectAsync(request))
+                using (GetObjectResponse response = await _client.Value.GetObjectAsync(request))
                 using (Stream responseStream = response.ResponseStream)
                 using (StreamReader reader = new StreamReader(responseStream))
                 {
                     var file = new DeleteSyncFile
                     {
-                        Key = key,
-                        Name = response.Metadata["x-amz-meta-title"]
+                        Key = key
                     };
                     
                     var responseBody = reader.ReadToEnd();
@@ -128,7 +143,7 @@ namespace Gigya.Module.DeleteSync.Providers
                         return null;
                     }
 
-                    file.UIDs.AddRange(lines.Skip(1));
+                    file.UIDs = new List<string>(lines.Skip(1).Where(i => !string.IsNullOrEmpty(i)));
                     return file;
                 }
             }

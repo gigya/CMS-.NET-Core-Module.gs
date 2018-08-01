@@ -7,8 +7,13 @@ using Gigya.Module.Core.Connector.Helpers;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.Connector.Logging;
 using Gigya.Sitefinity.Module.DeleteSync.Data;
+using Gigya.Sitefinity.Module.DeleteSync.Helpers;
 using Gigya.Sitefinity.Module.DeleteSync.Tasks;
 using Gigya.Module.DeleteSync.Models;
+using Gigya.Module.DeleteSync.Helpers;
+using Gigya.Module.DeleteSync;
+using Gigya.Module.DeleteSync.Providers;
+using Gigya.Sitefinity.Module.DeleteSync.Models;
 
 namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
 {
@@ -51,6 +56,10 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
         [DataMember]
         public string S3ObjectKeyPrefix { get; set; }
         [DataMember]
+        public string S3Region { get; set; }
+        [DataMember]
+        public int MaxAttempts { get; set; }
+        [DataMember]
         public bool CanViewSecretKey { get; set; }
 
         /// <summary>
@@ -77,9 +86,9 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
             using (var context = GigyaDeleteSyncContext.Get())
             {
                 // get settings for site or global settings or new settings
-                var settings = context.Settings.FirstOrDefault() ?? new DeleteSyncSettings();
+                var settings = context.Settings.FirstOrDefault() ?? new SitefinityDeleteSyncSettings();
 
-                // map settigs to this
+                // map settings to this
                 this.Action = settings.Action;
                 this.EmailsOnFailure = settings.EmailsOnFailure;
                 this.EmailsOnSuccess = settings.EmailsOnSuccess;
@@ -88,6 +97,8 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
                 this.S3AccessKey = settings.S3AccessKey;
                 this.S3BucketName = settings.S3BucketName;
                 this.S3ObjectKeyPrefix = settings.S3ObjectKeyPrefix;
+                this.S3Region = settings.S3Region;
+                this.MaxAttempts = settings.MaxAttempts;
 
                 // check if user can view application secret
                 var identity = ClaimsManager.GetCurrentIdentity();
@@ -119,7 +130,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
             using (var context = GigyaDeleteSyncContext.Get())
             {
                 // get settings to update
-                var settings = context.Settings.FirstOrDefault() ?? new DeleteSyncSettings();
+                var settings = context.Settings.FirstOrDefault() ?? new SitefinityDeleteSyncSettings();
 
                 // update all fields
                 settings.Action = this.Action;
@@ -130,6 +141,8 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
                 settings.S3AccessKey = this.S3AccessKey;
                 settings.S3BucketName = this.S3BucketName;
                 settings.S3ObjectKeyPrefix = this.S3ObjectKeyPrefix;
+                settings.S3Region = this.S3Region;
+                settings.MaxAttempts = this.MaxAttempts;
 
                 // check if user can view application secret
                 if (!string.IsNullOrEmpty(this.S3SecretKey))
@@ -145,6 +158,16 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
 
                         settings.S3SecretKey = Encryptor.Encrypt(S3SecretKey.Trim());
                     }
+                }
+
+                var deleteProvider = new AmazonProvider(settings.S3AccessKey, settings.S3SecretKey, settings.S3BucketName, settings.S3ObjectKeyPrefix, settings.S3Region, Logger);
+                var deleteService = new DeleteSyncService(deleteProvider);
+                var validationHelper = new ValidationHelper(deleteService);
+                var mappedSettings = Mapper.Map(settings);
+                var validationResponse = validationHelper.Validate(mappedSettings);
+                if (!validationResponse.IsValid)
+                {
+                    throw new ArgumentException(validationResponse.Message);
                 }
                 
                 context.Add(settings);

@@ -73,12 +73,14 @@
     <Compile Include="BasicSettings\GigyaModuleSettingsContract.cs" />
     <Compile Include="BasicSettings\IGigyaSettingsDataContract.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Data\GigyaContext.cs" />
+    <Compile Include="Data\GigyaDeleteSyncContext.cs" />
     <Compile Include="Data\GigyaFluentMetaDataSource.cs" />
     <Compile Include="Data\GigyaMetaDataProvider.cs" />
     <Compile Include="Helpers\DeleteSyncHelper.cs" />
+    <Compile Include="Helpers\Mapper.cs" />
     <Compile Include="Helpers\SettingsHelper.cs" />
-    <Compile Include="Helpers\ValidationHelper.cs" />
+    <Compile Include="Models\DeleteSyncLog.cs" />
+    <Compile Include="Models\DeleteSyncSettings.cs" />
     <Compile Include="ModuleClass.cs" />
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="ModuleResources.cs" />
