@@ -19,7 +19,7 @@ namespace Gigya.Module.DeleteSync.Models
         public string S3SecretKey { get; set; }
         public string S3ObjectKeyPrefix { get; set; }
         public string S3Region { get; set; }
-        public int MaxAttempts { get; set; } = 1
+        public int MaxAttempts { get; set; } = 1;
     }
 
     public enum DeleteSyncAction

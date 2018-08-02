@@ -12,8 +12,8 @@ namespace Gigya.Module.DeleteSync.Tests
     [TestClass]
     public class TaskTests
     {
-        private const string _accessKey = "AKIAJDZFARTEO5I6LDTQ";
-        private const string _secretKey = "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";
+        private const string _accessKey = "";
+        private const string _secretKey = "";
         private const string _bucketName = "lpsgigya";
         private const string _prefix = "";
         private const string _region = "eu-west-2";
