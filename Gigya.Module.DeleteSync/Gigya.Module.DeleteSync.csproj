@@ -47,7 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\DeleteSyncEventHub.cs" />
+    <Compile Include="Helpers\EmailHelper.cs" />
     <Compile Include="Helpers\ValidationHelper.cs" />
+    <Compile Include="Models\DeleteSyncEmailModel.cs" />
     <Compile Include="Models\DeleteSyncUserDeletedEventArgs.cs" />
     <Compile Include="Models\DeleteSyncEventArgs.cs" />
     <Compile Include="Models\DeleteSyncLog.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Models\DeleteSyncFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\IDeleteSyncProvider.cs" />
+    <Compile Include="Providers\IEmailProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

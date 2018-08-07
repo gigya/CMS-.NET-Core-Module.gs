@@ -48,8 +48,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EmailTests\EmailTests.cs" />
     <Compile Include="Logging\FakeCmsLogger.cs" />
     <Compile Include="Providers\FakeAmazonProvider.cs" />
+    <Compile Include="Providers\FakeEmailProvider.cs" />
     <Compile Include="TaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
