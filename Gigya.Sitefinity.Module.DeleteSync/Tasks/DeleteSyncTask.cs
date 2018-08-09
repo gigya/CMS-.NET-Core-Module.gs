@@ -39,16 +39,26 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Tasks
             }
 
             var helper = new DeleteSyncHelper();
-            var processedFiles = helper.GetProcessedFiles();
 
-            var provider = new AmazonProvider(settings.S3AccessKey, settings.S3SecretKey, settings.S3BucketName, settings.S3ObjectKeyPrefix, settings.S3Region, _logger);
-            var service = new DeleteSyncService(provider);
-            var uids = service.GetUids(processedFiles).Result;
-            helper.Process(settings, uids);
+            try
+            {
+                var processedFiles = helper.GetProcessedFiles();
+
+                var provider = new AmazonProvider(settings.S3AccessKey, settings.S3SecretKey, settings.S3BucketName, settings.S3ObjectKeyPrefix, settings.S3Region, _logger);
+                var service = new DeleteSyncService(provider);
+                var uids = service.GetUids(processedFiles).Result;
+                helper.Process(settings, uids);
+            }
+            catch (Exception e)
+            {
+                _logger.Error("Error occurred executing delete sync task.", e);
+            }
 
             // schedule next run
             var nextProcessDate = DateTime.Now.AddMinutes(settings.FrequencyMins);
             ScheduleTask(nextProcessDate);
+
+            _logger.Debug($"Delete sync task rescheduled for {nextProcessDate}");
         }
 
         public static void ScheduleTask(DateTime executeTime)

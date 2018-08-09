@@ -35,7 +35,7 @@ namespace Gigya.Module.DeleteSync.Helpers
         protected string GetEmailBody(DeleteSyncEmailModel model)
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"The user deletion job scheduled to run for {model.Domain} at {model.DateStarted}, completed with {model.FailedDeletedUids.Count + model.FailedUpdatedUids.Count} errors.");
+            builder.AppendLine($"The user deletion job scheduled to run for {model.Domain} at {model.DateStarted} UTC, completed with {model.FailedDeletedUids.Count + model.FailedUpdatedUids.Count} errors.");
 
             builder.AppendLine();
 

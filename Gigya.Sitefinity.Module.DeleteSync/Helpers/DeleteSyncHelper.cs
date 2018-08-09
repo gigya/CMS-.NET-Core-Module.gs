@@ -1,14 +1,17 @@
 ﻿using Gigya.Module.Connector.Logging;
 using Gigya.Module.Core.Connector.Logging;
 using Gigya.Module.DeleteSync.Events;
+using Gigya.Module.DeleteSync.Helpers;
 using Gigya.Module.DeleteSync.Models;
 using Gigya.Sitefinity.Module.DeleteSync.Data;
 using Gigya.Sitefinity.Module.DeleteSync.Models;
+using Gigya.Sitefinity.Module.DeleteSync.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Telerik.Sitefinity.Model;
 using Telerik.Sitefinity.Security;
 using Telerik.Sitefinity.Security.Model;
@@ -20,6 +23,17 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
         private readonly Logger _logger = LoggerFactory.Instance();
         private readonly UserManager _userManager = UserManager.GetManager();
         private readonly UserProfileManager _profileManager = UserProfileManager.GetManager();
+        private readonly EmailHelper _emailHelper;
+        private DeleteSyncEmailModel _emailModel;
+
+        public DeleteSyncHelper() : this (new EmailHelper(new SitefinityEmailProvider()))
+        {
+        }
+
+        public DeleteSyncHelper(EmailHelper emailHelper)
+        {
+            _emailHelper = emailHelper;
+        }
 
         public Dictionary<string, DeleteSyncLog> GetProcessedFiles()
         {
@@ -33,6 +47,14 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
         public void Process(SitefinityDeleteSyncSettings settings, List<DeleteSyncFile> files)
         {
             _logger.DebugFormat("Found {0} files to delete.", files.Count);
+
+            _emailModel = new DeleteSyncEmailModel
+            {
+                DateStarted = DateTime.UtcNow,
+                Domain = HttpContext.Current?.Request?.Url?.Host ?? "localhost",
+                Subject = "User deletion job completed",
+                ProcessedFilenames = files.Select(i => i.Key).ToList()
+            };
 
             using (var context = GigyaDeleteSyncContext.Get())
             {
@@ -54,6 +76,9 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
                     context.SaveChanges();
                 }
             }
+
+            _emailModel.DateCompleted = DateTime.UtcNow;
+            _emailHelper.SendConfirmation(_emailModel);
         }
 
         private SitefinityDeleteSyncLog ProcessUids(SitefinityDeleteSyncSettings settings, DeleteSyncFile file)
@@ -67,9 +92,11 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
 
             foreach (var id in file.UIDs)
             {
+                var success = false;
+
                 try
                 {
-                    var success = DeleteOrUpdateUser(id, settings.Action);
+                    success = DeleteOrUpdateUser(id, settings.Action);
                     if (success)
                     {
                         log.Success++;
@@ -84,9 +111,43 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
                     _logger.Error("Error occurred deleting users.", e);
                     log.Errors++;
                 }
+                finally
+                {
+                    AddLogEntry(success, id, settings.Action);
+                }
             }
 
             return log;
+        }
+
+        private void AddLogEntry(bool success, string uid, DeleteSyncAction action)
+        {
+            switch (action)
+            {
+                case DeleteSyncAction.FullUserDeletion:
+                    if (success)
+                    {
+                        _emailModel.DeletedUids.Add(uid);
+                    }
+                    else
+                    {
+                        _emailModel.FailedDeletedUids.Add(uid);
+                    }
+                    return;
+                case DeleteSyncAction.DeleteNotification:
+                    if (success)
+                    {
+                        _emailModel.UpdatedUids.Add(uid);
+                    }
+                    else
+                    {
+                        _emailModel.FailedUpdatedUids.Add(uid);
+                    }
+                    return;
+                default:
+                    _logger.Error($"Action: {action} not supported.");
+                    return;
+            }
         }
 
         private bool DeleteOrUpdateUser(string uid, DeleteSyncAction action)
