@@ -11,19 +11,23 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
 {
     public class SettingsHelper
     {
+        protected readonly GigyaDeleteSyncContext _context;
+
+        public SettingsHelper()
+        {
+            _context = GigyaDeleteSyncContext.Get();
+        }
+
         public SitefinityDeleteSyncSettings GetSettings()
         {
-            using (var context = GigyaDeleteSyncContext.Get())
+            var settings = _context.Settings.FirstOrDefault();
+
+            if (settings != null && !string.IsNullOrEmpty(settings.S3SecretKey))
             {
-                var settings = context.Settings.FirstOrDefault();
-
-                if (settings != null && !string.IsNullOrEmpty(settings.S3SecretKey))
-                {
-                    settings.S3SecretKey = Gigya.Module.Core.Connector.Encryption.Encryptor.Decrypt(settings.S3SecretKey);
-                }
-
-                return settings;
+                settings.S3SecretKey = Gigya.Module.Core.Connector.Encryption.Encryptor.Decrypt(settings.S3SecretKey);
             }
+
+            return settings;
         }
     }
 }

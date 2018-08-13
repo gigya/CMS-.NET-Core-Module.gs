@@ -54,8 +54,10 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Tasks
                 _logger.Error("Error occurred executing delete sync task.", e);
             }
 
+            this.LastExecutedTime = DateTime.UtcNow;
+
             // schedule next run
-            var nextProcessDate = DateTime.Now.AddMinutes(settings.FrequencyMins);
+            var nextProcessDate = DateTime.UtcNow.AddMinutes(settings.FrequencyMins);
             ScheduleTask(nextProcessDate);
 
             _logger.Debug($"Delete sync task rescheduled for {nextProcessDate}");
@@ -65,24 +67,13 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Tasks
         {
             SchedulingManager schedulingManager = SchedulingManager.GetManager();
 
-            var existingTask = schedulingManager.GetTaskData().FirstOrDefault(x => x.Key == Constants.Task.Key);
-
-            if (existingTask == null)
+            // Create a new scheduled task
+            DeleteSyncTask newTask = new DeleteSyncTask()
             {
-                // Create a new scheduled task
-                DeleteSyncTask newTask = new DeleteSyncTask()
-                {
-                    ExecuteTime = executeTime
-                };
+                ExecuteTime = executeTime
+            };
 
-                schedulingManager.AddTask(newTask);
-            }
-            else
-            {
-                // Updates the existing scheduled task
-                existingTask.ExecuteTime = executeTime;
-            }
-
+            schedulingManager.AddTask(newTask);
             SchedulingManager.RescheduleNextRun();
             schedulingManager.SaveChanges();
         }

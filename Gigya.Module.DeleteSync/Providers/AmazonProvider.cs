@@ -143,7 +143,7 @@ namespace Gigya.Module.DeleteSync.Providers
                         return null;
                     }
 
-                    file.UIDs = new List<string>(lines.Skip(1).Where(i => !string.IsNullOrEmpty(i)));
+                    file.UIDs = new List<string>(lines.Skip(1).Where(i => !string.IsNullOrEmpty(i)).Select(i => i.Replace("\r", string.Empty)));
                     return file;
                 }
             }

@@ -63,7 +63,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
                     for (int i = 0; i < settings.MaxAttempts; i++)
                     {
                         var log = ProcessUids(settings, file);
-                        if (log.Errors == log.Total)
+                        if (log.Errors == log.Total && i < (settings.MaxAttempts - 1))
                         {
                             // complete failure so try again
                             continue;
@@ -77,6 +77,14 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
                 }
             }
 
+            if (_emailModel.FailedDeletedUids.Any() || _emailModel.FailedUpdatedUids.Any())
+            {
+                _emailModel.To = settings.EmailsOnFailure;
+            }
+            else
+            {
+                _emailModel.To = settings.EmailsOnSuccess;
+            }
             _emailModel.DateCompleted = DateTime.UtcNow;
             _emailHelper.SendConfirmation(_emailModel);
         }
@@ -224,7 +232,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
 
             if (updated)
             {
-                _userManager.SaveChanges();
+                _profileManager.SaveChanges();
                 _logger.DebugFormat("User with UID of {0} has been marked as deleted.", user.UserName);
             }
             else

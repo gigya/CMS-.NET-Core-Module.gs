@@ -144,6 +144,8 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
                 settings.S3Region = this.S3Region;
                 settings.MaxAttempts = this.MaxAttempts;
 
+                string plainTextS3Secret = string.Empty;
+
                 // check if user can view application secret
                 if (!string.IsNullOrEmpty(this.S3SecretKey))
                 {
@@ -156,11 +158,17 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
                             throw new ArgumentException("Encryption key not specified. Refer to installation guide.");
                         }
 
-                        settings.S3SecretKey = Encryptor.Encrypt(S3SecretKey.Trim());
+                        plainTextS3Secret = S3SecretKey.Trim();
+                        settings.S3SecretKey = Encryptor.Encrypt(plainTextS3Secret);
                     }
                 }
 
-                var deleteProvider = new AmazonProvider(settings.S3AccessKey, settings.S3SecretKey, settings.S3BucketName, settings.S3ObjectKeyPrefix, settings.S3Region, Logger);
+                if (string.IsNullOrEmpty(plainTextS3Secret) && Encryptor.IsConfigured && !string.IsNullOrEmpty(settings.S3SecretKey))
+                {
+                    plainTextS3Secret = TryDecryptApplicationSecret(settings.S3SecretKey);
+                }
+
+                var deleteProvider = new AmazonProvider(settings.S3AccessKey, plainTextS3Secret, settings.S3BucketName, settings.S3ObjectKeyPrefix, settings.S3Region, Logger);
                 var deleteService = new DeleteSyncService(deleteProvider);
                 var validationHelper = new ValidationHelper(deleteService);
                 var mappedSettings = Mapper.Map(settings);
@@ -176,7 +184,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.BasicSettings
                 // schedule job
                 if (settings.Enabled)
                 {
-                    DeleteSyncTask.ScheduleTask(DateTime.Now.AddMinutes(settings.FrequencyMins));
+                    DeleteSyncTask.ScheduleTask(DateTime.UtcNow.AddMinutes(settings.FrequencyMins));
                 }
             }
         }

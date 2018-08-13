@@ -10,7 +10,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync
     {
         public class Task
         {
-            public const string Key = "bfc466d8-d347-4803-b4e0-f5e25a7418e1";
+            public const string Key = "7558be7c-d976-4fff-941a-2eea3ab950c0";
         }
 
         public class CmsFields
