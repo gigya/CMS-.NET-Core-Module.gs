@@ -482,6 +482,10 @@ var gigyaCms = {
             gigyaCms.log('applying embedded screen with settings', settings);
 
             gigya.accounts.showScreenSet(settings);
+
+            if (!document.getElementById(settings.containerID)) {
+                throw new Error('Unable to find container with id of ' + settings.containerID);
+            }
         }
     },
     onGetAccountInfo: function onGetAccountInfo(eventObj) {
