@@ -11,7 +11,7 @@ using Gigya.Sitefinity.Module.DeleteSync.Models;
 
 namespace Gigya.Sitefinity.Module.DeleteSync.Data
 {
-	public class GigyaDeleteSyncContext : SitefinityOAContext
+	public class GigyaDeleteSyncContext : SitefinityOAContext, IGigyaDeleteSyncContext
     {
 		public static GigyaDeleteSyncContext Get()
 		{

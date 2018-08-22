@@ -16,6 +16,7 @@ namespace Gigya.Module.DeleteSync.Tests.Providers
             var smtpClient = new SmtpClient();
             smtpClient.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;
             smtpClient.PickupDirectoryLocation = "C:\\temp\\gigya";
+            message.From = new MailAddress("test@test.com");
             smtpClient.Send(message);
         }
     }

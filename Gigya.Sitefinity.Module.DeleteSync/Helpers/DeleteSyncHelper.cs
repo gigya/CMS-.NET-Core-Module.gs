@@ -20,16 +20,19 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
 {
     public class DeleteSyncHelper : DeleteSyncHelperBase
     {
-        private readonly UserManager _userManager = UserManager.GetManager();
-        private readonly UserProfileManager _profileManager = UserProfileManager.GetManager();
+        private readonly IUserManager _userManager;
+        private readonly IProfileManager _profileManager;
+        private readonly IGigyaDeleteSyncContext _gigyaDeleteSyncContext;
 
-        public DeleteSyncHelper() : this (new EmailHelper(new SitefinityEmailProvider()), LoggerFactory.Instance())
+        public DeleteSyncHelper() : this (new EmailHelper(new SitefinityEmailProvider()), LoggerFactory.Instance(), new SitefinityUserManager(), new SitefinityProfileManager(), GigyaDeleteSyncContext.Get())
         {
         }
 
-        public DeleteSyncHelper(EmailHelper emailHelper, Logger logger) : base(emailHelper, logger)
+        public DeleteSyncHelper(EmailHelper emailHelper, Logger logger, IUserManager userManager, IProfileManager profileManager, IGigyaDeleteSyncContext gigyaDeleteSyncContext) : base(emailHelper, logger)
         {
-            
+            _userManager = userManager;
+            _profileManager = profileManager;
+            _gigyaDeleteSyncContext = gigyaDeleteSyncContext;
         }
 
         public Dictionary<string, DeleteSyncLog> GetProcessedFiles()
@@ -53,25 +56,22 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
                 ProcessedFilenames = files.Select(i => i.Key).ToList()
             };
 
-            using (var context = GigyaDeleteSyncContext.Get())
+            foreach (var file in files)
             {
-                foreach (var file in files)
+                for (int i = 0; i < settings.MaxAttempts; i++)
                 {
-                    for (int i = 0; i < settings.MaxAttempts; i++)
+                    var log = ProcessUids(settings, file);
+                    if (log.Errors == log.Total && i < (settings.MaxAttempts - 1))
                     {
-                        var log = ProcessUids(settings, file);
-                        if (log.Errors == log.Total && i < (settings.MaxAttempts - 1))
-                        {
-                            // complete failure so try again
-                            continue;
-                        }
-
-                        context.Add(log);
-                        break;
+                        // complete failure so try again
+                        continue;
                     }
 
-                    context.SaveChanges();
+                    _gigyaDeleteSyncContext.Add(log);
+                    break;
                 }
+
+                _gigyaDeleteSyncContext.SaveChanges();
             }
 
             WriteSummaryLog();

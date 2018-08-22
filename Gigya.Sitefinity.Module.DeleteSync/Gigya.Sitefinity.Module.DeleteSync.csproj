@@ -76,6 +76,7 @@
     <Compile Include="Data\GigyaDeleteSyncContext.cs" />
     <Compile Include="Data\GigyaFluentMetaDataSource.cs" />
     <Compile Include="Data\GigyaMetaDataProvider.cs" />
+    <Compile Include="Data\IGigyaDeleteSyncContext.cs" />
     <Compile Include="Helpers\DeleteSyncHelper.cs" />
     <Compile Include="Helpers\Mapper.cs" />
     <Compile Include="Helpers\SettingsHelper.cs" />
@@ -85,7 +86,11 @@
     <Compile Include="ModuleInstaller.cs" />
     <Compile Include="ModuleResources.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\IProfileManager.cs" />
+    <Compile Include="Providers\IUserManager.cs" />
     <Compile Include="Providers\SitefinityEmailProvider.cs" />
+    <Compile Include="Providers\SitefinityProfileManager.cs" />
+    <Compile Include="Providers\SitefinityUserManager.cs" />
     <Compile Include="Tasks\DeleteSyncTask.cs" />
     <Compile Include="Web\Services\GigyaDeleteSyncSettingsService.cs" />
   </ItemGroup>
