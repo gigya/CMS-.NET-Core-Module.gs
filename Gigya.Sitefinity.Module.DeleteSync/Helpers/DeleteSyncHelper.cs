@@ -18,21 +18,18 @@ using Telerik.Sitefinity.Security.Model;
 
 namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
 {
-    public class DeleteSyncHelper
+    public class DeleteSyncHelper : DeleteSyncHelperBase
     {
-        private readonly Logger _logger = LoggerFactory.Instance();
         private readonly UserManager _userManager = UserManager.GetManager();
         private readonly UserProfileManager _profileManager = UserProfileManager.GetManager();
-        private readonly EmailHelper _emailHelper;
-        private DeleteSyncEmailModel _emailModel;
 
-        public DeleteSyncHelper() : this (new EmailHelper(new SitefinityEmailProvider()))
+        public DeleteSyncHelper() : this (new EmailHelper(new SitefinityEmailProvider()), LoggerFactory.Instance())
         {
         }
 
-        public DeleteSyncHelper(EmailHelper emailHelper)
+        public DeleteSyncHelper(EmailHelper emailHelper, Logger logger) : base(emailHelper, logger)
         {
-            _emailHelper = emailHelper;
+            
         }
 
         public Dictionary<string, DeleteSyncLog> GetProcessedFiles()
@@ -72,10 +69,12 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
                         context.Add(log);
                         break;
                     }
-                    
+
                     context.SaveChanges();
                 }
             }
+
+            WriteSummaryLog();
 
             if (_emailModel.FailedDeletedUids.Any() || _emailModel.FailedUpdatedUids.Any())
             {
@@ -126,36 +125,6 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
             }
 
             return log;
-        }
-
-        private void AddLogEntry(bool success, string uid, DeleteSyncAction action)
-        {
-            switch (action)
-            {
-                case DeleteSyncAction.FullUserDeletion:
-                    if (success)
-                    {
-                        _emailModel.DeletedUids.Add(uid);
-                    }
-                    else
-                    {
-                        _emailModel.FailedDeletedUids.Add(uid);
-                    }
-                    return;
-                case DeleteSyncAction.DeleteNotification:
-                    if (success)
-                    {
-                        _emailModel.UpdatedUids.Add(uid);
-                    }
-                    else
-                    {
-                        _emailModel.FailedUpdatedUids.Add(uid);
-                    }
-                    return;
-                default:
-                    _logger.Error($"Action: {action} not supported.");
-                    return;
-            }
         }
 
         private bool DeleteOrUpdateUser(string uid, DeleteSyncAction action)
