@@ -148,7 +148,7 @@ namespace Gigya.Sitefinity.Module.DeleteSync.Helpers
             if (!eventArgs.ContinueWithDeletion)
             {
                 _logger.DebugFormat("Deletion not required for user with UID of {0}.", uid);
-                return false;
+                return true;
             }
 
             var success = false;
