@@ -15,7 +15,7 @@
         };
     </script>
     <script src="//cdns.@(Model.DataCenter)/js/gigya.js?apiKey=@Model.ApiKey">
-        @Html.Raw(Model.SettingsJson)
+        @Model.SettingsJson
     </script>
     <script src="@Model.GigyaScriptPath"></script>
 }

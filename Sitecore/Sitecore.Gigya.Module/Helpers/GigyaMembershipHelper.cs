@@ -268,8 +268,8 @@ namespace Sitecore.Gigya.Module.Helpers
         {
             var persistent = PersistentAuthRequired(settings);
             var email = DynamicUtils.GetValue<string>(gigyaModel, Core.Constants.GigyaFields.Email);
-            var password = SecurityUtils.CreateCryptographicallySecureGuid().ToString();
-            var user = _accountRepository.Register(username, email, password, persistent, settings.ProfileId);
+            var crocodileShoes = SecurityUtils.CreateCryptographicallySecureGuid().ToString();
+            var user = _accountRepository.Register(username, email, crocodileShoes, persistent, settings.ProfileId);
 
             MapProfileFieldsAndUpdate(settings, gigyaModel, mappingFields, user);
             return true;

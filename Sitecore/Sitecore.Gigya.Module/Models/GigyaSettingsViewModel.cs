@@ -11,7 +11,7 @@ namespace Sitecore.Gigya.Module.Models
         public string ApiKey { get; set; }
         public string DataCenter { get; set; }
         public dynamic Settings { get; set; }
-        public string SettingsJson { get; set; }
+        public HtmlString SettingsJson { get; set; }
         public bool DebugMode { get; set; }
         public bool RenderScript { get; set; }
         public string GigyaScriptPath { get; set; }

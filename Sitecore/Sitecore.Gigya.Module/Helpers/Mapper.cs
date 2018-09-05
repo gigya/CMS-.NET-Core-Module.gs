@@ -34,7 +34,7 @@ namespace Sitecore.Gigya.Module.Helpers
                 LogoutUrl = source.LogoutUrl,
                 RenderScript = source.RenderScript,
                 Settings = source.Settings,
-                SettingsJson = source.SettingsJson,
+                SettingsJson = new HtmlString(source.SettingsJson),
                 EnableSSOToken = source.EnableSSOToken,
                 SyncSSOGroup = source.SyncSSOGroup
             };

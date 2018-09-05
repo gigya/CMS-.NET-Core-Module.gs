@@ -78,12 +78,12 @@ namespace Sitecore.Gigya.Module.Repositories
             }
         }
 
-        public User Register(string username, string email, string password, bool persistent, string profileId)
+        public User Register(string username, string email, string pword, bool persistent, string profileId)
         {
             var fullName = Context.Domain.GetFullName(username);
             Assert.IsNotNullOrEmpty(fullName, "Can't retrieve full userName");
 
-            var user = User.Create(fullName, password);
+            var user = User.Create(fullName, pword);
             user.Profile.Email = email;
             if (!string.IsNullOrEmpty(profileId))
             {
