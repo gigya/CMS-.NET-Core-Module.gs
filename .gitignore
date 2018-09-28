@@ -196,3 +196,7 @@
 /Tests/Gigya.UnitTests.Umbraco621/obj/Release
 /Sitecore/Sitecore.Gigya.XConnect.Models/bin/Release
 /.vs/Gigya-Core/v15
+/Core/Gigya.Module.DeleteSync/bin/Debug
+/Core/Gigya.Module.DeleteSync/obj/Debug
+/Core/Gigya.Module.DeleteSync.Tests/bin/Debug
+/Core/Gigya.Module.DeleteSync.Tests/obj/Debug
