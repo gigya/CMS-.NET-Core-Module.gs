@@ -130,7 +130,7 @@ namespace Gigya.Module.Core.Connector.Helpers
                 model.Settings.sessionExpiration = settings.SessionTimeout;
             }
 
-            model.SettingsJson = JsonConvert.SerializeObject(model.Settings);            
+            model.SettingsJson = new HtmlString(JsonConvert.SerializeObject(model.Settings));
             return model;
         }
 
