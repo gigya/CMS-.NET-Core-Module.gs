@@ -43,7 +43,7 @@ namespace Gigya.Module.DeleteSync.Providers
 
             try
             {
-                var response = await _client.Value.ListObjectsAsync(request);
+                var response = await _client.Value.ListObjectsAsync(request).ConfigureAwait(false);
                 return response.HttpStatusCode == System.Net.HttpStatusCode.OK;
             }
             catch (Exception e)
@@ -80,7 +80,7 @@ namespace Gigya.Module.DeleteSync.Providers
                         {
                             continue;
                         }
-                        
+
                         var file = await ReadObjectDataAsync(entry.Key);
                         if (file != null)
                         {
@@ -129,7 +129,7 @@ namespace Gigya.Module.DeleteSync.Providers
                     {
                         Key = key
                     };
-                    
+
                     var responseBody = reader.ReadToEnd();
                     if (string.IsNullOrEmpty(responseBody))
                     {
