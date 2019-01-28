@@ -23,7 +23,7 @@ namespace Gigya.Module.DeleteSync.Helpers
         /// </summary>
         /// <param name="settings">The settings to validate.</param>
         /// <returns></returns>
-        public ValidationResponseModel Validate(DeleteSyncSettings settings)
+        public virtual ValidationResponseModel Validate(DeleteSyncSettings settings)
         {
             var response = new ValidationResponseModel();
 
@@ -42,6 +42,12 @@ namespace Gigya.Module.DeleteSync.Helpers
             if (settings.FrequencyMins <= 0)
             {
                 response.Message = "Frequency minutes must be greater than 0.";
+                return response;
+            }
+
+            if (settings.FrequencyMins >= 1440)
+            {
+                response.Message = "Frequency minutes must be less than 1440.";
                 return response;
             }
 
