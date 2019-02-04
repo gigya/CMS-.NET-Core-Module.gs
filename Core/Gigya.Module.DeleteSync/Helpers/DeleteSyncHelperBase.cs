@@ -23,16 +23,56 @@ namespace Gigya.Module.DeleteSync.Helpers
 
         protected void WriteSummaryLog()
         {
+            if (string.IsNullOrEmpty(_emailModel.Body))
+            {
+                SetEmailBody();
+            }
+
+            _logger.Debug(_emailModel.Body);
+        }
+
+        protected void SetEmailBody()
+        {
+            var model = _emailModel;
             var builder = new StringBuilder();
-            builder.AppendLine($"The user deletion job scheduled to run for {_emailModel.Domain} at {_emailModel.DateStarted} UTC, completed with {_emailModel.FailedDeletedUids.Count + _emailModel.FailedUpdatedUids.Count} errors.");
+            builder.AppendLine($"The user deletion job scheduled to run for {model.Domain} at {model.DateStarted} UTC, completed with {model.FailedDeletedUids.Count + model.FailedUpdatedUids.Count} errors.");
 
             builder.AppendLine();
 
-            var total = _emailModel.DeletedUids.Count + _emailModel.FailedDeletedUids.Count + _emailModel.FailedUpdatedUids.Count + _emailModel.UpdatedUids.Count;
-            builder.AppendLine($"A total of {_emailModel.DeletedUids.Count} out of {total} users were deleted.");
-            builder.AppendLine($"A total of {_emailModel.UpdatedUids.Count} out of {total} users were marked for deletion.");
+            var total = model.DeletedUids.Count + model.FailedDeletedUids.Count + model.FailedUpdatedUids.Count + model.UpdatedUids.Count;
+            builder.AppendLine($"A total of {model.DeletedUids.Count} out of {total} users were deleted.");
+            builder.AppendLine($"A total of {model.UpdatedUids.Count} out of {total} users were marked for deletion.");
 
-            _logger.Debug(builder.ToString());
+            builder.AppendLine();
+            builder.AppendLine("===================================================");
+            builder.AppendLine();
+            builder.AppendLine("Detailed information:");
+            builder.AppendLine();
+
+            builder.AppendLine("Processed files:");
+            foreach (var file in model.ProcessedFilenames)
+            {
+                builder.AppendLine(file);
+            }
+            builder.AppendLine();
+
+            builder.AppendLine("Accounts marked for deletion:");
+            builder.AppendLine($"[{string.Join(", ", model.UpdatedUids.Select(i => $"\"{i}\""))}]");
+            builder.AppendLine();
+
+            builder.AppendLine("Accounts deleted:");
+            builder.AppendLine($"[{string.Join(", ", model.DeletedUids.Select(i => $"\"{i}\""))}]");
+            builder.AppendLine();
+
+            builder.AppendLine("Accounts failed to be marked for deletion:");
+            builder.AppendLine($"[{string.Join(", ", model.FailedUpdatedUids.Select(i => $"\"{i}\""))}]");
+            builder.AppendLine();
+
+            builder.AppendLine("Accounts failed to be deleted:");
+            builder.AppendLine($"[{string.Join(", ", model.FailedDeletedUids.Select(i => $"\"{i}\""))}]");
+            builder.AppendLine();
+
+            _emailModel.Body = builder.ToString();
         }
 
         protected void AddLogEntry(bool success, string uid, DeleteSyncAction action)

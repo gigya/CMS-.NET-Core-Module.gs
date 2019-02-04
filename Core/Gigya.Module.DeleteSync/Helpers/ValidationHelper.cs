@@ -9,9 +9,16 @@ using System.Threading.Tasks;
 
 namespace Gigya.Module.DeleteSync.Helpers
 {
-    public class ValidationHelper
+    public class ValidationHelper : ValidationHelper<DeleteSyncSettings>
     {
-        private readonly IDeleteSyncService _deleteSyncService;
+        public ValidationHelper(IDeleteSyncService deleteSyncService) : base(deleteSyncService)
+        {
+        }
+    }
+
+    public class ValidationHelper<T> where T : DeleteSyncSettings
+    {
+        protected readonly IDeleteSyncService _deleteSyncService;
 
         public ValidationHelper(IDeleteSyncService deleteSyncService)
         {
@@ -23,7 +30,7 @@ namespace Gigya.Module.DeleteSync.Helpers
         /// </summary>
         /// <param name="settings">The settings to validate.</param>
         /// <returns></returns>
-        public virtual ValidationResponseModel Validate(DeleteSyncSettings settings)
+        public virtual ValidationResponseModel Validate(T settings)
         {
             var response = new ValidationResponseModel();
 

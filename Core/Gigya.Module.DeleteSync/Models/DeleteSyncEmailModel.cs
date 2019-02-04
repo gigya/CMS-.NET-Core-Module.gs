@@ -19,5 +19,6 @@ namespace Gigya.Module.DeleteSync.Models
         public List<string> DeletedUids { get; set; } = new List<string>();
         public List<string> FailedUpdatedUids { get; set; } = new List<string>();
         public List<string> FailedDeletedUids { get; set; } = new List<string>();
+        public string Body { get; set; }
     }
 }

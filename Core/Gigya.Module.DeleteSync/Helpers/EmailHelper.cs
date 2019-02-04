@@ -27,51 +27,9 @@ namespace Gigya.Module.DeleteSync.Helpers
                 message.From = new MailAddress(model.From);
             }
             message.Subject = model.Subject;
-            message.Body = GetEmailBody(model);
+            message.Body = model.Body;
 
             _emailProvider.Send(message);
-        }
-
-        protected string GetEmailBody(DeleteSyncEmailModel model)
-        {
-            var builder = new StringBuilder();
-            builder.AppendLine($"The user deletion job scheduled to run for {model.Domain} at {model.DateStarted} UTC, completed with {model.FailedDeletedUids.Count + model.FailedUpdatedUids.Count} errors.");
-
-            builder.AppendLine();
-
-            var total = model.DeletedUids.Count + model.FailedDeletedUids.Count + model.FailedUpdatedUids.Count + model.UpdatedUids.Count;
-            builder.AppendLine($"A total of {model.DeletedUids.Count} out of {total} users were deleted.");
-            builder.AppendLine($"A total of {model.UpdatedUids.Count} out of {total} users were marked for deletion.");
-
-            builder.AppendLine();
-            builder.AppendLine("===================================================");
-            builder.AppendLine();
-            builder.AppendLine("Detailed information:");
-            builder.AppendLine();
-
-            builder.AppendLine("Processed files:");
-            foreach (var file in model.ProcessedFilenames)
-            {
-                builder.AppendLine(file);
-            }
-            builder.AppendLine();
-
-            builder.AppendLine("Accounts updated:");
-            builder.AppendLine($"[{string.Join(", ", model.UpdatedUids.Select(i => $"\"{i}\""))}]");
-            builder.AppendLine();
-
-            builder.AppendLine("Accounts deleted:");
-            builder.AppendLine($"[{string.Join(", ", model.DeletedUids.Select(i => $"\"{i}\""))}]");
-            builder.AppendLine();
-
-            builder.AppendLine("Accounts failed to be updated:");
-            builder.AppendLine($"[{string.Join(", ", model.FailedUpdatedUids.Select(i => $"\"{i}\""))}]");
-            builder.AppendLine();
-
-            builder.AppendLine("Accounts failed to be deleted:");
-            builder.AppendLine($"[{string.Join(", ", model.FailedDeletedUids.Select(i => $"\"{i}\""))}]");
-            builder.AppendLine();
-            return builder.ToString();
         }
     }
 }
