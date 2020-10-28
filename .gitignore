@@ -202,3 +202,5 @@
 /Core/Gigya.Module.DeleteSync.Tests/obj/Debug
 /.vs/Gigya-Core/DesignTimeBuild/.dtbcache
 /Tests/Gigya.UnitTests/App_Data/NuGetBackup/20201025-211513
+/Core/Gigya.Module.DeleteSync.Tests/obj/Release
+/Core/Gigya.Module.DeleteSync/obj/Release
